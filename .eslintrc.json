@@ -1,0 +1,37 @@
+{
+    "extends": "eslint:recommended",
+    "root": true,
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 8,
+        "ecmaFeatures": {
+            "globalReturn": true
+        }
+    },
+    "rules": {
+        "indent": [
+            "warn",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "guard-for-in": [
+            "warn"
+        ],
+        "no-prototype-builtins": [
+            "warn"
+        ]
+    }
+}

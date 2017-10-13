@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+const Daemon = require('../lib/daemon');
+
+const instance = new Daemon();
+
+instance.listen(process.argv[1], process.argv[2]);

@@ -1,0 +1,23 @@
+{
+  "name": "final-pm",
+  "version": "1.0.0",
+  "author": "laino",
+  "description": "The Final Process Manager",
+  "main": "index.js",
+  "repository": "https://github.com/laino/final-pm",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "./bin/cli",
+    "build-doc": "./doc/build.js"
+  },
+  "dependencies": {
+    "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
+    "command-line-usage": "",
+    "joi": ""
+  },
+  "devDependencies": {
+    "ansi-to-html": ""
+  },
+  "config": {}
+}

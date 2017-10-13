@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const commandLineArgs = require('command-line-args');
+const commandLineUsage = require('command-line-usage');
+
+const argsDefinition = require('../cli-args.js');
+
+const args = commandLineArgs(argsDefinition.options, {
+    partial: false,
+    disableGreedyMultiple: true
+});
+
+console.log(args);
+
+if (Object.keys(args).length === 0 || args.help) {
+    console.log(commandLineUsage(argsDefinition.usage));
+}
