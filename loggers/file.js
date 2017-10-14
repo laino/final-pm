@@ -6,7 +6,7 @@ const ws = fs.createWriteStream(outfile);
 
 process.on('message', (message) => {
     const app = message.app;
-    const streamName = message.stream; // STDOUT or STDIN
+    const streamName = message.stream; // STDOUT or STDERR
     const line = message.line.replace(/\n/g, '\\n');
 
     ws.write(`${app}:${streamName}: ${line}`);
