@@ -8,11 +8,39 @@ const toMarkdown = require('to-markdown');
 const AnsiToHtml = new (require('ansi-to-html'))({
     standalone: true, bg: "#FAFAFA",
     fg: "#222222",
-    newline: true
+    newline: false
 });
 
-const htmlBody = AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage));
-const html = `<html><body style="margin: 2em; font-size: 15px"><pre>${htmlBody}</pre></body></html>`;
+let inBlock = false;
+
+const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage))
+    .split('\n').map(line => {
+        line = line.replace(/[#] /g, '&#35; ');
+
+        let lineIsEmpty = line.trim() === '';
+        let lineIsBlock = !lineIsEmpty && line.startsWith('  ');
+
+        if (lineIsEmpty) {
+            line = '</p><p>';
+        }
+
+        if (lineIsBlock !== inBlock) {
+            inBlock = lineIsBlock;
+            if (lineIsBlock) {
+                line = '<pre>' + line;
+            } else {
+                line = '</pre>' + line;
+            }
+        }
+
+        if (!lineIsBlock && !lineIsEmpty) {
+            line += '<br>'; 
+        }
+
+        return line + '\n';
+    }).join('') + '</p>';
+
+const html = `<html><body style="margin: 2em; font-size: 15px">${htmlBody}</body></html>`;
 const markdown = toMarkdown(htmlBody);
 
 fs.writeFileSync(path.resolve(__dirname, 'README.html'), html);
