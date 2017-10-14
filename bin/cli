@@ -10,8 +10,11 @@ const args = commandLineArgs(argsDefinition.options, {
     disableGreedyMultiple: true
 });
 
-console.log(args);
-
-if (Object.keys(args).length === 0 || args.help) {
+if (args.help) {
     console.log(commandLineUsage(argsDefinition.usage));
+    process.exit(0);
 }
+
+const actions = [];
+
+console.log(args);

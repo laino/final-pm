@@ -20,30 +20,43 @@ __Examples__
 </pre>
 
 <pre>  # Stop processes by PID                                                       
-  final-pm stop pid=43342,pid=3452                                              
+  final-pm stop pid=43342 pid=3452                                              
 </pre>
 
 <pre>  # Stop processes by application name 'worker'                                 
   final-pm stop worker                                                          
 </pre>
 
-### Arguments  
+### Options  
 
-<pre>  -s, --select Selector      Select processes/applications (see: Selectors)                                
-  -a, --action Action        Start/Stop/Restart/... all selected (see: Actions)                            
+<pre>  # final-pm [--config Config File] [--set app-key=value] [Action Selectors...] 
+</pre>
+
+<pre>  -h, --help                 Print this usage guide.                                                       
   -c, --config Config File   Default: ./process-config.{js,json}                                           
                              Load a configuration file into the daemon. For paths beginning with ./ checks 
                              parent folders until a package.json is encountered. If you specified a        
                              config for an already running application, it will be only be applied to new  
                              processes.                                                                    
   --set app-key=value        Override a configuration key.                                                 
-  -h, --help                 Print this usage guide.                                                       
+  -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
+                             to max-buffered-log-lines.                                                    
+  -f, --follow               When using the log action, will output new log lines continously as they      
+                             appear.                                                                       
 </pre>
 
-### Actions  
+**Selectors**  
 
-Valid actions are **start**, **stop**, **restart**, **kill**, **scale**.  
-All arguments not prefixed with '--' are treated as _Action Selector_ pairs.  
+A selector identifies a process or an application.  
+
+A selector can either be an _application name_ or PID (pid=_id_). Using **all** as a  
+selector will target all applications found in the configuration or which are  
+running, depending on the action. Prefix with **new:**, **running:**, **old:**, or  
+**marked:** to only target processes in that **generation**.  
+
+**Actions**  
+
+Valid actions are **start**, **stop**, **restart**, **kill**, **scale**, **show**, **log**.  
 
 __start__  
 
@@ -75,14 +88,14 @@ __scale__
 Starts or stops processes for each selected application until N matches  
 configured _instances_.  
 
-### Selectors  
+__show__  
 
-A Process/Application or comma-separated list of such.  
+Show information about all selected applications / processes.  
 
-A selector can either be an _application name_ or PID (pid=_id_). Using **all** as a  
-selector will target all applications found in the configuration and/or are  
-running, depending on the action. Prefix with **new:**, **running:**, **old:**, or  
-**marked:** to only target processes in that **generation**.  
+__log__  
+
+Show process output. Understands **--follow** and **--lines**, which work the same as  
+the UNIX _tail_ command.  
 
 ### Generations  
 

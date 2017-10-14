@@ -10,6 +10,7 @@ module.exports = {
     'restart-crashing-timeout': 1000,
     'logger': 'file-logger',
     'logger-args:': ['log.txt'],
+    'max-buffered-log-lines': 1000,
     'stop-timeout': null,
     'start-timeout': null
 };

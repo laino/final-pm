@@ -14,7 +14,8 @@
   "dependencies": {
     "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
     "command-line-usage": "",
-    "joi": ""
+    "joi": "",
+    "jayson": ""
   },
   "devDependencies": {
     "ansi-to-html": "",

@@ -4,22 +4,18 @@ const path = require('path');
 
 exports.options = [
     { 
-        name: 'actionIdGroups',
+        name: 'actionSelect',
         value: String,
-    },
-    {
-        name: 'select',
-        alias: 's',
-        typeLabel: '[underline]{Selector}',
-        description: "Select processes/applications (see: [bold]{Selectors})"
+        defaultOption: true,
+        multiple: true,
+        defaultValue: ['show', 'all']
     },
     { 
-        name: 'action',
-        alias: 'a',
-        typeLabel: '[underline]{Action}',
-        value: String,
-        multiple: true,
-        description: "Start/Stop/Restart/... all selected (see: [bold]{Actions})"
+        name: 'help',
+        alias: 'h',
+        type: Boolean,
+        description: "Print this usage guide.",
+        defaultValue: false
     },
     { 
         name: 'config',
@@ -29,20 +25,35 @@ exports.options = [
         description: "Default: ./process-config.{js,json}\n" +
                      "Load a configuration file into the daemon. For paths beginning with ./ " +
                      "checks parent folders until a package.json is encountered. If you specified a " +
-                     "config for an already running application, it will be only be applied to new processes."
+                     "config for an already running application, it will be only be applied to new processes.",
+        multiple: true,
+        defaultValue: []
     },
     { 
         name: 'set',
         typeLabel: '[underline]{app}-[underline]{key}=[underline]{value}',
-        multiple: true,
         type: String,
-        description: "Override a configuration key."
+        description: "Override a configuration key.",
+        multiple: true,
+        defaultValue: []
     },
     { 
-        name: 'help',
-        alias: 'h',
+        name: 'lines',
+        alias: 'n',
+        typeLabel: '[underline]{num}',
+        type: Number,
+        description: "When using the [bold]{log} action, sets the number of past log lines to display. " +
+                     "Up to [bold]{max-buffered-log-lines}.",
+        multiple: true,
+        defaultValue: 10
+    },
+    { 
+        name: 'follow',
+        alias: 'f',
         type: Boolean,
-        description: "Print this usage guide."
+        description: "When using the [bold]{log} action, will output new log lines continously as they appear.",
+        multiple: true,
+        defaultValue: 10
     }
 ];
 
@@ -67,22 +78,39 @@ exports.usage = [
             "final-pm stop all",   
             "",
             "# Stop processes by PID",
-            "final-pm stop pid=43342,pid=3452",
+            "final-pm stop pid=43342 pid=3452",
             "",
             "# Stop processes by application name 'worker'",
             "final-pm stop worker",
         ],
     },
     {
-        header: "Arguments",
-        optionList: exports.options,
-        hide: "actionIdGroups"
+        header: "Options",
+        content: [
+            "# final-pm [--config [underline]{Config File}] [--set [underline]{app}-[underline]{key}=[underline]{value}] " +
+            "[[underline]{Action} [underline]{Selectors}...]"
+        ]
     },
     {
-        header: "Actions",
+        optionList: exports.options,
+        hide: "actionSelect"
+    },
+    {
         content: [
-            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{restart}, [bold]{kill}, [bold]{scale}.",
-            "All arguments not prefixed with '--' are treated as [italic]{Action Selector} pairs.",
+            "",
+            "[bold]{Selectors}",
+            "",
+            "A selector identifies a process or an application.",
+            "",
+            "A selector can either be an [italic]{application name} or PID (pid=[italic]{id}). " +
+            "Using [bold]{all} as a selector will target all applications found in the configuration or which are running, " +
+            "depending on the action. " +
+            "Prefix with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} to only target processes in that [bold]{generation}.",
+            "",
+            "",
+            "[bold]{Actions}",
+            "",
+            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{restart}, [bold]{kill}, [bold]{scale}, [bold]{show}, [bold]{log}.",
             "",
             "[underline]{start}",
             "Start N=[italic]{instances} processes for all selected applications. " + 
@@ -104,18 +132,13 @@ exports.usage = [
             "Immediately [bold]{SIGKILL} all selected processes or applications. This works on processes in any [bold]{generation}.",
             "",
             "[underline]{scale}",
-            "Starts or stops processes for each selected application until N matches configured [italic]{instances}."
-        ]
-    },
-    {
-        header: "Selectors",
-        content: [
-            "A Process/Application or comma-separated list of such.",
+            "Starts or stops processes for each selected application until N matches configured [italic]{instances}.",
             "",
-            "A selector can either be an [italic]{application name} or PID (pid=[italic]{id}). " +
-            "Using [bold]{all} as a selector will target all applications found in the configuration and/or are running, " +
-            "depending on the action. " +
-            "Prefix with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} to only target processes in that [bold]{generation}."
+            "[underline]{show}",
+            "Show information about all selected applications / processes.",
+            "",
+            "[underline]{log}",
+            "Show process output. Understands [bold]{--follow} and [bold]{--lines}, which work the same as the UNIX [italic]{tail} command.",
         ]
     },
     {
@@ -197,5 +220,5 @@ exports.usage = [
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))
-        .toString().split('\n').map(col => {return {col}});
+        .toString().split('\n').map(col => {return {col};});
 }
