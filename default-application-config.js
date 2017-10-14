@@ -11,6 +11,7 @@ module.exports = {
     'logger': 'file-logger',
     'logger-args:': ['log.txt'],
     'max-buffered-log-lines': 1000,
+    'internal': false,
     'stop-timeout': null,
     'start-timeout': null
 };

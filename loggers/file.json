@@ -1,4 +1,5 @@
 {
     "name": "file-logger",
-    "ready-on": "message"
+    "ready-on": "message",
+    "internal": true
 }
