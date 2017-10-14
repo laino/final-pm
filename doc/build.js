@@ -6,7 +6,8 @@ const argsDefinition = require('../cli-args.js');
 const commandLineUsage = require('command-line-usage');
 const toMarkdown = require('to-markdown');
 const AnsiToHtml = new (require('ansi-to-html'))({
-    standalone: true, bg: "#FAFAFA",
+    standalone: true,
+    bg: "#FAFAFA",
     fg: "#222222",
     newline: false
 });
@@ -52,7 +53,14 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
     }).join('') + '</p>';
 
 const html = `<html><body style="margin: 2em; font-size: 15px">${htmlBody}</body></html>`;
-const markdown = toMarkdown(htmlBody, { gfm: true });
+const markdown = toMarkdown(htmlBody, { 
+    converters: [{
+        filter: 'u',
+        replacement: function(content) {
+            return '__' + content + '__';
+        }
+    }]
+});
 
 fs.writeFileSync(path.resolve(__dirname, 'README.html'), html);
 fs.writeFileSync(path.resolve(__dirname, 'README.md'), markdown);
