@@ -21,7 +21,7 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
         let lineIsBlock = !lineIsEmpty && ((/^ *-/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
 
         if (lineIsEmpty) {
-            line = '</p><p>';
+            line = '</p>\n\n<p>';
         }
 
         if (lineIsBlock !== inBlock) {
@@ -33,12 +33,12 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
             }
         }
 
-        if (!lineIsBlock) {
-            line = line.replace(/ /g, '&nbsp;');
+        if (!lineIsBlock && !lineIsEmpty) {
+            line = line.replace(/ *$/, '') + '<br>'; 
         }
 
-        if (!lineIsBlock && !lineIsEmpty) {
-            line += '<br>'; 
+        if (!lineIsBlock) {
+            line = line.replace(/ /g, '&nbsp;');
         }
 
         if (lineIsBlock) {
