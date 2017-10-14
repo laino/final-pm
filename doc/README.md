@@ -1,4 +1,4 @@
-__**FinalPM**__  
+### FinalPM  
 
 _Finally a good process manager._  
 
@@ -29,7 +29,7 @@ __Examples__
   $ final-pm stop worker                                                        
 </pre>
 
-__**Arguments**__  
+### Arguments  
 
 <pre>  -s, --select Selector                  Select processes/applications.                                                
   -a, --action start|stop|restart|kill   Start/Stop/Restart/Kill all selected.                                         
@@ -40,7 +40,7 @@ __**Arguments**__
   -h, --help                             Print this usage guide.                                                       
 </pre>
 
-__**Selectors**__  
+### Selectors  
 
 A Process/Application or comma-separated list of such.  
 
@@ -49,7 +49,7 @@ selector will target all applications found in the configuration and/or are
 running, depending on the action. Prefix with **new:**, **running:**, **old:**, or  
 **marked:** to only target processes in that **generation**.  
 
-__**Generations**__  
+### Generations  
 
 Processes are grouped in generations:  
 The **new**, **running**, **old**, and **marked generation**.  
@@ -86,7 +86,7 @@ New processes who were asked to stop are kept here, then are moved to the **old
 generation** once they are **ready**. This means the programmer never has to worry  
 about handling **SIGINT** signals during startup.  
 
-__**Configuration**__  
+### Configuration  
 
 Configuration may be done in either JSON or JS, as well as environment  
 variables and command line arguments. Each configuration key can by overriden  

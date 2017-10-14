@@ -60,7 +60,7 @@ const markdown = toMarkdown(htmlBody, {
             return '__' + content + '__';
         }
     }]
-});
+}).replace(/__\*\*(\w.*?\w)\*\*__/g, '### $1');
 
 fs.writeFileSync(path.resolve(__dirname, 'README.html'), html);
 fs.writeFileSync(path.resolve(__dirname, 'README.md'), markdown);
