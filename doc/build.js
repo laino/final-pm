@@ -15,13 +15,18 @@ let inBlock = false;
 
 const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage))
     .split('\n').map(line => {
-        line = line.replace(/[#] /g, '&#35; ');
 
         let lineIsEmpty = line.trim() === '';
-        let lineIsBlock = !lineIsEmpty && ((/^ *-/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
+        let lineIsBlock = !lineIsEmpty && ((/^ *[-#$/]/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
+
+        line = line.replace(/[#] /g, '&#35; ');
 
         if (lineIsEmpty) {
             line = '</p>\n\n<p>';
+        }
+        
+        if (!lineIsBlock && !lineIsEmpty) {
+            line = line.trim() + '<br>'; 
         }
 
         if (lineIsBlock !== inBlock) {
@@ -31,14 +36,6 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
             } else {
                 line = '</pre>' + line;
             }
-        }
-
-        if (!lineIsBlock && !lineIsEmpty) {
-            line = line.replace(/ *$/, '') + '<br>'; 
-        }
-
-        if (!lineIsBlock) {
-            line = line.replace(/ /g, '&nbsp;');
         }
 
         if (lineIsBlock) {
