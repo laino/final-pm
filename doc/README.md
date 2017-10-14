@@ -137,7 +137,7 @@ FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.
 
 __Configuration Files__  
 
-JS files will be **require**d with the appropriate _NPM_PACKAGE_CONFIG_*_  
+JS files will be **require()**'d with the appropriate _NPM_PACKAGE_CONFIG_*_  
 environment variables. JSON files on the other hand are parsed as-is.  
 
 __Logging__  
