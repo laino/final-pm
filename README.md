@@ -52,7 +52,7 @@ listen_timeout   || PM2_GRACEFUL_LISTEN_TIMEOUT     # How long PM2 waits for the
 wait_ready       || (NONE)                          # true or false, If true, PM2 will wait for process.send('ready') instead of waiting for the 'listening' event.
 exec_mode        || (NONE)                          # 'fork' or 'cluster'. 
 ```
-[1]: [Comment](https://github.com/Unitech/pm2/commit/a53fd17a7015cf77dd9a04a01300c60a98c0fc08#commitcomment-24954769)
+1: [Comment](https://github.com/Unitech/pm2/commit/a53fd17a7015cf77dd9a04a01300c60a98c0fc08#commitcomment-24954769)
 
 Don't trust a process manager that can't get basic stuff like that right, will send you down a goose
 chase with a completely wrong error message and a lack of documentation, then will reveal to you

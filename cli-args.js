@@ -11,23 +11,25 @@ exports.options = [
         name: 'select',
         alias: 's',
         typeLabel: '[underline]{Selector}',
-        description: "Select processes/applications."
+        description: "Select processes/applications (see: [bold]{Selectors})"
     },
     { 
         name: 'action',
         alias: 'a',
-        typeLabel: 'start|stop|restart|kill',
+        typeLabel: '[underline]{Action}',
         value: String,
         multiple: true,
-        description: "Start/Stop/Restart/Kill all selected."
+        description: "Start/Stop/Restart/... all selected (see: [bold]{Actions})"
     },
     { 
         name: 'config',
         alias: 'c',
         typeLabel: '[underline]{Config File}',
         type: String,
-        description: "Default: ./process-config.{js,json} and checks parent folders until a package.json is encountered. " +
-                     "If you specified a config for an already running application, it will be only be applied to new processes."
+        description: "Default: ./process-config.{js,json}\n" +
+                     "Load a configuration file into the daemon. For paths beginning with ./ " +
+                     "checks parent folders until a package.json is encountered. If you specified a " +
+                     "config for an already running application, it will be only be applied to new processes."
     },
     { 
         name: 'set',
@@ -55,28 +57,55 @@ exports.usage = [
             "",
             "[underline]{Examples}",
             "",
-            "# Start processes of all configured applications. This",
-            "# may cause existing processes to be gracefully stopped once",
-            "# they are ready, making this similar to 'restart'.",
-            "$ final-pm start all",
+            "# Start processes of all configured applications.",
+            "final-pm start all",
             "",
             "# For each running process, start a new one",
-            "$ final-pm restart all",   
+            "final-pm restart all",   
             "",
             "# Stop all processes gracefully",
-            "$ final-pm stop all",   
+            "final-pm stop all",   
             "",
             "# Stop processes by PID",
-            "$ final-pm stop pid=43342,pid=3452",
+            "final-pm stop pid=43342,pid=3452",
             "",
             "# Stop processes by application name 'worker'",
-            "$ final-pm stop worker",
+            "final-pm stop worker",
         ],
     },
     {
         header: "Arguments",
         optionList: exports.options,
         hide: "actionIdGroups"
+    },
+    {
+        header: "Actions",
+        content: [
+            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{restart}, [bold]{kill}, [bold]{scale}.",
+            "All arguments not prefixed with '--' are treated as [italic]{Action Selector} pairs.",
+            "",
+            "[underline]{start}",
+            "Start N=[italic]{instances} processes for all selected applications. " + 
+            "When processes are selected this will start one new process for each selected one instead. " +
+            "May cause existing processes to be gracefully stopped when the newly started ones are ready, and " +
+            "will even implicitly stop more processes than were started when [italic]{instances} was decreased " +
+            "in the configuration. Note that this may replace different processes than the selected ones, or none at all, " +
+            "if [italic]{unique-instances} is set to [italic]{false}. In which case the oldest ones of that application " +
+            "will be replaced if [italic]{instances} was exceeded.",
+            "",
+            "[underline]{restart}",
+            "Same as [bold]{start} except [italic]{unique-instances} is ignored and processes are always replaced, " +
+            "also stopping processes in case N currently exceeds [italic]{instances}.",
+            "",
+            "[underline]{stop}",
+            "Gracefully stop all selected [italic]{running}/[italic]{new} processes or applications.",
+            "",
+            "[underline]{kill}",
+            "Immediately [bold]{SIGKILL} all selected processes or applications. The works on processes in any [bold]{generation}.",
+            "",
+            "[underline]{scale}",
+            "Starts or stops processes for each selected application until N matches configured [italic]{instances}."
+        ]
     },
     {
         header: "Selectors",
@@ -105,9 +134,12 @@ exports.usage = [
             "",
             "[underline]{Running Generation}",
             "The [bold]{running generation} is where processes remain until they are [bold]{stopped}. At most the configured amount of " +
-            "processes for each application may reside here. If the maximum was exceeded because new processes were started, " + 
-            "the oldest processes will be moved to the [bold]{old generation}. " +
-            "If a process exits abnormally while in the running generation, a new one is started (config: [bold]{restart-crashing}).",
+            "processes for each application may reside here. If [italic]{unique-instances} is set to [italic]{false} and the maximum " +
+            "[italic]{instances} was exceeded because new processes were started, the oldest processes will be moved to the [bold]{old generation}. " +
+            "If [italic]{unique-instances} is set to [italic]{true}, each process will replace its counterpart 1:1 instead, and only then " +
+            "additional processes stopped if [italic]{instances} is exceeded. If a process exits abnormally while in the running generation, " +
+            "a new one is started (config: [bold]{restart-crashing}). Note that an older process can never replace a process that was started " +
+            "later, ensuring always the latest processes are running even if startup time wildly varies.",
             "",
             "[underline]{Old Generation}",
             "The [bold]{old generation} is where processes remain when they should be [bold]{stopped} until they finally [bold]{exit}. " +
@@ -125,12 +157,19 @@ exports.usage = [
         content: [
             "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
             "Each configuration key can by overriden with an environment variable by replacing all dashes in the key " +
-            " with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_ i.e. " +
-            " restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
+            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_ i.e. " +
+            "restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
             "",
             "[underline]{Configuration Files}",
             "JS files will be [bold]{require}d with the appropriate [italic]{NPM_PACKAGE_CONFIG_*} environment variables. " +
             "JSON files on the other hand are parsed as-is.",
+            "",
+            "[underline]{Logging}",
+            "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
+            "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
+            "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
+            "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
+            "Each logger is fed back its own output, so make sure you don't accidentially call [italic]{console.log} for each log line you receive. "
         ]
     },
     {
@@ -141,7 +180,7 @@ exports.usage = [
             data: [
                 { col: "[underline]{Example Config}" },
                 { col: "[italic]{final-pm start myApp}\n" }
-            ].concat(fileToColumns('sample-config.js'))
+            ].concat(fileToColumns('examples/sample-config.js'))
         }
     },
     {
@@ -151,12 +190,12 @@ exports.usage = [
             },
             data: [
                 { col: "[underline]{Example App}\n" }
-            ].concat(fileToColumns('sample-app.js'))
+            ].concat(fileToColumns('examples/sample-app.js'))
         }
     }
 ];
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))
-           .toString().split('\n').map(col => {return {col}});
+        .toString().split('\n').map(col => {return {col}});
 }
