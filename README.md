@@ -3,6 +3,12 @@ FinalPM
 
 Finally a solid process manager that just works.
 
+Getting started
+--------------------
+
+The project is currently in works, but you can check out some
+preliminary documentation [here](https://github.com/laino/final-pm/doc/README.md).
+
 Why?
 ----
 
@@ -10,12 +16,6 @@ The current state of node.js process managers is terrible. Besides most of them
 trying to be 20 things at once, and not even being decent at any of them, 
 there is hardly one being half as reliable or complete in important features
 as you'd expect of a core component.
-
-Getting started
---------------------
-
-The project is currently in works, but you can check out some
-preliminary documentation [here](https://github.com/laino/final-pm/doc/README.md).
 
 PM2
 -------

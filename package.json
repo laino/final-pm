@@ -17,7 +17,8 @@
     "joi": ""
   },
   "devDependencies": {
-    "ansi-to-html": ""
+    "ansi-to-html": "",
+    "to-markdown": ""
   },
   "config": {}
 }
