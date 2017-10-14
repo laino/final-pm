@@ -7,7 +7,7 @@ Getting started
 --------------------
 
 The project is currently in works, but you can check out some
-preliminary documentation [here](https://github.com/laino/final-pm/doc/README.md).
+preliminary documentation [here](https://github.com/laino/final-pm/blob/master/doc/README.md).
 
 Why?
 ----
