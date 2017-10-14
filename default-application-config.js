@@ -10,6 +10,6 @@ module.exports = {
     'restart-crashing-timeout': 1000,
     'logger': 'file-logger',
     'logger-args:': ['log.txt'],
-    'stop-timeout': 0,
-    'start-timeout': 0
+    'stop-timeout': null,
+    'start-timeout': null
 };
