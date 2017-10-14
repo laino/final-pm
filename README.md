@@ -6,7 +6,7 @@ Finally a solid process manager that just works.
 Getting started
 --------------------
 
-The project is currently in works, but you can check out some
+The project is currently in the works, but you can check out some
 preliminary documentation [here](https://github.com/laino/final-pm/blob/master/doc/README.md).
 
 Why?
