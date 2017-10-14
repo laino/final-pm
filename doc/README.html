@@ -21,30 +21,28 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 </p>
 
 <p>
-<pre>  &#35; Start processes of all configured applications. This                        
-  &#35; may cause existing processes to be gracefully stopped once                  
-  &#35; they are ready, making this similar to 'restart'.                           
-  $ final-pm start all                                                          
+<pre>  &#35; Start processes of all configured applications.                             
+  final-pm start all                                                            
 </pre></p>
 
 <p>
 <pre>  &#35; For each running process, start a new one                                   
-  $ final-pm restart all                                                        
+  final-pm restart all                                                          
 </pre></p>
 
 <p>
 <pre>  &#35; Stop all processes gracefully                                               
-  $ final-pm stop all                                                           
+  final-pm stop all                                                             
 </pre></p>
 
 <p>
 <pre>  &#35; Stop processes by PID                                                       
-  $ final-pm stop pid=43342,pid=3452                                            
+  final-pm stop pid=43342,pid=3452                                              
 </pre></p>
 
 <p>
 <pre>  &#35; Stop processes by application name 'worker'                                 
-  $ final-pm stop worker                                                        
+  final-pm stop worker                                                          
 </pre></p>
 
 <p>
@@ -53,14 +51,66 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 </p>
 
 <p>
-<pre>  -s, --select Selector                  Select processes/applications.                                                
-  -a, --action start|stop|restart|kill   Start/Stop/Restart/Kill all selected.                                         
-  -c, --config Config File               Default: ./process-config.{js,json} and checks parent folders until a         
-                                         package.json is encountered. If you specified a config for an already running 
-                                         application, it will be only be applied to new processes.                     
-  --set app-key=value                    Override a configuration key.                                                 
-  -h, --help                             Print this usage guide.                                                       
+<pre>  -s, --select Selector      Select processes/applications (see: Selectors)                                
+  -a, --action Action        Start/Stop/Restart/... all selected (see: Actions)                            
+  -c, --config Config File   Default: ./process-config.{js,json}                                           
+                             Load a configuration file into the daemon. For paths beginning with ./ checks 
+                             parent folders until a package.json is encountered. If you specified a        
+                             config for an already running application, it will be only be applied to new  
+                             processes.                                                                    
+  --set app-key=value        Override a configuration key.                                                 
+  -h, --help                 Print this usage guide.                                                       
 </pre></p>
+
+<p>
+<u><b>Actions</b></u><br>
+<br>
+</p>
+
+<p>
+Valid actions are <b>start</b>, <b>stop</b>, <b>restart</b>, <b>kill</b>, <b>scale</b>.<br>
+All arguments not prefixed with '--' are treated as <i>Action Selector</i> pairs.<br>
+</p>
+
+<p>
+<u>start</u><br>
+<br>
+Start N=<i>instances</i> processes for all selected applications. When processes are<br>
+selected this will start one new process for each selected one instead. May<br>
+cause existing processes to be gracefully stopped when the newly started ones<br>
+are ready, and will even implicitly stop more processes than were started<br>
+when <i>instances</i> was decreased in the configuration. Note that this may replace<br>
+different processes than the selected ones, or none at all, if <i>unique-<br>
+instances</i> is set to <i>false</i>. In which case the oldest ones of that application<br>
+will be replaced if <i>instances</i> was exceeded.<br>
+</p>
+
+<p>
+<u>restart</u><br>
+<br>
+Same as <b>start</b> except <i>unique-instances</i> is ignored and processes are always<br>
+replaced, also stopping processes in case N currently exceeds <i>instances</i>.<br>
+</p>
+
+<p>
+<u>stop</u><br>
+<br>
+Gracefully stop all selected <i>running</i>/<i>new</i> processes or applications.<br>
+</p>
+
+<p>
+<u>kill</u><br>
+<br>
+Immediately <b>SIGKILL</b> all selected processes or applications. The works on<br>
+processes in any <b>generation</b>.<br>
+</p>
+
+<p>
+<u>scale</u><br>
+<br>
+Starts or stops processes for each selected application until N matches<br>
+configured <i>instances</i>.<br>
+</p>
 
 <p>
 <u><b>Selectors</b></u><br>
@@ -106,10 +156,15 @@ generation, a new one is started (config: <b>restart-new-crashing</b>).<br>
 <br>
 The <b>running generation</b> is where processes remain until they are <b>stopped</b>. At<br>
 most the configured amount of processes for each application may reside here.<br>
-If the maximum was exceeded because new processes were started, the oldest<br>
-processes will be moved to the <b>old generation</b>. If a process exits abnormally<br>
-while in the running generation, a new one is started (config: <b>restart-<br>
-crashing</b>).<br>
+If <i>unique-instances</i> is set to <i>false</i> and the maximum <i>instances</i> was exceeded<br>
+because new processes were started, the oldest processes will be moved to the<br>
+<b>old generation</b>. If <i>unique-instances</i> is set to <i>true</i>, each process will<br>
+replace its counterpart 1:1 instead, and only then additional processes<br>
+stopped if <i>instances</i> is exceeded. If a process exits abnormally while in the<br>
+running generation, a new one is started (config: <b>restart-crashing</b>). Note<br>
+that an older process can never replace a process that was started later,<br>
+ensuring always the latest processes are running even if startup time wildly<br>
+varies.<br>
 </p>
 
 <p>
@@ -137,9 +192,9 @@ about handling <b>SIGINT</b> signals during startup.<br>
 <p>
 Configuration may be done in either JSON or JS, as well as environment<br>
 variables and command line arguments. Each configuration key can by overriden<br>
-with an environment variable by replacing all dashes in the key  with<br>
+with an environment variable by replacing all dashes in the key with<br>
 underscores and translating it to uppercase, finally prefixed with<br>
-FINAL_PM_CONFIG_ i.e.  restart-new-crashing=true becomes<br>
+FINAL_PM_CONFIG_ i.e. restart-new-crashing=true becomes<br>
 FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.<br>
 </p>
 
@@ -148,6 +203,20 @@ FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.<br>
 <br>
 JS files will be <b>require</b>d with the appropriate <i>NPM_PACKAGE_CONFIG_*</i><br>
 environment variables. JSON files on the other hand are parsed as-is.<br>
+</p>
+
+<p>
+<u>Logging</u><br>
+<br>
+Logging is done by a logging process started for each application, which will<br>
+be fed logging output via process.send(logLine). The logging process is<br>
+automatically started with your application, and is stopped once the last<br>
+process of your application exits. By default all applications use the simple<br>
+file-logger that ships with final-pm, but creating your own logger is as<br>
+simple as creating a new application 'my-logger' which listens to<br>
+process.on(...) and setting <i>logger</i> to 'my-logger' in your main application.<br>
+Each logger is fed back its own output, so make sure you don't accidentially<br>
+call <i>console.log</i> for each log line you receive.<br>
 </p>
 
 <p>

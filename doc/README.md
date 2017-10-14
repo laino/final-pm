@@ -7,38 +7,73 @@ stopped only once new processes have indicated they are **ready**.
 
 __Examples__  
 
-<pre>  # Start processes of all configured applications. This                        
-  # may cause existing processes to be gracefully stopped once                  
-  # they are ready, making this similar to 'restart'.                           
-  $ final-pm start all                                                          
+<pre>  # Start processes of all configured applications.                             
+  final-pm start all                                                            
 </pre>
 
 <pre>  # For each running process, start a new one                                   
-  $ final-pm restart all                                                        
+  final-pm restart all                                                          
 </pre>
 
 <pre>  # Stop all processes gracefully                                               
-  $ final-pm stop all                                                           
+  final-pm stop all                                                             
 </pre>
 
 <pre>  # Stop processes by PID                                                       
-  $ final-pm stop pid=43342,pid=3452                                            
+  final-pm stop pid=43342,pid=3452                                              
 </pre>
 
 <pre>  # Stop processes by application name 'worker'                                 
-  $ final-pm stop worker                                                        
+  final-pm stop worker                                                          
 </pre>
 
 ### Arguments  
 
-<pre>  -s, --select Selector                  Select processes/applications.                                                
-  -a, --action start|stop|restart|kill   Start/Stop/Restart/Kill all selected.                                         
-  -c, --config Config File               Default: ./process-config.{js,json} and checks parent folders until a         
-                                         package.json is encountered. If you specified a config for an already running 
-                                         application, it will be only be applied to new processes.                     
-  --set app-key=value                    Override a configuration key.                                                 
-  -h, --help                             Print this usage guide.                                                       
+<pre>  -s, --select Selector      Select processes/applications (see: Selectors)                                
+  -a, --action Action        Start/Stop/Restart/... all selected (see: Actions)                            
+  -c, --config Config File   Default: ./process-config.{js,json}                                           
+                             Load a configuration file into the daemon. For paths beginning with ./ checks 
+                             parent folders until a package.json is encountered. If you specified a        
+                             config for an already running application, it will be only be applied to new  
+                             processes.                                                                    
+  --set app-key=value        Override a configuration key.                                                 
+  -h, --help                 Print this usage guide.                                                       
 </pre>
+
+### Actions  
+
+Valid actions are **start**, **stop**, **restart**, **kill**, **scale**.  
+All arguments not prefixed with '--' are treated as _Action Selector_ pairs.  
+
+__start__  
+
+Start N=_instances_ processes for all selected applications. When processes are  
+selected this will start one new process for each selected one instead. May  
+cause existing processes to be gracefully stopped when the newly started ones  
+are ready, and will even implicitly stop more processes than were started  
+when _instances_ was decreased in the configuration. Note that this may replace  
+different processes than the selected ones, or none at all, if _unique-  
+instances_ is set to _false_. In which case the oldest ones of that application  
+will be replaced if _instances_ was exceeded.  
+
+__restart__  
+
+Same as **start** except _unique-instances_ is ignored and processes are always  
+replaced, also stopping processes in case N currently exceeds _instances_.  
+
+__stop__  
+
+Gracefully stop all selected _running_/_new_ processes or applications.  
+
+__kill__  
+
+Immediately **SIGKILL** all selected processes or applications. The works on  
+processes in any **generation**.  
+
+__scale__  
+
+Starts or stops processes for each selected application until N matches  
+configured _instances_.  
 
 ### Selectors  
 
@@ -68,10 +103,15 @@ __Running Generation__
 
 The **running generation** is where processes remain until they are **stopped**. At  
 most the configured amount of processes for each application may reside here.  
-If the maximum was exceeded because new processes were started, the oldest  
-processes will be moved to the **old generation**. If a process exits abnormally  
-while in the running generation, a new one is started (config: **restart-  
-crashing**).  
+If _unique-instances_ is set to _false_ and the maximum _instances_ was exceeded  
+because new processes were started, the oldest processes will be moved to the  
+**old generation**. If _unique-instances_ is set to _true_, each process will  
+replace its counterpart 1:1 instead, and only then additional processes  
+stopped if _instances_ is exceeded. If a process exits abnormally while in the  
+running generation, a new one is started (config: **restart-crashing**). Note  
+that an older process can never replace a process that was started later,  
+ensuring always the latest processes are running even if startup time wildly  
+varies.  
 
 __Old Generation__  
 
@@ -99,6 +139,18 @@ __Configuration Files__
 
 JS files will be **require**d with the appropriate _NPM_PACKAGE_CONFIG_*_  
 environment variables. JSON files on the other hand are parsed as-is.  
+
+__Logging__  
+
+Logging is done by a logging process started for each application, which will  
+be fed logging output via process.send(logLine). The logging process is  
+automatically started with your application, and is stopped once the last  
+process of your application exits. By default all applications use the simple  
+file-logger that ships with final-pm, but creating your own logger is as  
+simple as creating a new application 'my-logger' which listens to  
+process.on(...) and setting _logger_ to 'my-logger' in your main application.  
+Each logger is fed back its own output, so make sure you don't accidentially  
+call _console.log_ for each log line you receive.  
 
 __Example Config__  
 
