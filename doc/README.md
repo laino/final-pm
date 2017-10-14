@@ -55,6 +55,7 @@ Processes are grouped in generations:
 The **new**, **running**, **old**, and **marked generation**.
 
 <u>New Generation</u>
+
 The **new generation** is where processes remain until they are considered **ready**.
 A process is considered to be **ready** on the cluster **listen** event or when it
 sends the **ready** message, depending on the configuration (config: **ready-on**).
@@ -64,6 +65,7 @@ generation** instead. If a process exits abnormally while in the new
 generation, a new one is started (config: **restart-new-crashing**).
 
 <u>Running Generation</u>
+
 The **running generation** is where processes remain until they are **stopped**. At
 most the configured amount of processes for each application may reside here.
 If the maximum was exceeded because new processes were started, the oldest
@@ -72,12 +74,14 @@ while in the running generation, a new one is started (config: **restart-
 crashing**).
 
 <u>Old Generation</u>
+
 The **old generation** is where processes remain when they should be **stopped**
 until they finally **exit**. A process moved to the **old generation** is sent the
 **SIGINT** signal. If the process does not exit within **stop-timeout** (default is
 no timeout), it is sent **SIGKILL** and removed from the old generation.
 
 <u>Marked Generation</u>
+
 New processes who were asked to stop are kept here, then are moved to the **old
 generation** once they are **ready**. This means the programmer never has to worry
 about handling **SIGINT** signals during startup.
@@ -92,10 +96,12 @@ FINAL_PM_CONFIG_ i.e. restart-new-crashing=true becomes
 FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.
 
 <u>Configuration Files</u>
+
 JS files will be **require**d with the appropriate _NPM_PACKAGE_CONFIG_*_
 environment variables. JSON files on the other hand are parsed as-is.
 
 <u>Example Config</u>
+
 _final-pm start myApp_
 
 <pre>  // sample-config.js                                                  

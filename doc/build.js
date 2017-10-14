@@ -17,6 +17,7 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
     .split('\n').map(line => {
 
         let lineIsEmpty = line.trim() === '';
+        let length = line.trim().length;
         let lineIsBlock = !lineIsEmpty && ((/^ *[-#$/]/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
 
         line = line.replace(/[#] /g, '&#35; ');
@@ -27,6 +28,9 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
         
         if (!lineIsBlock && !lineIsEmpty) {
             line = line.trim() + '<br>'; 
+            if (length < 70 && line.startsWith('<')) {
+                line = line + '\n<br>';
+            }
         }
 
         if (lineIsBlock !== inBlock) {

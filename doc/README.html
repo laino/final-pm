@@ -2,10 +2,12 @@
 
 <p>
 <u><b>FinalPM</b></u><br>
+<br>
 </p>
 
 <p>
 <i>Finally a good process manager.</i><br>
+<br>
 </p>
 
 <p>
@@ -15,6 +17,7 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 
 <p>
 <u>Examples</u><br>
+<br>
 </p>
 
 <p>
@@ -46,6 +49,7 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 
 <p>
 <u><b>Arguments</b></u><br>
+<br>
 </p>
 
 <p>
@@ -60,6 +64,7 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 
 <p>
 <u><b>Selectors</b></u><br>
+<br>
 </p>
 
 <p>
@@ -71,10 +76,12 @@ A selector can either be an <i>application name</i> or PID (pid=<i>id</i>). Usin
 selector will target all applications found in the configuration and/or are<br>
 running, depending on the action. Prefix with <b>new:</b>, <b>running:</b>, <b>old:</b>, or<br>
 <b>marked:</b> to only target processes in that <b>generation</b>.<br>
+<br>
 </p>
 
 <p>
 <u><b>Generations</b></u><br>
+<br>
 </p>
 
 <p>
@@ -84,6 +91,7 @@ The <b>new</b>, <b>running</b>, <b>old</b>, and <b>marked generation</b>.<br>
 
 <p>
 <u>New Generation</u><br>
+<br>
 The <b>new generation</b> is where processes remain until they are considered <b>ready</b>.<br>
 A process is considered to be <b>ready</b> on the cluster <b>listen</b> event or when it<br>
 sends the <b>ready</b> message, depending on the configuration (config: <b>ready-on</b>).<br>
@@ -95,6 +103,7 @@ generation, a new one is started (config: <b>restart-new-crashing</b>).<br>
 
 <p>
 <u>Running Generation</u><br>
+<br>
 The <b>running generation</b> is where processes remain until they are <b>stopped</b>. At<br>
 most the configured amount of processes for each application may reside here.<br>
 If the maximum was exceeded because new processes were started, the oldest<br>
@@ -105,6 +114,7 @@ crashing</b>).<br>
 
 <p>
 <u>Old Generation</u><br>
+<br>
 The <b>old generation</b> is where processes remain when they should be <b>stopped</b><br>
 until they finally <b>exit</b>. A process moved to the <b>old generation</b> is sent the<br>
 <b>SIGINT</b> signal. If the process does not exit within <b>stop-timeout</b> (default is<br>
@@ -113,6 +123,7 @@ no timeout), it is sent <b>SIGKILL</b> and removed from the old generation.<br>
 
 <p>
 <u>Marked Generation</u><br>
+<br>
 New processes who were asked to stop are kept here, then are moved to the <b>old<br>
 generation</b> once they are <b>ready</b>. This means the programmer never has to worry<br>
 about handling <b>SIGINT</b> signals during startup.<br>
@@ -120,6 +131,7 @@ about handling <b>SIGINT</b> signals during startup.<br>
 
 <p>
 <u><b>Configuration</b></u><br>
+<br>
 </p>
 
 <p>
@@ -133,13 +145,16 @@ FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.<br>
 
 <p>
 <u>Configuration Files</u><br>
+<br>
 JS files will be <b>require</b>d with the appropriate <i>NPM_PACKAGE_CONFIG_*</i><br>
 environment variables. JSON files on the other hand are parsed as-is.<br>
 </p>
 
 <p>
 <u>Example Config</u><br>
+<br>
 <i>final-pm start myApp</i><br>
+<br>
 </p>
 
 <p>
@@ -161,6 +176,7 @@ environment variables. JSON files on the other hand are parsed as-is.<br>
 
 <p>
 <u>Example App</u><br>
+<br>
 </p>
 
 <p>
