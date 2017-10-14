@@ -18,7 +18,7 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
         line = line.replace(/[#] /g, '&#35; ');
 
         let lineIsEmpty = line.trim() === '';
-        let lineIsBlock = !lineIsEmpty && line.startsWith('  ');
+        let lineIsBlock = !lineIsEmpty && ((/^ *-/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
 
         if (lineIsEmpty) {
             line = '</p><p>';
@@ -33,15 +33,25 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage
             }
         }
 
+        if (!lineIsBlock) {
+            line = line.replace(/ /g, '&nbsp;');
+        }
+
         if (!lineIsBlock && !lineIsEmpty) {
             line += '<br>'; 
+        }
+
+        if (lineIsBlock) {
+            line = line.replace(/<i>(.*?)<\/i>/g, '$1');
+            line = line.replace(/<b>(.*?)<\/b>/g, '$1');
+            line = line.replace(/<u>(.*?)<\/u>/g, '$1');
         }
 
         return line + '\n';
     }).join('') + '</p>';
 
 const html = `<html><body style="margin: 2em; font-size: 15px">${htmlBody}</body></html>`;
-const markdown = toMarkdown(htmlBody);
+const markdown = toMarkdown(htmlBody, { gfm: true });
 
 fs.writeFileSync(path.resolve(__dirname, 'README.html'), html);
 fs.writeFileSync(path.resolve(__dirname, 'README.md'), markdown);

@@ -1,128 +1,128 @@
 <html><body style="margin: 2em; font-size: 15px"><p></p><p>
 <u><b>FinalPM</b></u><br>
 </p><p>
-<pre>  <i>Finally a good process manager.</i>                                               
-</pre></p><p>
-<pre>  By default all actions are <b>graceful</b>. Old processes will always be cleanly     
-  stopped only once new processes have indicated they are <b>ready</b>.                
-</pre></p><p>
-<pre>  <u>Examples</u>                                                                      
-</pre></p><p>
-<pre>  &#35; Start processes of all configured applications. This                        
-  &#35; may cause existing processes to be gracefully stopped once                  
-  &#35; they are ready, making this similar to 'restart'.                           
-  $ final-pm start all                                                          
-</pre></p><p>
-<pre>  &#35; For each running process, start a new one                                   
-  $ final-pm restart all                                                        
-</pre></p><p>
-<pre>  &#35; Stop all processes gracefully                                               
-  $ final-pm stop all                                                           
-</pre></p><p>
-<pre>  &#35; Stop processes by PID                                                       
-  $ final-pm stop pid=43342,pid=3452                                            
-</pre></p><p>
-<pre>  &#35; Stop processes by application name 'worker'                                 
-  $ final-pm stop worker                                                        
-</pre></p><p>
+&nbsp;&nbsp;<i>Finally&nbsp;a&nbsp;good&nbsp;process&nbsp;manager.</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;By&nbsp;default&nbsp;all&nbsp;actions&nbsp;are&nbsp;<b>graceful</b>.&nbsp;Old&nbsp;processes&nbsp;will&nbsp;always&nbsp;be&nbsp;cleanly&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;stopped&nbsp;only&nbsp;once&nbsp;new&nbsp;processes&nbsp;have&nbsp;indicated&nbsp;they&nbsp;are&nbsp;<b>ready</b>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>Examples</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&#35;&nbsp;Start&nbsp;processes&nbsp;of&nbsp;all&nbsp;configured&nbsp;applications.&nbsp;This&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&#35;&nbsp;may&nbsp;cause&nbsp;existing&nbsp;processes&nbsp;to&nbsp;be&nbsp;gracefully&nbsp;stopped&nbsp;once&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&#35;&nbsp;they&nbsp;are&nbsp;ready,&nbsp;making&nbsp;this&nbsp;similar&nbsp;to&nbsp;'restart'.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;$&nbsp;final-pm&nbsp;start&nbsp;all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&#35;&nbsp;For&nbsp;each&nbsp;running&nbsp;process,&nbsp;start&nbsp;a&nbsp;new&nbsp;one&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;$&nbsp;final-pm&nbsp;restart&nbsp;all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&#35;&nbsp;Stop&nbsp;all&nbsp;processes&nbsp;gracefully&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;$&nbsp;final-pm&nbsp;stop&nbsp;all&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&#35;&nbsp;Stop&nbsp;processes&nbsp;by&nbsp;PID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;$&nbsp;final-pm&nbsp;stop&nbsp;pid=43342,pid=3452&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&#35;&nbsp;Stop&nbsp;processes&nbsp;by&nbsp;application&nbsp;name&nbsp;'worker'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;$&nbsp;final-pm&nbsp;stop&nbsp;worker&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
 <u><b>Arguments</b></u><br>
 </p><p>
-<pre>  <b>-s</b>, <b>--select</b> <u>Selector</u>                  Select processes/applications.                                                
-  <b>-a</b>, <b>--action</b> start|stop|restart|kill   Start/Stop/Restart/Kill all selected.                                         
-  <b>-c</b>, <b>--config</b> <u>Config File</u>               Default: ./process-config.{js,json} and checks parent folders until a         
+<pre>  -s, --select Selector                  Select processes/applications.                                                
+  -a, --action start|stop|restart|kill   Start/Stop/Restart/Kill all selected.                                         
+  -c, --config Config File               Default: ./process-config.{js,json} and checks parent folders until a         
                                          package.json is encountered. If you specified a config for an already running 
                                          application, it will be only be applied to new processes.                     
-  <b>--set</b> <u>app</u>-<u>key</u>=<u>value</u>                    Override a configuration key.                                                 
-  <b>-h</b>, <b>--help</b>                             Print this usage guide.                                                       
+  --set app-key=value                    Override a configuration key.                                                 
+  -h, --help                             Print this usage guide.                                                       
 </pre></p><p>
 <u><b>Selectors</b></u><br>
 </p><p>
-<pre>  A Process/Application or comma-separated list of such.                        
-</pre></p><p>
-<pre>  A selector can either be an <i>application name</i> or PID (pid=<i>id</i>). Using <b>all</b> as a  
-  selector will target all applications found in the configuration and/or are   
-  running, depending on the action. Prefix with <b>new:</b>, <b>running:</b>, <b>old:</b>, or        
-  <b>marked:</b> to only target processes in that <b>generation</b>.                          
-</pre></p><p>
+&nbsp;&nbsp;A&nbsp;Process/Application&nbsp;or&nbsp;comma-separated&nbsp;list&nbsp;of&nbsp;such.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;A&nbsp;selector&nbsp;can&nbsp;either&nbsp;be&nbsp;an&nbsp;<i>application&nbsp;name</i>&nbsp;or&nbsp;PID&nbsp;(pid=<i>id</i>).&nbsp;Using&nbsp;<b>all</b>&nbsp;as&nbsp;a&nbsp;&nbsp;<br>
+&nbsp;&nbsp;selector&nbsp;will&nbsp;target&nbsp;all&nbsp;applications&nbsp;found&nbsp;in&nbsp;the&nbsp;configuration&nbsp;and/or&nbsp;are&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;running,&nbsp;depending&nbsp;on&nbsp;the&nbsp;action.&nbsp;Prefix&nbsp;with&nbsp;<b>new:</b>,&nbsp;<b>running:</b>,&nbsp;<b>old:</b>,&nbsp;or&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;<b>marked:</b>&nbsp;to&nbsp;only&nbsp;target&nbsp;processes&nbsp;in&nbsp;that&nbsp;<b>generation</b>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
 <u><b>Generations</b></u><br>
 </p><p>
-<pre>  Processes are grouped in generations:                                         
-  The <b>new</b>, <b>running</b>, <b>old</b>, and <b>marked generation</b>.                                 
-</pre></p><p>
-<pre>  <u>New Generation</u>                                                                
-  The <b>new generation</b> is where processes remain until they are considered <b>ready</b>. 
-  A process is considered to be <b>ready</b> on the cluster <b>listen</b> event or when it    
-  sends the <b>ready</b> message, depending on the configuration (config: <b>ready-on</b>).   
-  Once a process is <b>ready</b> it is moved to the <b>running generation</b>. If a process   
-  is asked to be stopped while in the new generation, it is moved to the <b>marked 
-  generation</b> instead. If a process exits abnormally while in the new            
-  generation, a new one is started (config: <b>restart-new-crashing</b>).              
-</pre></p><p>
-<pre>  <u>Running Generation</u>                                                            
-  The <b>running generation</b> is where processes remain until they are <b>stopped</b>. At   
-  most the configured amount of processes for each application may reside here. 
-  If the maximum was exceeded because new processes were started, the oldest    
-  processes will be moved to the <b>old generation</b>. If a process exits abnormally  
-  while in the running generation, a new one is started (config: <b>restart-       
-  crashing</b>).                                                                    
-</pre></p><p>
-<pre>  <u>Old Generation</u>                                                                
-  The <b>old generation</b> is where processes remain when they should be <b>stopped</b>      
-  until they finally <b>exit</b>. A process moved to the <b>old generation</b> is sent the    
-  <b>SIGINT</b> signal. If the process does not exit within <b>stop-timeout</b> (default is   
-  no timeout), it is sent <b>SIGKILL</b> and removed from the old generation.          
-</pre></p><p>
-<pre>  <u>Marked Generation</u>                                                             
-  New processes who were asked to stop are kept here, then are moved to the <b>old 
-  generation</b> once they are <b>ready</b>. This means the programmer never has to worry  
-  about handling <b>SIGINT</b> signals during startup.                                 
-</pre></p><p>
+&nbsp;&nbsp;Processes&nbsp;are&nbsp;grouped&nbsp;in&nbsp;generations:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;The&nbsp;<b>new</b>,&nbsp;<b>running</b>,&nbsp;<b>old</b>,&nbsp;and&nbsp;<b>marked&nbsp;generation</b>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>New&nbsp;Generation</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;The&nbsp;<b>new&nbsp;generation</b>&nbsp;is&nbsp;where&nbsp;processes&nbsp;remain&nbsp;until&nbsp;they&nbsp;are&nbsp;considered&nbsp;<b>ready</b>.&nbsp;<br>
+&nbsp;&nbsp;A&nbsp;process&nbsp;is&nbsp;considered&nbsp;to&nbsp;be&nbsp;<b>ready</b>&nbsp;on&nbsp;the&nbsp;cluster&nbsp;<b>listen</b>&nbsp;event&nbsp;or&nbsp;when&nbsp;it&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;sends&nbsp;the&nbsp;<b>ready</b>&nbsp;message,&nbsp;depending&nbsp;on&nbsp;the&nbsp;configuration&nbsp;(config:&nbsp;<b>ready-on</b>).&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;Once&nbsp;a&nbsp;process&nbsp;is&nbsp;<b>ready</b>&nbsp;it&nbsp;is&nbsp;moved&nbsp;to&nbsp;the&nbsp;<b>running&nbsp;generation</b>.&nbsp;If&nbsp;a&nbsp;process&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;is&nbsp;asked&nbsp;to&nbsp;be&nbsp;stopped&nbsp;while&nbsp;in&nbsp;the&nbsp;new&nbsp;generation,&nbsp;it&nbsp;is&nbsp;moved&nbsp;to&nbsp;the&nbsp;<b>marked&nbsp;<br>
+&nbsp;&nbsp;generation</b>&nbsp;instead.&nbsp;If&nbsp;a&nbsp;process&nbsp;exits&nbsp;abnormally&nbsp;while&nbsp;in&nbsp;the&nbsp;new&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;generation,&nbsp;a&nbsp;new&nbsp;one&nbsp;is&nbsp;started&nbsp;(config:&nbsp;<b>restart-new-crashing</b>).&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>Running&nbsp;Generation</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;The&nbsp;<b>running&nbsp;generation</b>&nbsp;is&nbsp;where&nbsp;processes&nbsp;remain&nbsp;until&nbsp;they&nbsp;are&nbsp;<b>stopped</b>.&nbsp;At&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;most&nbsp;the&nbsp;configured&nbsp;amount&nbsp;of&nbsp;processes&nbsp;for&nbsp;each&nbsp;application&nbsp;may&nbsp;reside&nbsp;here.&nbsp;<br>
+&nbsp;&nbsp;If&nbsp;the&nbsp;maximum&nbsp;was&nbsp;exceeded&nbsp;because&nbsp;new&nbsp;processes&nbsp;were&nbsp;started,&nbsp;the&nbsp;oldest&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;processes&nbsp;will&nbsp;be&nbsp;moved&nbsp;to&nbsp;the&nbsp;<b>old&nbsp;generation</b>.&nbsp;If&nbsp;a&nbsp;process&nbsp;exits&nbsp;abnormally&nbsp;&nbsp;<br>
+&nbsp;&nbsp;while&nbsp;in&nbsp;the&nbsp;running&nbsp;generation,&nbsp;a&nbsp;new&nbsp;one&nbsp;is&nbsp;started&nbsp;(config:&nbsp;<b>restart-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;crashing</b>).&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>Old&nbsp;Generation</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;The&nbsp;<b>old&nbsp;generation</b>&nbsp;is&nbsp;where&nbsp;processes&nbsp;remain&nbsp;when&nbsp;they&nbsp;should&nbsp;be&nbsp;<b>stopped</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;until&nbsp;they&nbsp;finally&nbsp;<b>exit</b>.&nbsp;A&nbsp;process&nbsp;moved&nbsp;to&nbsp;the&nbsp;<b>old&nbsp;generation</b>&nbsp;is&nbsp;sent&nbsp;the&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;<b>SIGINT</b>&nbsp;signal.&nbsp;If&nbsp;the&nbsp;process&nbsp;does&nbsp;not&nbsp;exit&nbsp;within&nbsp;<b>stop-timeout</b>&nbsp;(default&nbsp;is&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;no&nbsp;timeout),&nbsp;it&nbsp;is&nbsp;sent&nbsp;<b>SIGKILL</b>&nbsp;and&nbsp;removed&nbsp;from&nbsp;the&nbsp;old&nbsp;generation.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>Marked&nbsp;Generation</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;New&nbsp;processes&nbsp;who&nbsp;were&nbsp;asked&nbsp;to&nbsp;stop&nbsp;are&nbsp;kept&nbsp;here,&nbsp;then&nbsp;are&nbsp;moved&nbsp;to&nbsp;the&nbsp;<b>old&nbsp;<br>
+&nbsp;&nbsp;generation</b>&nbsp;once&nbsp;they&nbsp;are&nbsp;<b>ready</b>.&nbsp;This&nbsp;means&nbsp;the&nbsp;programmer&nbsp;never&nbsp;has&nbsp;to&nbsp;worry&nbsp;&nbsp;<br>
+&nbsp;&nbsp;about&nbsp;handling&nbsp;<b>SIGINT</b>&nbsp;signals&nbsp;during&nbsp;startup.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
 <u><b>Configuration</b></u><br>
 </p><p>
-<pre>  Configuration may be done in either JSON or JS, as well as environment        
-  variables and command line arguments. Each configuration key can by overriden 
-  with an environment variable by replacing all dashes in the key  with         
-  underscores and translating it to uppercase, finally prefixed with            
-  FINAL_PM_CONFIG_ i.e.  restart-new-crashing=true becomes                      
-  FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.                                    
-</pre></p><p>
-<pre>  <u>Configuration Files</u>                                                           
-  JS files will be <b>require</b>d with the appropriate <i>NPM_PACKAGE_CONFIG_*</i>           
-  environment variables. JSON files on the other hand are parsed as-is.         
-</pre></p><p>
-<pre>  <u>Example Config</u>                                                       
-  <i>final-pm start myApp</i>                                                 
-</pre></p><p>
-<pre>  // sample-config.js                                                  
-  module.exports = {                                                   
-      'applications': [                                                
-          'name': 'myApp',                                             
-          'run': './sample-app.js',                                    
-          'args': ['arg1', 'arg2'],                                    
-          'node-args': ['--harmony'],                                  
-          'ready-on': 'message',                                       
-          'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4, 
-      ]                                                                
-  };                                                                   
-</pre></p><p>
+&nbsp;&nbsp;Configuration&nbsp;may&nbsp;be&nbsp;done&nbsp;in&nbsp;either&nbsp;JSON&nbsp;or&nbsp;JS,&nbsp;as&nbsp;well&nbsp;as&nbsp;environment&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;variables&nbsp;and&nbsp;command&nbsp;line&nbsp;arguments.&nbsp;Each&nbsp;configuration&nbsp;key&nbsp;can&nbsp;by&nbsp;overriden&nbsp;<br>
+&nbsp;&nbsp;with&nbsp;an&nbsp;environment&nbsp;variable&nbsp;by&nbsp;replacing&nbsp;all&nbsp;dashes&nbsp;in&nbsp;the&nbsp;key&nbsp;&nbsp;with&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;underscores&nbsp;and&nbsp;translating&nbsp;it&nbsp;to&nbsp;uppercase,&nbsp;finally&nbsp;prefixed&nbsp;with&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;FINAL_PM_CONFIG_&nbsp;i.e.&nbsp;&nbsp;restart-new-crashing=true&nbsp;becomes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
 </p><p>
-<pre>  <u>Example App</u>                                                          
-</pre></p><p>
-<pre>  // sample-app.js                                                     
-  const server = require('http').createServer((req, res) => {          
-      res.end(process.argv.join(' ')); // Reply with process arguments 
-  }).listen(3333, (error) => {                                         
-      if (error) throw error;                                          
-</pre></p><p>
-<pre>      console.log("Process started, telling master we are ready...");  
-      if (process.send)                                                
-          process.send('ready');                                       
-  });                                                                  
-</pre></p><p>
-<pre>  process.on('SIGINT', () => {                                         
-      console.log("SIGINT received. Performing clean shutdown...");    
-      server.close();                                                  
-  });                                                                  
-</pre></p><p>
+&nbsp;&nbsp;<u>Configuration&nbsp;Files</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;JS&nbsp;files&nbsp;will&nbsp;be&nbsp;<b>require</b>d&nbsp;with&nbsp;the&nbsp;appropriate&nbsp;<i>NPM_PACKAGE_CONFIG_*</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;environment&nbsp;variables.&nbsp;JSON&nbsp;files&nbsp;on&nbsp;the&nbsp;other&nbsp;hand&nbsp;are&nbsp;parsed&nbsp;as-is.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;<u>Example&nbsp;Config</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;<i>final-pm&nbsp;start&nbsp;myApp</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;//&nbsp;sample-config.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;module.exports&nbsp;=&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'applications':&nbsp;[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'name':&nbsp;'myApp',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'run':&nbsp;'./sample-app.js',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'args':&nbsp;['arg1',&nbsp;'arg2'],&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'node-args':&nbsp;['--harmony'],&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'ready-on':&nbsp;'message',&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'instances':&nbsp;process.env['NPM_PACKAGE_CONFIG_WORKERS']&nbsp;||&nbsp;4,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+</p><p>
+&nbsp;&nbsp;<u>Example&nbsp;App</u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;//&nbsp;sample-app.js&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;const&nbsp;server&nbsp;=&nbsp;require('http').createServer((req,&nbsp;res)&nbsp;=>&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;res.end(process.argv.join('&nbsp;'));&nbsp;//&nbsp;Reply&nbsp;with&nbsp;process&nbsp;arguments&nbsp;<br>
+&nbsp;&nbsp;}).listen(3333,&nbsp;(error)&nbsp;=>&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(error)&nbsp;throw&nbsp;error;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log("Process&nbsp;started,&nbsp;telling&nbsp;master&nbsp;we&nbsp;are&nbsp;ready...");&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(process.send)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;process.send('ready');&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;});&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
+&nbsp;&nbsp;process.on('SIGINT',&nbsp;()&nbsp;=>&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log("SIGINT&nbsp;received.&nbsp;Performing&nbsp;clean&nbsp;shutdown...");&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;server.close();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;});&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+</p><p>
 </p><p>
 </p></body></html>
