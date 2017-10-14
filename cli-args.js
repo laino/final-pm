@@ -101,7 +101,7 @@ exports.usage = [
             "Gracefully stop all selected [italic]{running}/[italic]{new} processes or applications.",
             "",
             "[underline]{kill}",
-            "Immediately [bold]{SIGKILL} all selected processes or applications. The works on processes in any [bold]{generation}.",
+            "Immediately [bold]{SIGKILL} all selected processes or applications. This works on processes in any [bold]{generation}.",
             "",
             "[underline]{scale}",
             "Starts or stops processes for each selected application until N matches configured [italic]{instances}."

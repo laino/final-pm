@@ -67,7 +67,7 @@ Gracefully stop all selected _running_/_new_ processes or applications.
 
 __kill__  
 
-Immediately **SIGKILL** all selected processes or applications. The works on  
+Immediately **SIGKILL** all selected processes or applications. This works on  
 processes in any **generation**.  
 
 __scale__  
