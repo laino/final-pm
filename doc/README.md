@@ -41,9 +41,11 @@ __Examples__
                              to max-buffered-log-bytes.                                                    
   -f, --follow               When using the log action, will output new log lines continously as they      
                              appear.                                                                       
-  --help-usage               Short usage guide.                                                            
-  -h, --help                 Slightly more verbose usage guide.                                            
-  --help-configuration       Print annotated default configuration.                                        
+  -h, --help                 Print short usage guide.                                                      
+  --help-usage               Print slightly more verbose usage guide.                                      
+  --help-generations         Print help page about generations.                                            
+  --help-example             Print a short example application.                                            
+  --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
 </pre>
 
@@ -164,47 +166,8 @@ process of your application exits. By default all applications use the simple
 file-logger that ships with final-pm, but creating your own logger is as  
 simple as creating a new application 'my-logger' which listens to  
 process.on(...) and setting _logger_ to 'my-logger' in your main application.  
-Each logger is fed back its own output, so make sure you don't accidentially  
+Each logger is fed back its own output, so make sure you don't accidentally  
 call _console.log_ for each log line you receive.  
-
-__Example Config__  
-
-_final-pm --config sample-config.js start myApp_  
-
-<pre>  // sample-config.js                                                  
-  module.exports = {                                                   
-      'applications': [                                                
-          'name': 'myApp',                                             
-          'run': './sample-app.js',                                    
-          'args': ['arg1', 'arg2'],                                    
-          'node-args': ['--harmony'],                                  
-          'ready-on': 'message',                                       
-          'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4, 
-      ]                                                                
-  };                                                                   
-</pre>
-
-__Example App__  
-
-<pre>  // sample-app.js                                                     
-  const server = require('http').createServer((req, res) => {          
-      res.end(process.argv.join(' ')); // Reply with process arguments 
-  }).listen(3333, (error) => {                                         
-      if (error) {                                                     
-          throw error;                                                 
-      }                                                                
-      console.log("Process started, telling master we are ready...");  
-      process.send('ready');                                           
-  });                                                                  
-  process.on('SIGINT', () => {                                         
-      console.log("SIGINT received. Performing clean shutdown...");    
-      server.close();                                                  
-  });                                                                  
-</pre>
-
-### Default Configuration  
-
-Below is the annotated default configuration.  
 
 __Default Config__  
 
@@ -452,4 +415,41 @@ __Default Application Config__
 </pre>
 
 <pre>  };                                                                        
+</pre>
+
+### Example  
+
+__Example Config__  
+
+_final-pm --config sample-config.js start myApp_  
+
+<pre>  // sample-config.js                                                  
+  module.exports = {                                                   
+      'applications': [                                                
+          'name': 'myApp',                                             
+          'run': './sample-app.js',                                    
+          'args': ['arg1', 'arg2'],                                    
+          'node-args': ['--harmony'],                                  
+          'ready-on': 'message',                                       
+          'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4, 
+      ]                                                                
+  };                                                                   
+</pre>
+
+__Example App__  
+
+<pre>  // sample-app.js                                                     
+  const server = require('http').createServer((req, res) => {          
+      res.end(process.argv.join(' ')); // Reply with process arguments 
+  }).listen(3333, (error) => {                                         
+      if (error) {                                                     
+          throw error;                                                 
+      }                                                                
+      console.log("Process started, telling master we are ready...");  
+      process.send('ready');                                           
+  });                                                                  
+  process.on('SIGINT', () => {                                         
+      console.log("SIGINT received. Performing clean shutdown...");    
+      server.close();                                                  
+  });                                                                  
 </pre>

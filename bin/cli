@@ -18,13 +18,18 @@ try {
     invalidArgument(e.message);
 }
 
-if (args['help']) {
-    console.log(commandLineUsage(argsDefinition.help));
+if (args['help-usage']) {
+    console.log(commandLineUsage(argsDefinition.usage));
     process.exit(0);
 }
 
-if (args['help-all']) {
-    console.log(commandLineUsage(argsDefinition.helpAll));
+if (args['help-generations']) {
+    console.log(commandLineUsage(argsDefinition.generations));
+    process.exit(0);
+}
+
+if (args['help-example']) {
+    console.log(commandLineUsage(argsDefinition.example));
     process.exit(0);
 }
 
@@ -33,8 +38,13 @@ if (args['help-configuration']) {
     process.exit(0);
 }
 
-if (args['help-usage'] || args.actionSelect.length === 0) {
-    console.log(commandLineUsage(argsDefinition.usage));
+if (args['help-all']) {
+    console.log(commandLineUsage(argsDefinition.helpAll));
+    process.exit(0);
+}
+
+if (args['help'] || args.actionSelect.length === 0) {
+    console.log(commandLineUsage(argsDefinition.help));
     process.exit(0);
 }
 

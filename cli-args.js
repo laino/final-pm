@@ -46,23 +46,35 @@ exports.options = [
         description: "When using the [bold]{log} action, will output new log lines continously as they appear.",
         defaultValue: false
     },
-    {
-        name: 'help-usage',
-        type: Boolean,
-        description: "Short usage guide.",
-        defaultValue: false
-    },
     { 
         name: 'help',
         alias: 'h',
         type: Boolean,
-        description: "Slightly more verbose usage guide.",
+        description: "Print short usage guide.", 
+        defaultValue: false
+    },
+    {
+        name: 'help-usage',
+        type: Boolean,
+        description: "Print slightly more verbose usage guide.",
+        defaultValue: false
+    },
+    { 
+        name: 'help-generations',
+        type: Boolean,
+        description: "Print help page about [bold]{generations}.",
+        defaultValue: false
+    },
+    { 
+        name: 'help-example',
+        type: Boolean,
+        description: "Print a short example application.",
         defaultValue: false
     },
     { 
         name: 'help-configuration',
         type: Boolean,
-        description: "Print annotated default configuration.",
+        description: "Print full configuration help.",
         defaultValue: false
     },
     { 
@@ -73,7 +85,7 @@ exports.options = [
     },
 ];
 
-exports.usage = [
+exports.help = [
     {
         header: "Options",
         content: [
@@ -87,36 +99,7 @@ exports.usage = [
     },
 ];
 
-exports.configuration = [
-    {
-        header: "Default Configuration",
-        content: [
-            "Below is the annotated default configuration."
-        ]
-    },
-    {
-        content: {
-            options: {
-                noTrim: true
-            },
-            data: [
-                { col: "[underline]{Default Config}" },
-            ].concat(fileToColumns('config/default-config.js'))
-        }
-    },
-    {
-        content: {
-            options: {
-                noTrim: true
-            },
-            data: [
-                { col: "[underline]{Default Application Config}\n" }
-            ].concat(fileToColumns('config/default-application-config.js'))
-        }
-    }
-];
-
-exports.help = [
+exports.usage = [
     {
         header: "FinalPM",
         content: [
@@ -143,7 +126,7 @@ exports.help = [
             "final-pm stop worker",
         ],
     },
-].concat(exports.usage).concat([
+].concat(exports.help).concat([
     {
         content: [
             "",
@@ -191,8 +174,8 @@ exports.help = [
         ]
     }
 ]);
-
-exports.helpAll = exports.help.concat([
+    
+exports.generations = [
     {
         header: "Generations",
         content: [
@@ -226,26 +209,12 @@ exports.helpAll = exports.help.concat([
             "once they are [bold]{ready}. This means the programmer never has to worry about handling " +
             "[bold]{SIGINT} signals during startup."
         ]
-    },
+    }
+];
+
+exports.example = [
     {
-        header: "Configuration",
-        content: [
-            "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
-            "Each configuration key can by overriden with an environment variable by replacing all dashes in the key " +
-            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_ i.e. " +
-            "restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
-            "",
-            "[underline]{Configuration Files}",
-            "JS files will be [bold]{require()}'d with the appropriate [italic]{NPM_PACKAGE_CONFIG_*} environment variables. " +
-            "JSON files on the other hand are parsed as-is.",
-            "",
-            "[underline]{Logging}",
-            "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
-            "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
-            "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
-            "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
-            "Each logger is fed back its own output, so make sure you don't accidentially call [italic]{console.log} for each log line you receive. "
-        ]
+        header: "Example",
     },
     {
         content: {
@@ -268,7 +237,52 @@ exports.helpAll = exports.help.concat([
             ].concat(fileToColumns('examples/sample-app.js'))
         }
     }
-]).concat(exports.configuration);
+];
+
+exports.configuration = [
+    {
+        header: "Configuration",
+        content: [
+            "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
+            "Each configuration key can by overriden with an environment variable by replacing all dashes in the key " +
+            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_ i.e. " +
+            "restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
+            "",
+            "[underline]{Configuration Files}",
+            "JS files will be [bold]{require()}'d with the appropriate [italic]{NPM_PACKAGE_CONFIG_*} environment variables. " +
+            "JSON files on the other hand are parsed as-is.",
+            "",
+            "[underline]{Logging}",
+            "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
+            "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
+            "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
+            "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
+            "Each logger is fed back its own output, so make sure you don't accidentally call [italic]{console.log} for each log line you receive. "
+        ]
+    },
+    {
+        content: {
+            options: {
+                noTrim: true
+            },
+            data: [
+                { col: "[underline]{Default Config}" },
+            ].concat(fileToColumns('config/default-config.js'))
+        }
+    },
+    {
+        content: {
+            options: {
+                noTrim: true
+            },
+            data: [
+                { col: "[underline]{Default Application Config}\n" }
+            ].concat(fileToColumns('config/default-application-config.js'))
+        }
+    }
+];
+
+exports.helpAll = exports.usage.concat(exports.generations, exports.configuration, exports.example);
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))
