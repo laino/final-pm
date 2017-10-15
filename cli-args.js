@@ -16,8 +16,8 @@ exports.options = [
         typeLabel: '[underline]{File|Folder}',
         type: String,
         description: "Default: process-config.{js,json}\n" +
-                     "Load a configuration file into the daemon. For paths not beginning with ./ or /," +
-                     "also checks parent folders. If you specified a config for an already running " +
+                     "Load a configuration file. If path doesn't begin with ./ or /," +
+                     " also checks parent folders. If you specified a configuration for an already running " +
                      "application, it will be only be applied to new processes.",
         multiple: true,
         defaultValue: ['.']
