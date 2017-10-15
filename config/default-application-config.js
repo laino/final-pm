@@ -1,5 +1,6 @@
 // default-application-config.js
 module.exports = {
+
     /*
      * Name of this application. Used when referring to
      * this application via the command line.
@@ -156,4 +157,5 @@ module.exports = {
      */
 
     'start-timeout': null
+
 };

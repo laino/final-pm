@@ -210,7 +210,9 @@ __Default Config__
 
 <pre>  // default-config.js                                                
   module.exports = {                                                  
-      /*                                                              
+</pre>
+
+<pre>      /*                                                              
        * FinalPM will store state and other information here.         
        * Relative to process.cwd(), but absolute paths are also       
        * allowed. All other paths in this configuration file are      
@@ -247,14 +249,18 @@ __Default Config__
 </pre>
 
 <pre>      "applications": []                                              
-  }                                                                   
+</pre>
+
+<pre>  }                                                                   
 </pre>
 
 __Default Application Config__  
 
 <pre>  // default-application-config.js                                          
   module.exports = {                                                        
-      /*                                                                    
+</pre>
+
+<pre>      /*                                                                    
        * Name of this application. Used when referring to                   
        * this application via the command line.                             
        */                                                                   
@@ -443,5 +449,7 @@ __Default Application Config__
 </pre>
 
 <pre>      'start-timeout': null                                                 
-  };                                                                        
+</pre>
+
+<pre>  };                                                                        
 </pre>

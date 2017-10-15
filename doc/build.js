@@ -21,7 +21,7 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpA
         const length = line.trim().length;
         const withoutTags = line.replace(/<(.*?)>/g, '');
         const lineIsBlock = !lineIsEmpty && (
-            /^ *[-#$/]/.test(withoutTags) || /^ {4}/.test(withoutTags) || inBlock);
+            /^ *[-#$/{};]/.test(withoutTags) || /^ {4}/.test(withoutTags) || inBlock);
 
         line = line.replace(/[#] /g, '&#35; ');
 

@@ -1,5 +1,6 @@
 // default-config.js
 module.exports = {
+
     /*
      * FinalPM will store state and other information here.
      * Relative to process.cwd(), but absolute paths are also
@@ -32,4 +33,5 @@ module.exports = {
      */
 
     "applications": []
+
 }
