@@ -33,9 +33,9 @@ __Examples__
 </pre>
 
 <pre>  -c, --config File|Folder   Default: process-config.{js,json}                                             
-                             Load a configuration file into the daemon. For paths not beginning with ./ or 
-                             /,also checks parent folders. If you specified a config for an already        
-                             running application, it will be only be applied to new processes.             
+                             Load a configuration file. If path doesn't begin with ./ or /, also checks    
+                             parent folders. If you specified a configuration for an already running       
+                             application, it will be only be applied to new processes.                     
   --set app-key=value        Override a configuration key.                                                 
   -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
                              to max-buffered-log-bytes.                                                    
