@@ -1,20 +1,83 @@
 #!/usr/bin/env node
 
+const finalPM = require('../');
+const util = require('util');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
-
 const argsDefinition = require('../cli-args.js');
 
-const args = commandLineArgs(argsDefinition.options, {
-    partial: false,
-    disableGreedyMultiple: true
-});
+finalPM.registerProcessHandlers();
 
-if (args.help) {
+let args;
+try {
+    args = commandLineArgs(argsDefinition.options, {
+        partial: false,
+        disableGreedyMultiple: true
+    });
+} catch (e) {
+    invalidArgument(e.message);
+}
+
+if (args['help']) {
+    console.log(commandLineUsage(argsDefinition.help));
+    process.exit(0);
+}
+
+if (args['help-all']) {
+    console.log(commandLineUsage(argsDefinition.helpAll));
+    process.exit(0);
+}
+
+if (args['help-configuration']) {
+    console.log(commandLineUsage(argsDefinition.configuration));
+    process.exit(0);
+}
+
+if (args['help-usage'] || args.actionSelect.length === 0) {
     console.log(commandLineUsage(argsDefinition.usage));
     process.exit(0);
 }
 
-const actions = [];
+if (args.actionSelect.length === 1) {
+    invalidArgument("Missing option: Selector is missing.");
+}
 
-console.log(args);
+async function run() {
+    const paths = await Promise.all(
+        args.config.map(finalPM.config.resolveConfig));
+
+    paths.forEach((path, i) => {
+        if (!path) {
+            invalidArgument(`No configuration file found: ${args.config[i]}`);
+        }
+    });
+
+    const configs = await Promise.all(paths.map(async (path) =>  {
+        try {
+            return await finalPM.config.getConfig(path);
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                invalidConfig(path, error.message);
+            }
+
+            throw error;
+        }
+    }));
+
+    console.log(configs);
+}
+
+function invalidConfig(path, info) {
+    console.error("Error reading:", path);
+    console.error("Invalid Configuration:", info);
+    console.error("Check \"final-pm --help\" for example configurations.");
+    process.exit(1);
+}
+
+function invalidArgument(info) {
+    console.error(info);
+    console.error("Check \"final-pm --help\" for the correct syntax.");
+    process.exit(1);
+}
+
+run();

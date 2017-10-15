@@ -14,12 +14,14 @@ const AnsiToHtml = new (require('ansi-to-html'))({
 
 let inBlock = false;
 
-const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.usage))
+const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpAll))
     .split('\n').map(line => {
 
-        let lineIsEmpty = line.trim() === '';
-        let length = line.trim().length;
-        let lineIsBlock = !lineIsEmpty && ((/^ *[-#$/]/).test(line.replace(/<(.*?)>/g, '')) || inBlock);
+        const lineIsEmpty = line.trim() === '';
+        const length = line.trim().length;
+        const withoutTags = line.replace(/<(.*?)>/g, '');
+        const lineIsBlock = !lineIsEmpty && (
+            /^ *[-#$/]/.test(withoutTags) || /^ {4}/.test(withoutTags) || inBlock);
 
         line = line.replace(/[#] /g, '&#35; ');
 

@@ -51,21 +51,23 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 </p>
 
 <p>
-<pre>  &#35; final-pm [--config Config File] [--set app-key=value] [Action Selectors...] 
+<pre>  &#35; final-pm [--config File|Folder] [--set app-key=value] [Action Select...] 
 </pre></p>
 
 <p>
-<pre>  -h, --help                 Print this usage guide.                                                       
-  -c, --config Config File   Default: ./process-config.{js,json}                                           
-                             Load a configuration file into the daemon. For paths beginning with ./ checks 
-                             parent folders until a package.json is encountered. If you specified a        
-                             config for an already running application, it will be only be applied to new  
-                             processes.                                                                    
+<pre>  -c, --config File|Folder   Default: process-config.{js,json}                                             
+                             Load a configuration file into the daemon. For paths not beginning with ./ or 
+                             /,also checks parent folders. If you specified a config for an already        
+                             running application, it will be only be applied to new processes.             
   --set app-key=value        Override a configuration key.                                                 
   -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
-                             to max-buffered-log-lines.                                                    
+                             to max-buffered-log-bytes.                                                    
   -f, --follow               When using the log action, will output new log lines continously as they      
                              appear.                                                                       
+  --help-usage               Short usage guide.                                                            
+  -h, --help                 Slightly more verbose usage guide.                                            
+  --help-configuration       Print annotated default configuration.                                        
+  --help-all                 Print full help page.                                                         
 </pre></p>
 
 <p>
@@ -246,7 +248,7 @@ call <i>console.log</i> for each log line you receive.<br>
 <p>
 <u>Example Config</u><br>
 <br>
-<i>final-pm start myApp</i><br>
+<i>final-pm --config sample-config.js start myApp</i><br>
 <br>
 </p>
 
@@ -287,6 +289,304 @@ call <i>console.log</i> for each log line you receive.<br>
       console.log("SIGINT received. Performing clean shutdown...");    
       server.close();                                                  
   });                                                                  
+</pre></p>
+
+<p>
+</p>
+
+<p>
+<u><b>Default Configuration</b></u><br>
+<br>
+</p>
+
+<p>
+Below is the annotated default configuration.<br>
+</p>
+
+<p>
+<u>Default Config</u><br>
+<br>
+<pre>  // default-config.js                                                
+  module.exports = {                                                  
+      /*                                                              
+       * FinalPM will store state and other information here.         
+       * Relative to process.cwd(), but absolute paths are also       
+       * allowed. All other paths in this configuration file are      
+       * relative to this.                                            
+       */                                                             
+</pre></p>
+
+<p>
+<pre>      "home": ".final-pm",                                            
+</pre></p>
+
+<p>
+<pre>      /*                                                              
+       * Unix domain socket or host:port combination. FinalPM         
+       * will use this socket to communicate with the daemon          
+       * via JSON-RPC 2.0. URLs must start with either "unix://",     
+       * followed by a relative or absolute paths, or with either     
+       * "tcp://" or "http://", followed by a host:port comibination. 
+       *                                                              
+       * Examples:                                                    
+       *                                                              
+       *     tcp://localhost:32423                                    
+       *     unix:///home/user/final-pm.sock &#35; absolute path          
+       *     unix://home/user/final-pm.sock &#35; Same as above           
+       *     unix://./final-pm.sock &#35; relative to 'home'              
+       */                                                             
+</pre></p>
+
+<p>
+<pre>      "socket": "unix://./daemon.sock",                               
+</pre></p>
+
+<p>
+<pre>      /*                                                              
+       * Array of application configurations.                         
+       * Refer to default-application-config.js                       
+       */                                                             
+</pre></p>
+
+<p>
+<pre>      "applications": []                                              
+  }                                                                   
+</pre></p>
+
+<p>
+</p>
+
+<p>
+<u>Default Application Config</u><br>
+<br>
+</p>
+
+<p>
+<pre>  // default-application-config.js                                          
+  module.exports = {                                                        
+      /*                                                                    
+       * Name of this application. Used when referring to                   
+       * this application via the command line.                             
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'name': 'default',                                                    
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Entry point of this application.                                   
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'run': './server.js',                                                 
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Array of arguments to pass to the application.                     
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'args': [],                                                           
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Array of arguments to pass to node.js when                         
+       * starting a new process of this application.                        
+       *                                                                    
+       * Example: ['--harmony']                                             
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'node-args': [],                                                      
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Additional environment variables to pass                           
+       * to the application.                                                
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'env': {},                                                            
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Working directory for this application.                            
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'cwd': './',                                                          
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Defines when FinalPM should consider this                          
+       * application to be ready and thus move it                           
+       * to the 'running' generation.                                       
+       *                                                                    
+       * Valid values are 'listen' and 'message'.                           
+       *                                                                    
+       * 'listen': FinalPM waits for the cluster 'listen'                   
+       *           event, which is emitted when the application             
+       *           begins to listen on a socket.                            
+       *                                                                    
+       * 'message': FinalPM will ignore the cluster 'listen'                
+       *            event and instead wait for the process to               
+       *            send a 'ready' message with IPC,                        
+       *            i.e. process.send('ready')                              
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'ready-on': 'listen',                                                 
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * How many instances / processes FinalPM will                        
+       * launch for this application.                                       
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'instances': 1,                                                       
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Whether FinalPM should consider each process                       
+       * of this application to be functionally identical.                  
+       *                                                                    
+       * 'false': FinalPM will assume instances of this                     
+       *          application are fundamentally the same,                   
+       *          and always replace the oldest processes currently         
+       *          in the running generation when deciding which             
+       *          processes to stop when new ones were started.             
+       *                                                                    
+       * 'true':  FinalPM will add FINAL_PM_INSTANCE_NUMBER=N               
+       *          to the environment of each process, as well               
+       *          always replace processes of this application with         
+       *          ones having the same FINAL_PM_INSTANCE_NUMBER.            
+       *          This is useful, for example, if you want to perform       
+       *          certain jobs only on specific instances of                
+       *          this application.                                         
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'unique-instances': true,                                             
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * When true, a new process will be started whenever a                
+       * running one of this application exited abnormally.                 
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'restart-crashing': true,                                             
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Same as above, except for processes which haven't yet              
+       * indicated they are ready.                                          
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'restart-new-crashing': true,                                         
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Time to wait before starting a new process after one crashed.      
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'restart-crashing-timeout': 1000,                                     
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Logger application to use.                                         
+       *                                                                    
+       * 'file-logger' is a simple logger shipping with FinalPM.            
+       *                                                                    
+       * Refer to final-pm --help-all for how to implement your own logger. 
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'logger': 'file-logger',                                              
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * Arguments to pass to the logger process.                           
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'logger-args:': ['log.txt'],                                          
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * How many past log bytes to buffer in RAM. Mainly used              
+       * to show past log lines when using 'final-pm log', but              
+       * also when a logger isn't yet ready (or crashed and                 
+       * has to be restarted).                                              
+       *                                                                    
+       * This value is per-application.                                     
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'max-buffered-log-bytes': 1000000,                                    
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * How much time in milliseconds a process has to terminate           
+       * after being sent SIGINT.                                           
+       *                                                                    
+       * If a timeout occurs the process is terminated with SIGKILL.        
+       *                                                                    
+       * 'null' for no timeout.                                             
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'stop-timeout': null,                                                 
+</pre></p>
+
+<p>
+<pre>      /*                                                                    
+       * How much time in milliseconds a process has to become ready.       
+       *                                                                    
+       * If a timeout occurs the process is terminated with SIGKILL         
+       * and assumed to have crashed.                                       
+       *                                                                    
+       * 'null' for no timeout.                                             
+       */                                                                   
+</pre></p>
+
+<p>
+<pre>      'start-timeout': null                                                 
+  };                                                                        
 </pre></p>
 
 <p>

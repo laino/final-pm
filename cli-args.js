@@ -8,26 +8,19 @@ exports.options = [
         value: String,
         defaultOption: true,
         multiple: true,
-        defaultValue: ['show', 'all']
-    },
-    { 
-        name: 'help',
-        alias: 'h',
-        type: Boolean,
-        description: "Print this usage guide.",
-        defaultValue: false
+        defaultValue: []
     },
     { 
         name: 'config',
         alias: 'c',
-        typeLabel: '[underline]{Config File}',
+        typeLabel: '[underline]{File|Folder}',
         type: String,
-        description: "Default: ./process-config.{js,json}\n" +
-                     "Load a configuration file into the daemon. For paths beginning with ./ " +
-                     "checks parent folders until a package.json is encountered. If you specified a " +
-                     "config for an already running application, it will be only be applied to new processes.",
+        description: "Default: process-config.{js,json}\n" +
+                     "Load a configuration file into the daemon. For paths not beginning with ./ or /," +
+                     "also checks parent folders. If you specified a config for an already running " +
+                     "application, it will be only be applied to new processes.",
         multiple: true,
-        defaultValue: []
+        defaultValue: ['.']
     },
     { 
         name: 'set',
@@ -43,8 +36,7 @@ exports.options = [
         typeLabel: '[underline]{num}',
         type: Number,
         description: "When using the [bold]{log} action, sets the number of past log lines to display. " +
-                     "Up to [bold]{max-buffered-log-lines}.",
-        multiple: true,
+                     "Up to [bold]{max-buffered-log-bytes}.",
         defaultValue: 10
     },
     { 
@@ -52,12 +44,79 @@ exports.options = [
         alias: 'f',
         type: Boolean,
         description: "When using the [bold]{log} action, will output new log lines continously as they appear.",
-        multiple: true,
-        defaultValue: 10
-    }
+        defaultValue: false
+    },
+    {
+        name: 'help-usage',
+        type: Boolean,
+        description: "Short usage guide.",
+        defaultValue: false
+    },
+    { 
+        name: 'help',
+        alias: 'h',
+        type: Boolean,
+        description: "Slightly more verbose usage guide.",
+        defaultValue: false
+    },
+    { 
+        name: 'help-configuration',
+        type: Boolean,
+        description: "Print annotated default configuration.",
+        defaultValue: false
+    },
+    { 
+        name: 'help-all',
+        type: Boolean,
+        description: "Print full help page.",
+        defaultValue: false
+    },
 ];
 
 exports.usage = [
+    {
+        header: "Options",
+        content: [
+            "# final-pm [--config [underline]{File|Folder}] [--set [underline]{app}-[underline]{key}=[underline]{value}] " +
+            "[[underline]{Action} [underline]{Select}...]"
+        ]
+    },
+    {
+        optionList: exports.options,
+        hide: "actionSelect"
+    },
+];
+
+exports.configuration = [
+    {
+        header: "Default Configuration",
+        content: [
+            "Below is the annotated default configuration."
+        ]
+    },
+    {
+        content: {
+            options: {
+                noTrim: true
+            },
+            data: [
+                { col: "[underline]{Default Config}" },
+            ].concat(fileToColumns('config/default-config.js'))
+        }
+    },
+    {
+        content: {
+            options: {
+                noTrim: true
+            },
+            data: [
+                { col: "[underline]{Default Application Config}\n" }
+            ].concat(fileToColumns('config/default-application-config.js'))
+        }
+    }
+];
+
+exports.help = [
     {
         header: "FinalPM",
         content: [
@@ -84,17 +143,7 @@ exports.usage = [
             "final-pm stop worker",
         ],
     },
-    {
-        header: "Options",
-        content: [
-            "# final-pm [--config [underline]{Config File}] [--set [underline]{app}-[underline]{key}=[underline]{value}] " +
-            "[[underline]{Action} [underline]{Selectors}...]"
-        ]
-    },
-    {
-        optionList: exports.options,
-        hide: "actionSelect"
-    },
+].concat(exports.usage).concat([
     {
         content: [
             "",
@@ -140,7 +189,10 @@ exports.usage = [
             "[underline]{log}",
             "Show process output. Understands [bold]{--follow} and [bold]{--lines}, which work the same as the UNIX [italic]{tail} command.",
         ]
-    },
+    }
+]);
+
+exports.helpAll = exports.help.concat([
     {
         header: "Generations",
         content: [
@@ -202,7 +254,7 @@ exports.usage = [
             },
             data: [
                 { col: "[underline]{Example Config}" },
-                { col: "[italic]{final-pm start myApp}\n" }
+                { col: "[italic]{final-pm --config sample-config.js start myApp}\n" }
             ].concat(fileToColumns('examples/sample-config.js'))
         }
     },
@@ -216,7 +268,7 @@ exports.usage = [
             ].concat(fileToColumns('examples/sample-app.js'))
         }
     }
-];
+]).concat(exports.configuration);
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))

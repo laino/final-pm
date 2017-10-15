@@ -11,11 +11,15 @@
     "start": "./bin/cli",
     "build-doc": "./doc/build.js"
   },
+  "bin": {
+    "final-pm": "./bin/cli"
+  },
   "dependencies": {
+    "async": "",
     "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
     "command-line-usage": "",
-    "joi": "",
-    "jayson": ""
+    "jayson": "",
+    "joi": ""
   },
   "devDependencies": {
     "ansi-to-html": "",
