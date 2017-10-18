@@ -4,10 +4,10 @@ _Finally a good process manager._
 
 By default all actions are **graceful**. Old processes will always be cleanly  
 stopped only once new processes have indicated they are **ready**.  
+
 __Examples__  
 
-<pre>                                                                                
-  # Start processes of all configured applications.                             
+<pre>  # Start processes of all configured applications.                             
   final-pm start all                                                            
 
   # For each running process, start a new one                                   
@@ -28,28 +28,28 @@ __Examples__
 
 <pre>  # final-pm [--config File|Folder] [--set app-key=value] [Action Select...] 
 
-  -c, --config File|Folder   Default: process-config.{js,json}                                 
-                             Load a configuration file. If path doesn't begin with ./ or /,    
-                             also checks parent folders. If you specified a configuration for  
-                             an already running application, it will be only be applied to new 
-                             processes.                                                        
-  --set app-key=value        Override a configuration key.                                     
-  -n, --lines num            When using the log action, sets the number of past log lines to   
-                             display. Up to max-buffered-log-bytes.                            
-  -f, --follow               When using the log action, will output new log lines continously  
-                             as they appear.                                                   
-  -h, --help                 Print short usage guide.                                          
-  --help-usage               Print slightly more verbose usage guide.                          
-  --help-generations         Print help page about generations.                                
-  --help-example             Print a short example application.                                
-  --help-configuration       Print full configuration help.                                    
-  --help-all                 Print full help page.                                             
+  -c, --config File|Folder   Default: process-config.{js,json}                                             
+                             Load a configuration file. If path doesn't begin with ./ or /, also checks    
+                             parent folders. If you specified a configuration for an already running       
+                             application, it will be only be applied to new processes.                     
+  --set app-key=value        Override a configuration key.                                                 
+  -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
+                             to max-buffered-log-bytes.                                                    
+  -f, --follow               When using the log action, will output new log lines continously as they      
+                             appear.                                                                       
+  -h, --help                 Print short usage guide.                                                      
+  --help-usage               Print slightly more verbose usage guide.                                      
+  --help-generations         Print help page about generations.                                            
+  --help-example             Print a short example application.                                            
+  --help-configuration       Print full configuration help.                                                
+  --help-all                 Print full help page.                                                         
 
 </pre>
 
 **Selectors**  
 
 A selector identifies a process or an application.  
+
 A selector can either be an _application name_ or PID (pid=_id_). Using **all** as a  
 selector will target all applications found in the configuration or which are  
 running, depending on the action. Prefix with **new:**, **running:**, **old:**, or  
@@ -58,6 +58,7 @@ running, depending on the action. Prefix with **new:**, **running:**, **old:**, 
 **Actions**  
 
 Valid actions are **start**, **stop**, **restart**, **kill**, **scale**, **show**, **log**.  
+
 __start__  
 
 Start N=_instances_ processes for all selected applications. When processes are  
@@ -68,24 +69,30 @@ when _instances_ was decreased in the configuration. Note that this may replace
 different processes than the selected ones, or none at all, if _unique-  
 instances_ is set to _false_. In which case the oldest ones of that application  
 will be replaced if _instances_ was exceeded.  
+
 __restart__  
 
 Same as **start** except _unique-instances_ is ignored and processes are always  
 replaced, also stopping processes in case N currently exceeds _instances_.  
+
 __stop__  
 
 Gracefully stop all selected _running_/_new_ processes or applications.  
+
 __kill__  
 
 Immediately **SIGKILL** all selected processes or applications. This works on  
 processes in any **generation**.  
+
 __scale__  
 
 Starts or stops processes for each selected application until N matches  
 configured _instances_.  
+
 __show__  
 
 Show information about all selected applications / processes.  
+
 __log__  
 
 Show process output. Understands **--follow** and **--lines**, which work the same as  
@@ -105,6 +112,7 @@ Once a process is **ready** it is moved to the **running generation**. If a proc
 is asked to be stopped while in the new generation, it is moved to the **marked  
 generation** instead. If a process exits abnormally while in the new  
 generation, a new one is started (config: **restart-new-crashing**).  
+
 __Running Generation__  
 
 The **running generation** is where processes remain until they are **stopped**. At  
@@ -118,12 +126,14 @@ running generation, a new one is started (config: **restart-crashing**). Note
 that an older process can never replace a process that was started later,  
 ensuring always the latest processes are running even if startup time wildly  
 varies.  
+
 __Old Generation__  
 
 The **old generation** is where processes remain when they should be **stopped**  
 until they finally **exit**. A process moved to the **old generation** is sent the  
 **SIGINT** signal. If the process does not exit within **stop-timeout** (default is  
 no timeout), it is sent **SIGKILL** and removed from the old generation.  
+
 __Marked Generation__  
 
 New processes who were asked to stop are kept here, then are moved to the **old  
@@ -142,6 +152,7 @@ FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.
 __Configuration Files__  
 
 Configuration may be done in either .  
+
 __Logging__  
 
 Logging is done by a logging process started for each application, which will  
@@ -213,8 +224,7 @@ __Default Config__
 
 __Default Application Config__  
 
-<pre>                                                                            
-  // default-application-config.js                                          
+<pre>  // default-application-config.js                                          
   module.exports = {                                                        
 
       /*                                                                    
@@ -384,8 +394,7 @@ __Example Config__
 
 _final-pm --config sample-config.js start myApp_  
 
-<pre>                                                                       
-  // sample-config.js                                                  
+<pre>  // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
           'name': 'myApp',                                             
@@ -401,8 +410,7 @@ _final-pm --config sample-config.js start myApp_
 
 __Example App__  
 
-<pre>                                                                       
-  // sample-app.js                                                     
+<pre>  // sample-app.js                                                     
   const server = require('http').createServer((req, res) => {          
       res.end(process.argv.join(' ')); // Reply with process arguments 
   }).listen(3333, (error) => {                                         

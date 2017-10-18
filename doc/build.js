@@ -15,12 +15,15 @@ const AnsiToHtml = new (require('ansi-to-html'))({
 let inBlock = false;
 let lineWasEmpty = false;
 
+process.stdout.columns = 500;
+
 const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpAll))
     .split('\n').map(line => {
         const lineIsEmpty = line.trim() === '';
         const length = line.trim().length;
         const withoutTags = line.replace(/<(.*?)>/g, '');
-        const lineIsBlock = /^ *[-#$/{};]/.test(withoutTags) || /^ {4}/.test(withoutTags) || (inBlock && !lineWasEmpty);
+        const lineIsBlock = !lineIsEmpty && (/^ *[-#$/{};]/.test(withoutTags) || /^ {4}/.test(withoutTags)) ||
+                            (inBlock && !lineWasEmpty);
 
         line = line.replace(/[#] /g, '&#35; ');
 
