@@ -79,7 +79,7 @@ module.exports = {
      *          processes to stop when new ones were started.
      *
      * 'true':  FinalPM will add FINAL_PM_INSTANCE_NUMBER=N
-     *          to the environment of each process, as well
+     *          to the environment of each process, as well as
      *          always replace processes of this application with
      *          ones having the same FINAL_PM_INSTANCE_NUMBER.
      *          This is useful, for example, if you want to perform

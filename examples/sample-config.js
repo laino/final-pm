@@ -6,6 +6,6 @@ module.exports = {
         'args': ['arg1', 'arg2'],
         'node-args': ['--harmony'],
         'ready-on': 'message',
-        'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4,
+        'instances': process.env['npm_package_config_workers'] || 4,
     }]
 };
