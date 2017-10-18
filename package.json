@@ -18,6 +18,7 @@
     "async": "",
     "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
     "command-line-usage": "",
+    "read-package-config": "",
     "jayson": "",
     "joi": ""
   },
@@ -25,5 +26,7 @@
     "ansi-to-html": "",
     "to-markdown": ""
   },
-  "config": {}
+  "config": {
+      "test": true
+  }
 }

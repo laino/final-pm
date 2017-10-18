@@ -1,4 +1,6 @@
 // default-config.js
+const os = require("os");
+const path = require("path");
 module.exports = {
 
     /*
@@ -22,7 +24,7 @@ module.exports = {
      *     tcp://localhost:32423
      *     unix:///home/user/final-pm.sock # absolute path
      *     unix://home/user/final-pm.sock # Same as above
-     *     unix://./final-pm.sock # relative to 'home'
+     *     unix://./final-pm.sock # relative to "home"
      */
 
     "socket": "unix://./daemon.sock",
@@ -32,6 +34,21 @@ module.exports = {
      * Refer to default-application-config.js
      */
 
-    "applications": []
+    "applications": [],
+    
+    /*
+     * Where npm stores its global configuration. 
+     * Used to generate config environment variables
+     * when running .js configuration files.
+     */
 
+    "npm-global-config": "/etc/npmrc",
+    
+    /*
+     * Where npm stores its per-user configuration. 
+     * Used to generate config environment variables
+     * when running .js configuration files.
+     */
+
+    "npm-user-config": path.resolve(os.homedir(), ".npmrc"),
 }

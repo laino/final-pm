@@ -249,8 +249,7 @@ exports.configuration = [
             "restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
             "",
             "[underline]{Configuration Files}",
-            "JS files will be [bold]{require()}'d with the appropriate [italic]{NPM_PACKAGE_CONFIG_*} environment variables. " +
-            "JSON files on the other hand are parsed as-is.",
+            "Configuration may be done in either .",
             "",
             "[underline]{Logging}",
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +

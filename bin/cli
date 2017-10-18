@@ -64,10 +64,13 @@ async function run() {
 
     const configs = await Promise.all(paths.map(async (path) =>  {
         try {
-            return await finalPM.config.getConfig(path);
+            return await finalPM.config.getConfig({
+                path: path,
+                args: args.set
+            });
         } catch (error) {
-            if (error.name === 'ValidationError') {
-                invalidConfig(path, error.message);
+            if (error.name === 'ConfigError') {
+                invalidConfig(error.path, error.message);
             }
 
             throw error;
