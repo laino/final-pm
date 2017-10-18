@@ -13,19 +13,18 @@ const AnsiToHtml = new (require('ansi-to-html'))({
 });
 
 let inBlock = false;
+let lineWasEmpty = false;
 
 const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpAll))
     .split('\n').map(line => {
-
         const lineIsEmpty = line.trim() === '';
         const length = line.trim().length;
         const withoutTags = line.replace(/<(.*?)>/g, '');
-        const lineIsBlock = !lineIsEmpty && (
-            /^ *[-#$/{};]/.test(withoutTags) || /^ {4}/.test(withoutTags) || inBlock);
+        const lineIsBlock = /^ *[-#$/{};]/.test(withoutTags) || /^ {4}/.test(withoutTags) || (inBlock && !lineWasEmpty);
 
         line = line.replace(/[#] /g, '&#35; ');
 
-        if (lineIsEmpty) {
+        if (lineIsEmpty && !lineIsBlock) {
             line = '</p>\n\n<p>';
         }
         
@@ -37,7 +36,6 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpA
         }
 
         if (lineIsBlock !== inBlock) {
-            inBlock = lineIsBlock;
             if (lineIsBlock) {
                 line = '<pre>' + line;
             } else {
@@ -50,6 +48,9 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpA
             line = line.replace(/<b>(.*?)<\/b>/g, '$1');
             line = line.replace(/<u>(.*?)<\/u>/g, '$1');
         }
+
+        lineWasEmpty = lineIsEmpty;
+        inBlock = lineIsBlock;
 
         return line + '\n';
     }).join('') + '</p>';
