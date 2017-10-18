@@ -123,7 +123,7 @@ module.exports = {
      * Arguments to pass to the logger process.
      */
 
-    'logger-args:': ['log.txt'],
+    'logger-args': ['log.txt'],
 
     /* 
      * How many past log bytes to buffer in RAM. Mainly used
@@ -142,7 +142,7 @@ module.exports = {
      *
      * If a timeout occurs the process is terminated with SIGKILL.
      *
-     * 'null' for no timeout.
+     * 'null' for no timeout (wait forever).
      */
 
     'stop-timeout': null,
@@ -153,7 +153,7 @@ module.exports = {
      * If a timeout occurs the process is terminated with SIGKILL
      * and assumed to have crashed.
      *
-     * 'null' for no timeout.
+     * 'null' for no timeout (wait forever).
      */
 
     'start-timeout': null

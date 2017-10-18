@@ -143,15 +143,15 @@ about handling **SIGINT** signals during startup.
 ### Configuration  
 
 Configuration may be done in either JSON or JS, as well as environment  
-variables and command line arguments. Each configuration key can by overriden  
-with an environment variable by replacing all dashes in the key with  
-underscores and translating it to uppercase, finally prefixed with  
-FINAL_PM_CONFIG_ i.e. restart-new-crashing=true becomes  
-FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.  
+variables and command line arguments. On the command line configuration keys  
+may be overriden with **--set** _key_=_value_, where _key_ may be any configuration  
+key. To override keys within an appliaction config, prefix _key_ with  
+'_application-name_:' like so: --set myApp:ready-on="message"  
 
-__Configuration Files__  
-
-Configuration may be done in either .  
+Each configuration key can also be overriden with an environment variable by  
+replacing all dashes and colons in _key_ with underscores and translating it to  
+uppercase, finally prefixed with FINAL_PM_CONFIG_,  
+i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.  
 
 __Logging__  
 
@@ -199,18 +199,13 @@ __Default Config__
       "socket": "unix://./daemon.sock",                               
 
       /*                                                              
-       * Array of application configurations.                         
-       * Refer to default-application-config.js                       
-       */                                                             
-
-      "applications": [],                                             
-      /*                                                              
        * Where npm stores its global configuration.                   
        * Used to generate config environment variables                
        * when running .js configuration files.                        
        */                                                             
 
       "npm-global-config": "/etc/npmrc",                              
+
       /*                                                              
        * Where npm stores its per-user configuration.                 
        * Used to generate config environment variables                
@@ -218,6 +213,14 @@ __Default Config__
        */                                                             
 
       "npm-user-config": path.resolve(os.homedir(), ".npmrc"),        
+
+      /*                                                              
+       * Array of application configurations.                         
+       * Refer to default-application-config.js                       
+       */                                                             
+
+      "applications": [],                                             
+
   }                                                                   
 
 </pre>
@@ -305,7 +308,7 @@ __Default Application Config__
        *          processes to stop when new ones were started.             
        *                                                                    
        * 'true':  FinalPM will add FINAL_PM_INSTANCE_NUMBER=N               
-       *          to the environment of each process, as well               
+       *          to the environment of each process, as well as            
        *          always replace processes of this application with         
        *          ones having the same FINAL_PM_INSTANCE_NUMBER.            
        *          This is useful, for example, if you want to perform       
@@ -349,7 +352,7 @@ __Default Application Config__
        * Arguments to pass to the logger process.                           
        */                                                                   
 
-      'logger-args:': ['log.txt'],                                          
+      'logger-args': ['log.txt'],                                           
 
       /*                                                                    
        * How many past log bytes to buffer in RAM. Mainly used              
@@ -368,7 +371,7 @@ __Default Application Config__
        *                                                                    
        * If a timeout occurs the process is terminated with SIGKILL.        
        *                                                                    
-       * 'null' for no timeout.                                             
+       * 'null' for no timeout (wait forever).                              
        */                                                                   
 
       'stop-timeout': null,                                                 
@@ -379,7 +382,7 @@ __Default Application Config__
        * If a timeout occurs the process is terminated with SIGKILL         
        * and assumed to have crashed.                                       
        *                                                                    
-       * 'null' for no timeout.                                             
+       * 'null' for no timeout (wait forever).                              
        */                                                                   
 
       'start-timeout': null                                                 
@@ -402,7 +405,7 @@ _final-pm --config sample-config.js start myApp_
           'args': ['arg1', 'arg2'],                                    
           'node-args': ['--harmony'],                                  
           'ready-on': 'message',                                       
-          'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4, 
+          'instances': process.env['npm_package_config_workers'] || 4, 
       }]                                                               
   };                                                                   
 

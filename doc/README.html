@@ -205,17 +205,17 @@ about handling <b>SIGINT</b> signals during startup.<br>
 
 <p>
 Configuration may be done in either JSON or JS, as well as environment<br>
-variables and command line arguments. Each configuration key can by overriden<br>
-with an environment variable by replacing all dashes in the key with<br>
-underscores and translating it to uppercase, finally prefixed with<br>
-FINAL_PM_CONFIG_ i.e. restart-new-crashing=true becomes<br>
-FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.<br>
+variables and command line arguments. On the command line configuration keys<br>
+may be overriden with <b>--set</b> <i>key</i>=<i>value</i>, where <i>key</i> may be any configuration<br>
+key. To override keys within an appliaction config, prefix <i>key</i> with<br>
+'<i>application-name</i>:' like so: --set myApp:ready-on="message"<br>
 </p>
 
 <p>
-<u>Configuration Files</u><br>
-<br>
-Configuration may be done in either .<br>
+Each configuration key can also be overriden with an environment variable by<br>
+replacing all dashes and colons in <i>key</i> with underscores and translating it to<br>
+uppercase, finally prefixed with FINAL_PM_CONFIG_,<br>
+i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.<br>
 </p>
 
 <p>
@@ -235,6 +235,9 @@ call <i>console.log</i> for each log line you receive.<br>
 <p>
 <u>Default Config</u><br>
 <br>
+</p>
+
+<p>
 <pre>  // default-config.js                                                
   const os = require("os");                                           
   const path = require("path");                                       
@@ -267,18 +270,13 @@ call <i>console.log</i> for each log line you receive.<br>
       "socket": "unix://./daemon.sock",                               
                                                                       
       /*                                                              
-       * Array of application configurations.                         
-       * Refer to default-application-config.js                       
-       */                                                             
-                                                                      
-      "applications": [],                                             
-      /*                                                              
        * Where npm stores its global configuration.                   
        * Used to generate config environment variables                
        * when running .js configuration files.                        
        */                                                             
                                                                       
       "npm-global-config": "/etc/npmrc",                              
+                                                                      
       /*                                                              
        * Where npm stores its per-user configuration.                 
        * Used to generate config environment variables                
@@ -286,6 +284,14 @@ call <i>console.log</i> for each log line you receive.<br>
        */                                                             
                                                                       
       "npm-user-config": path.resolve(os.homedir(), ".npmrc"),        
+                                                                      
+      /*                                                              
+       * Array of application configurations.                         
+       * Refer to default-application-config.js                       
+       */                                                             
+                                                                      
+      "applications": [],                                             
+                                                                      
   }                                                                   
                                                                       
 </pre></p>
@@ -377,7 +383,7 @@ call <i>console.log</i> for each log line you receive.<br>
        *          processes to stop when new ones were started.             
        *                                                                    
        * 'true':  FinalPM will add FINAL_PM_INSTANCE_NUMBER=N               
-       *          to the environment of each process, as well               
+       *          to the environment of each process, as well as            
        *          always replace processes of this application with         
        *          ones having the same FINAL_PM_INSTANCE_NUMBER.            
        *          This is useful, for example, if you want to perform       
@@ -421,7 +427,7 @@ call <i>console.log</i> for each log line you receive.<br>
        * Arguments to pass to the logger process.                           
        */                                                                   
                                                                             
-      'logger-args:': ['log.txt'],                                          
+      'logger-args': ['log.txt'],                                           
                                                                             
       /*                                                                    
        * How many past log bytes to buffer in RAM. Mainly used              
@@ -440,7 +446,7 @@ call <i>console.log</i> for each log line you receive.<br>
        *                                                                    
        * If a timeout occurs the process is terminated with SIGKILL.        
        *                                                                    
-       * 'null' for no timeout.                                             
+       * 'null' for no timeout (wait forever).                              
        */                                                                   
                                                                             
       'stop-timeout': null,                                                 
@@ -451,7 +457,7 @@ call <i>console.log</i> for each log line you receive.<br>
        * If a timeout occurs the process is terminated with SIGKILL         
        * and assumed to have crashed.                                       
        *                                                                    
-       * 'null' for no timeout.                                             
+       * 'null' for no timeout (wait forever).                              
        */                                                                   
                                                                             
       'start-timeout': null                                                 
@@ -481,7 +487,7 @@ call <i>console.log</i> for each log line you receive.<br>
           'args': ['arg1', 'arg2'],                                    
           'node-args': ['--harmony'],                                  
           'ready-on': 'message',                                       
-          'instances': process.env['NPM_PACKAGE_CONFIG_WORKERS'] || 4, 
+          'instances': process.env['npm_package_config_workers'] || 4, 
       }]                                                               
   };                                                                   
                                                                        

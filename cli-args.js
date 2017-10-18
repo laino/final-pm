@@ -244,12 +244,13 @@ exports.configuration = [
         header: "Configuration",
         content: [
             "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
-            "Each configuration key can by overriden with an environment variable by replacing all dashes in the key " +
-            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_ i.e. " +
-            "restart-new-crashing=true becomes FINAL_PM_CONFIG_RESTART_NEW_CRASHING=true.",
+            "On the command line configuration keys may be overriden with [bold]{--set} [italic]{key}=[italic]{value}, where " +
+            "[italic]{key} may be any configuration key. To override keys within an appliaction config, prefix [italic]{key} with " + 
+            "'[italic]{application-name}:' like so: --set myApp:ready-on=\"message\"",
             "",
-            "[underline]{Configuration Files}",
-            "Configuration may be done in either .",
+            "Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in [italic]{key} " +
+            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_, ",
+            "i.e. myApp:ready-on=\"message\" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.",
             "",
             "[underline]{Logging}",
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
@@ -265,7 +266,7 @@ exports.configuration = [
                 noTrim: true
             },
             data: [
-                { col: "[underline]{Default Config}" },
+                { col: "[underline]{Default Config}\n" },
             ].concat(fileToColumns('config/default-config.js'))
         }
     },

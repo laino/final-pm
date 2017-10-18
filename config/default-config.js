@@ -30,20 +30,13 @@ module.exports = {
     "socket": "unix://./daemon.sock",
 
     /*
-     * Array of application configurations.
-     * Refer to default-application-config.js
-     */
-
-    "applications": [],
-    
-    /*
      * Where npm stores its global configuration. 
      * Used to generate config environment variables
      * when running .js configuration files.
      */
 
     "npm-global-config": "/etc/npmrc",
-    
+
     /*
      * Where npm stores its per-user configuration. 
      * Used to generate config environment variables
@@ -51,4 +44,12 @@ module.exports = {
      */
 
     "npm-user-config": path.resolve(os.homedir(), ".npmrc"),
+
+    /*
+     * Array of application configurations.
+     * Refer to default-application-config.js
+     */
+
+    "applications": [],
+
 }
