@@ -24,7 +24,8 @@
     "strip-ansi": "",
     "ws": "",
     "joi": "",
-    "mkdirp": ""
+    "mkdirp": "",
+    "deep-equal": ""
   },
   "devDependencies": {
     "ansi-to-html": "",

@@ -2,6 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 
+exports.knownActions = ['start', 'restart', 'stop', 'kill', 'show', 'log'];
+
 exports.options = [
     { 
         name: 'actionSelect',
@@ -9,26 +11,6 @@ exports.options = [
         defaultOption: true,
         multiple: true,
         defaultValue: []
-    },
-    { 
-        name: 'verbose',
-        alias: 'v',
-        type: Boolean,
-        description: "Show debug output.",
-        defaultValue: false
-    },
-    { 
-        name: 'launch',
-        type: Boolean,
-        description: "Start the daemon even if there's nothing to do.",
-        defaultValue: false
-    },
-    { 
-        name: 'kill',
-        type: Boolean,
-        description: "Stop the daemon, killing any remaining processes.\n" + 
-                     "This is done after all actions have been applied.",
-        defaultValue: false
     },
     { 
         name: 'config',
@@ -67,8 +49,26 @@ exports.options = [
         defaultValue: false
     },
     { 
+        name: 'launch',
+        type: Boolean,
+        description: "Start the daemon even if there's nothing to do.",
+        defaultValue: false
+    },
+    { 
+        name: 'kill',
+        type: Boolean,
+        description: "Stop the daemon, killing any remaining processes.\n" + 
+                     "This is done after all actions have been applied.",
+        defaultValue: false
+    },
+    { 
+        name: 'no-upload',
+        type: Boolean,
+        description: "Don't upload (new) application configurations from config files.",
+        defaultValue: false
+    },
+    { 
         name: 'help',
-        alias: 'h',
         type: Boolean,
         description: "Print short usage guide.", 
         defaultValue: false
@@ -103,14 +103,20 @@ exports.options = [
         description: "Print full help page.",
         defaultValue: false
     },
+    { 
+        name: 'verbose',
+        alias: 'v',
+        type: Boolean,
+        description: "Show debug output.",
+        defaultValue: false
+    },
 ];
 
 exports.help = [
     {
         header: "Options",
         content: [
-            "# final-pm [--config [underline]{File|Folder}] [--set [underline]{app}-[underline]{key}=[underline]{value}] " +
-            "[[underline]{Action} [underline]{Select}...]"
+            "# final-pm [--config [underline]{File|Folder}] [[underline]{Action} [underline]{Select}...]"
         ]
     },
     {
@@ -274,6 +280,7 @@ exports.configuration = [
             "",
             "[underline]{Logging}",
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
+            "Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. " +
             "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
             "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
             "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
@@ -303,6 +310,10 @@ exports.configuration = [
 ];
 
 exports.helpAll = exports.usage.concat(exports.generations, exports.configuration, exports.example);
+
+exports.isKnownAction = function(arg) {
+    return exports.knownActions.indexOf(arg) !== -1;
+};
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))

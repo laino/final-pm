@@ -53,6 +53,17 @@ if (args['help'] || args.actionSelect.length === 0 && !args.kill && !args.launch
 if (args.actionSelect.length === 1) {
     invalidArgument("Missing option: Selector is missing.");
 }
+    
+let action = null;
+let select = [];
+if (args.actionSelect.length > 1) {
+    if (!argsDefinition.isKnownAction(args.actionSelect[0])) {
+        invalidArgument("Unknown action: " + args.actionSelect[0]);
+    }
+
+    action = args.actionSelect[0];
+    select = args.actionSelect.slice(1);
+}
 
 async function run() {
     const paths = await Promise.all(
@@ -60,7 +71,7 @@ async function run() {
 
     paths.forEach((path, i) => {
         if (!path) {
-            err(`Config file not found: ${args.config[i]}`);
+            err(`No configuration file found at: ${args.config[i]}`);
             process.exit(1);
         }
     });
@@ -89,6 +100,7 @@ async function run() {
 
 async function runWithConfig(config) {
     debug("Connection", "Connecting to " + config.socket);
+
     let client;
 
     try {
@@ -104,18 +116,104 @@ async function runWithConfig(config) {
 
     const api = client.api();
 
-    log("Load", "Uploading application configuration: " + config.applications.map(_ => _.name).join(' '));
+    if (config.applications.length > 0 && !args['no-upload']) {
+        log("Upload", "Uploading application configuration: " + config.applications.map(_ => _.name).join(' '));
 
-    await api.Daemon.load(config.applications);
+        await api.Daemon.load(config.applications);
+    }
+
+    debug("Download", "Retrieving application and process lists");
+
+    const info = filterInfo(await api.Daemon.info(), select);
+
+    debug("Selector", `Selector matched ${info.applications.length} applications and ${info.all.length} processes`);
+
+    if (action) {
+        await runAction(api, action, info)
+    }
 
     if (args.kill) {
         log("Daemon", "Stopping Daemon");
-        api.Daemon.kill()
+        await api.Daemon.kill()
     }
 
     debug("Connection", "Closing Connection");
 
     client._socket.close()
+}
+
+async function runAction(api, action, selected) {
+    if (action === 'show') {
+        printInfo(selected); 
+        return;
+    }
+}
+
+function printInfo(selected) {
+    printInfoLine("Known Applications: " + selected.applications.map(_ => _.name).join(' '));
+}
+    
+function printInfoLine(...args) {
+    log("[bold green]{Show}", ...args);
+}
+
+function filterInfo(info, select) {
+    const applications = info.applications.filter((app) => {
+        if (select.indexOf('all') !== -1) {
+            return true;
+        }
+
+        return select.indexOf(app.name) !== -1;
+    });
+
+    const processes = {};
+    let all = []; 
+
+    for (let gen of Object.keys(info.processes)) {
+        processes[gen] = info.processes[gen].filter(genFilter(gen));
+        all = all.concat(processes[gen]);
+    }
+
+    return {
+        applications,
+        processes,
+        all
+    }
+}
+    
+function genFilter(gen) {
+    return (process) => {
+        for (let sel of select) {
+            const genSep = sel.indexOf(':');
+
+            if (genSep !== -1) {
+                const selGen = sel.slice(0, genSep);
+                if (selGen !== gen) {
+                    continue;
+                }
+
+                sel = sel.slice(0, genSep + 1);
+            }
+
+            if (sel === 'all') {
+                return true;
+            }
+
+            if (sel.startsWith('pid=')) {
+                if (sel !== 'pid=' + process.pid) {
+                    continue;
+                }
+
+                return true;
+            }
+
+            if (sel === process['app-name']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 async function connectOrLaunch(config) {

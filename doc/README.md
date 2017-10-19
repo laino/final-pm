@@ -26,12 +26,8 @@ __Examples__
 
 ### Options  
 
-<pre>  # final-pm [--config File|Folder] [--set app-key=value] [Action Select...] 
+<pre>  # final-pm [--config File|Folder] [Action Select...] 
 
-  -v, --verbose              Show debug output.                                                            
-  --launch                   Start the daemon even if there's nothing to do.                               
-  --kill                     Stop the daemon, killing any remaining processes.                             
-                             This is done after all actions have been applied.                             
   -c, --config File|Folder   Default: process-config.{js,json}                                             
                              Load a configuration file. If path doesn't begin with ./ or /, also checks    
                              parent folders. If you specified a configuration for an already running       
@@ -41,12 +37,17 @@ __Examples__
                              to max-buffered-log-bytes.                                                    
   -f, --follow               When using the log action, will output new log lines continously as they      
                              appear.                                                                       
-  -h, --help                 Print short usage guide.                                                      
+  --launch                   Start the daemon even if there's nothing to do.                               
+  --kill                     Stop the daemon, killing any remaining processes.                             
+                             This is done after all actions have been applied.                             
+  --no-upload                Don't upload (new) application configurations from config files.              
+  --help                     Print short usage guide.                                                      
   --help-usage               Print slightly more verbose usage guide.                                      
   --help-generations         Print help page about generations.                                            
   --help-example             Print a short example application.                                            
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
+  -v, --verbose              Show debug output.                                                            
 
 </pre>
 
@@ -160,14 +161,16 @@ i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.
 __Logging__  
 
 Logging is done by a logging process started for each application, which will  
-be fed logging output via process.send(logLine). The logging process is  
-automatically started with your application, and is stopped once the last  
-process of your application exits. By default all applications use the simple  
-file-logger that ships with final-pm, but creating your own logger is as  
-simple as creating a new application 'my-logger' which listens to  
-process.on(...) and setting _logger_ to 'my-logger' in your main application.  
-Each logger is fed back its own output, so make sure you don't accidentally  
-call _console.log_ for each log line you receive.  
+be fed logging output via process.send(logLine). Logger processes are  
+started with the same CWD as your application. Keep this in mind when passing  
+relative paths to loggers. The logging process is automatically started with  
+your application, and is stopped once the last process of your application  
+exits. By default all applications use the simple file-logger that ships with  
+final-pm, but creating your own logger is as simple as creating a new  
+application 'my-logger' which listens to process.on(...) and setting _logger_  
+to 'my-logger' in your main application. Each logger is fed back its own  
+output, so make sure you don't accidentally call _console.log_ for each log  
+line you receive.  
 
 __Default Config__  
 
@@ -251,7 +254,21 @@ __Default Application Config__
       'name': 'default',                                                    
 
       /*                                                                    
+       * Defaults to configuration file directory if 'null'.                
+       * Other paths are relative to this.                                  
+       */                                                                   
+
+      'base-path': null,                                                    
+      /*                                                                    
+       * Working directory for this application.                            
+       * Relative to base-path.                                             
+       */                                                                   
+
+      'cwd': './',                                                          
+
+      /*                                                                    
        * Entry point of this application.                                   
+       * Relative to base-path.                                             
        */                                                                   
 
       'run': './server.js',                                                 
@@ -277,12 +294,6 @@ __Default Application Config__
        */                                                                   
 
       'env': {},                                                            
-
-      /*                                                                    
-       * Working directory for this application.                            
-       */                                                                   
-
-      'cwd': './',                                                          
 
       /*                                                                    
        * Defines when FinalPM should consider this                          

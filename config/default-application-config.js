@@ -9,7 +9,22 @@ module.exports = {
     'name': 'default',
 
     /*
+     * Defaults to configuration file directory if 'null'.
+     * Other paths are relative to this.
+     */
+
+    'base-path': null,
+    
+    /* 
+     * Working directory for this application.
+     * Relative to base-path.
+     */
+
+    'cwd': './',
+
+    /*
      * Entry point of this application.
+     * Relative to base-path.
      */
 
     'run': './server.js',
@@ -35,12 +50,6 @@ module.exports = {
      */
 
     'env': {},
-
-    /* 
-     * Working directory for this application.
-     */
-
-    'cwd': './',
 
     /*
      * Defines when FinalPM should consider this
