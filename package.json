@@ -19,8 +19,12 @@
     "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
     "command-line-usage": "",
     "read-package-config": "",
-    "jayson": "",
-    "joi": ""
+    "noice-json-rpc": "",
+    "ansi-escape-sequences": "",
+    "strip-ansi": "",
+    "ws": "",
+    "joi": "",
+    "mkdirp": ""
   },
   "devDependencies": {
     "ansi-to-html": "",

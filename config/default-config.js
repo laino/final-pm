@@ -10,24 +10,33 @@ module.exports = {
      * relative to this.
      */
 
-    "home": ".final-pm",
+    "home": path.resolve(os.homedir(), ".final-pm"),
 
     /*
      * Unix domain socket or host:port combination. FinalPM
      * will use this socket to communicate with the daemon
-     * via JSON-RPC 2.0. URLs must start with either "unix://",
-     * followed by a relative or absolute paths, or with either
-     * "tcp://" or "http://", followed by a host:port comibination.
+     * via JSON-RPC 2.0. URLs must start with either "ws+unix://",
+     * followed by a relative or absolute paths, or with "ws://",
+     * followed by a host:port combination. If the given
+     * host is localhost or an unix domain socket was given,
+     * a new daemon will automatically be launched if the
+     * connection fails.
      *
      * Examples:
      * 
-     *     tcp://localhost:32423
-     *     unix:///home/user/final-pm.sock # absolute path
-     *     unix://home/user/final-pm.sock # Same as above
-     *     unix://./final-pm.sock # relative to "home"
+     *     ws://localhost:3242                # localhost port 3242
+     *     ws+unix://./final-pm.sock          # Relative to "home"
+     *     ws+unix:///home/user/final-pm.sock # Absolute path
+     *     ws+unix://home/user/final-pm.sock  # Absolute path
      */
 
-    "socket": "unix://./daemon.sock",
+    "socket": "ws+unix://./daemon.sock",
+
+    /*
+     * The daemon's stdout and stderr will be redirected here.
+     */
+
+    "daemon-log": "./daemon.out",
 
     /*
      * Where npm stores its global configuration. 

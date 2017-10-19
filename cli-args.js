@@ -11,6 +11,26 @@ exports.options = [
         defaultValue: []
     },
     { 
+        name: 'verbose',
+        alias: 'v',
+        type: Boolean,
+        description: "Show debug output.",
+        defaultValue: false
+    },
+    { 
+        name: 'launch',
+        type: Boolean,
+        description: "Start the daemon even if there's nothing to do.",
+        defaultValue: false
+    },
+    { 
+        name: 'kill',
+        type: Boolean,
+        description: "Stop the daemon, killing any remaining processes.\n" + 
+                     "This is done after all actions have been applied.",
+        defaultValue: false
+    },
+    { 
         name: 'config',
         alias: 'c',
         typeLabel: '[underline]{File|Folder}',

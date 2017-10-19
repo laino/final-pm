@@ -1,6 +1,27 @@
 #!/usr/bin/env node
-const Daemon = require('../lib/daemon');
+const finalPM = require('../');
 
-const instance = new Daemon();
+finalPM.registerProcessHandlers();
 
-instance.listen(process.argv[1], process.argv[2]);
+const instance = new finalPM.daemon();
+
+process.on('SIGTERM', () => {
+    instance.kill();
+});
+
+process.on('SIGINT', () => {
+    instance.kill();
+});
+
+instance.on('kill', () => {
+    console.log("Daemon stopped.");
+});
+
+run();
+
+async function run() {
+    await instance.listen(process.argv[2]);
+
+    console.log("Daemon running.");
+    process.send('ready');
+}

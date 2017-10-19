@@ -5,6 +5,8 @@ const util = require('util');
 const commandLineArgs = require('command-line-args');
 const commandLineUsage = require('command-line-usage');
 const argsDefinition = require('../cli-args.js');
+const stripAnsi = require('strip-ansi');
+const ansi = require('ansi-escape-sequences');
 
 finalPM.registerProcessHandlers();
 
@@ -43,7 +45,7 @@ if (args['help-all']) {
     process.exit(0);
 }
 
-if (args['help'] || args.actionSelect.length === 0) {
+if (args['help'] || args.actionSelect.length === 0 && !args.kill && !args.launch) {
     console.log(commandLineUsage(argsDefinition.help));
     process.exit(0);
 }
@@ -58,7 +60,8 @@ async function run() {
 
     paths.forEach((path, i) => {
         if (!path) {
-            invalidArgument(`No configuration file found: ${args.config[i]}`);
+            err(`Config file not found: ${args.config[i]}`);
+            process.exit(1);
         }
     });
 
@@ -77,20 +80,105 @@ async function run() {
         }
     }));
 
-    console.log(configs);
+    const normalizedConfigs = finalPM.config.normalizeArray(configs);
+
+    for (let config of normalizedConfigs) {
+        await runWithConfig(config);
+    }
 }
 
-function invalidConfig(path, info) {
-    console.error("Error reading:", path);
-    console.error("Invalid Configuration:", info);
-    console.error("Check \"final-pm --help\" for example configurations.");
+async function runWithConfig(config) {
+    debug("Connection", "Connecting to " + config.socket);
+    let client;
+
+    try {
+        client = await connectOrLaunch(config);
+    } catch (error) {
+        if (error.name === 'ConnectionError') {
+            err("Connection", error.message);
+            return;
+        }
+        
+        throw error;
+    }
+
+    const api = client.api();
+
+    log("Load", "Uploading application configuration: " + config.applications.map(_ => _.name).join(' '));
+
+    await api.Daemon.load(config.applications);
+
+    if (args.kill) {
+        log("Daemon", "Stopping Daemon");
+        api.Daemon.kill()
+    }
+
+    debug("Connection", "Closing Connection");
+
+    client._socket.close()
+}
+
+async function connectOrLaunch(config) {
+    try {
+        return await finalPM.client.connect(config['socket']);
+    } catch (error) {
+        if ((error.name === 'ConnectionError')) {
+            if (config['is-local']) {
+                log("Daemon", "Starting Daemon");
+                await finalPM.daemon.launch(config);
+                return finalPM.client.connect(config['socket']);
+            }
+        } 
+
+        throw error;
+    }
+}
+
+function invalidConfig(path, ...info) {
+    err("Configuration", path, ...info);
+    err("Configuration", "Check \"final-pm --help\" for example configurations.");
     process.exit(1);
 }
 
-function invalidArgument(info) {
-    console.error(info);
-    console.error("Check \"final-pm --help\" for the correct syntax.");
+function invalidArgument(...info) {
+    err("Arguments", ...info);
+    err("Arguments", "Check \"final-pm --help\" for the correct syntax.");
     process.exit(1);
+}
+
+function debug(...out) {
+    if (!args.verbose) return;
+
+    console.log(makeLogLine(
+        ['[gray]{DEBUG}'].concat(out),
+        process.stdout.isTTY
+    ));
+}
+
+function log(...args) {
+    console.log(makeLogLine(
+        ['[white]{INFO }'].concat(args),
+        process.stdout.isTTY
+    ));
+}
+
+function err(...args) {
+    console.error(makeLogLine(
+        ['[red]{ERROR}'].concat(args),
+        process.stderr.isTTY
+    ));
+}
+
+function makeLogLine(args, format) {
+    const last = args[args.length - 1];
+    const pre = `[[bold]{${args.slice(0, args.length - 1).join('}] [[bold]{')}}] `;
+    const line = ansi.format(last.split('\n').map(line => pre + line).join('\n'));
+    
+    if (format) {
+        return line;
+    }
+
+    return stripAnsi(line);
 }
 
 run();

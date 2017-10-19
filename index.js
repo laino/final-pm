@@ -1,10 +1,11 @@
 
-exports.Daemon = require('./lib/daemon');
-exports.Client = require('./lib/client');
+exports.daemon = require('./lib/daemon');
+exports.client = require('./lib/client');
 exports.config = require('./lib/config');
 
 exports.registerProcessHandlers = () => {
     process.on('unhandledRejection', (error) => {
-        throw error;
+        console.error(error.stack || error);
+        process.exit(1);
     });
 };
