@@ -77,8 +77,8 @@ will be replaced if _instances_ was exceeded.
 
 __restart__  
 
-Same as **start** except _unique-instances_ is ignored and processes are always  
-replaced, also stopping processes in case N currently exceeds _instances_.  
+Same as **start** except that for each started process at least one is stopped,  
+also stopping additional processes in case N currently exceeds _instances_.  
 
 __stop__  
 

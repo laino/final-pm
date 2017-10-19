@@ -180,8 +180,8 @@ exports.usage = [
             "will be replaced if [italic]{instances} was exceeded.",
             "",
             "[underline]{restart}",
-            "Same as [bold]{start} except [italic]{unique-instances} is ignored and processes are always replaced, " +
-            "also stopping processes in case N currently exceeds [italic]{instances}.",
+            "Same as [bold]{start} except that for each started process at least one is stopped, " +
+            "also stopping additional processes in case N currently exceeds [italic]{instances}. ",
             "",
             "[underline]{stop}",
             "Gracefully stop all selected [italic]{running}/[italic]{new} processes or applications.",
