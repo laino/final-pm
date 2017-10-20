@@ -18,9 +18,9 @@ exports.options = [
         typeLabel: '[underline]{File|Folder}',
         type: String,
         description: "Default: process-config.{js,json}\n" +
-                     "Load a configuration file. If path doesn't begin with ./ or /," +
-                     " also checks parent folders. If you specified a configuration for an already running " +
-                     "application, it will be only be applied to new processes.",
+                     "Load a configuration file. If the path doesn't begin with ./ or /, also checks parent folders. " +
+                     "If you specified a configuration for an already running application, it will only be applied " +
+                     "once the application is manually (re-)started, but not when a new process is spawned after a crash.",
         multiple: true,
         defaultValue: ['.']
     },
@@ -38,7 +38,7 @@ exports.options = [
         typeLabel: '[underline]{num}',
         type: Number,
         description: "When using the [bold]{log} action, sets the number of past log lines to display. " +
-                     "Up to [bold]{max-buffered-log-bytes}.",
+                     "Up to [bold]{max-buffered-log-bytes} (see --help-configuration).",
         defaultValue: 10
     },
     { 
@@ -57,14 +57,28 @@ exports.options = [
     { 
         name: 'kill',
         type: Boolean,
-        description: "Stop the daemon, killing any remaining processes.\n" + 
-                     "This is done after all actions have been applied.",
+        description: "Stop the daemon, ungracefully killing any remaining processes. " + 
+                     "This is done after all other commands have been sent to the daemon.\n" +
+                     "Use [italic]{'final-pm --wait --kill stop all'} to achieve a graceful stop.",
+        defaultValue: false
+    },
+    { 
+        name: 'wait',
+        type: Boolean,
+        description: "Wait for any pending actions to complete. This means final-pm will only return once " +
+                     "the [bold]{new}, [bold]{old} and [bold]{marked generations} are empty.",
+        defaultValue: false
+    },
+    {
+        name: 'force',
+        type: Boolean,
+        description: "Make final-pm ignore some safeguards. (I hope you know what you're doing)",
         defaultValue: false
     },
     { 
         name: 'no-upload',
         type: Boolean,
-        description: "Don't upload (new) application configurations from config files.",
+        description: "Don't upload new application configurations from config files.",
         defaultValue: false
     },
     { 
@@ -142,14 +156,14 @@ exports.usage = [
             "# For each running process, start a new one",
             "final-pm restart all",   
             "",
-            "# Stop all processes gracefully",
-            "final-pm stop all",   
-            "",
             "# Stop processes by PID",
             "final-pm stop pid=43342 pid=3452",
             "",
             "# Stop processes by application name 'worker'",
             "final-pm stop worker",
+            "",
+            "# Stop the first and second currently running worker",
+            "final-pm stop running:worker/0 running:worker/1",
         ],
     },
 ].concat(exports.help).concat([
@@ -160,11 +174,12 @@ exports.usage = [
             "",
             "A selector identifies a process or an application.",
             "",
-            "A selector can either be an [italic]{application name} or PID (pid=[italic]{id}). " +
-            "Using [bold]{all} as a selector will target all applications found in the configuration or which are running, " +
-            "depending on the action. " +
-            "Prefix with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} to only target processes in that [bold]{generation}.",
-            "",
+            "A selector can either be an [italic]{application name}, or PID (pid=[italic]{id}). " +
+            "Using [bold]{all} as a selector will target all applications found in the configuration or " +
+            "which are running, depending on the action. An application name followed by /[italic]{N} " +
+            "(slash [italic]{N}) will only select the [italic]{N}-th processes of that application. " +
+            "Prefix your selector with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} " +
+            "to only target processes in that [bold]{generation}. See the usage examples above.",
             "",
             "[bold]{Actions}",
             "",
@@ -220,8 +235,8 @@ exports.generations = [
             "The [bold]{running generation} is where processes remain until they are [bold]{stopped}. At most the configured amount of " +
             "processes for each application may reside here. If [italic]{unique-instances} is set to [italic]{false} and the maximum " +
             "[italic]{instances} was exceeded because new processes were started, the oldest processes will be moved to the [bold]{old generation}. " +
-            "If [italic]{unique-instances} is set to [italic]{true}, each process will replace its counterpart 1:1 instead, and only then " +
-            "additional processes stopped if [italic]{instances} is exceeded. If a process exits abnormally while in the running generation, " +
+            "If [italic]{unique-instances} is set to [italic]{true}, each process will replace its counterpart 1:1 instead, and only then will " +
+            "additional processes be stopped if [italic]{instances} is exceeded. If a process exits abnormally while in the running generation, " +
             "a new one is started (config: [bold]{restart-crashing}). Note that an older process can never replace a process that was started " +
             "later, ensuring always the latest processes are running even if startup time wildly varies.",
             "",

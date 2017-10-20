@@ -6,9 +6,11 @@ Finally a solid process manager that just works.
 Getting started
 --------------------
 
-The project is currently in the works, but you can check out some
-preliminary documentation [here](https://github.com/laino/final-pm/blob/master/doc/README.md)
-and examples [here](https://github.com/laino/final-pm/blob/master/examples/)
+The project is currently in the works, but you can already check out some
+
+[Documentation](https://github.com/laino/final-pm/blob/master/doc/README.md)
+
+[and Examples](https://github.com/laino/final-pm/blob/master/examples/)
 
 Why?
 ----
@@ -18,8 +20,25 @@ trying to be 20 things at once, and not even being decent at any of them,
 there is hardly one being half as reliable or complete in important features
 as you'd expect of a core component.
 
-PM2
--------
+Design Philosophy
+-----------------
+
+Most of the complicated logic resides outside of the daemon itself, either sandboxed
+into other processes (Loggers) or moved up the chain (clients). The daemon should only support
+a minimal set of generic functions, which can be used to create higher level interfaces,
+such as the CLI.
+
+Process state is managed in [https://github.com/laino/final-pm/tree/master/doc#generations](generations),
+which are exclusively managed by synchronous code, asynchronous operations such as timeouts being hidden
+by the Process object and their state robustly managed there. This avoids weird or buggy behavior due to
+multiple asynchronous operations creating race conditions, from which many process managers suffer.
+
+Taken together these design decisions should create an extremely robust daemon process on which
+your application can rely. A crashing daemon process means crashing applications - A component
+meant to make your application more reliable should avoid introducing additional points of failure.
+
+A note on PM2
+------------
 _This section is mostly a rant I wrote after losing a night's worth of sleep when I made the
 mistake of trying to switch to pm2 in production._
 

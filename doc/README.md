@@ -40,7 +40,8 @@ __Examples__
   --launch                   Start the daemon even if there's nothing to do.                               
   --kill                     Stop the daemon, killing any remaining processes.                             
                              This is done after all actions have been applied.                             
-  --no-upload                Don't upload (new) application configurations from config files.              
+  --force                    Make final-pm ignore some safeguards. (I hope you know what you're doing)     
+  --no-upload                Don't upload new application configurations from config files.                
   --help                     Print short usage guide.                                                      
   --help-usage               Print slightly more verbose usage guide.                                      
   --help-generations         Print help page about generations.                                            

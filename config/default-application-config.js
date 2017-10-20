@@ -45,11 +45,16 @@ module.exports = {
     'node-args': [],
 
     /*
-     * Additional environment variables to pass
-     * to the application.
+     * Environment variables to pass to the application. 
+     *
+     * By default this contains environment variables with which the config was parsed.
+     *
+     * Since configuration is parsed with the appropriate npm_package_config_*
+     * environment variables of the node package the configuration file resides in,
+     * there is no need for weird hacks such as running final-pm through npm.
      */
 
-    'env': {},
+    'env': process.env,
 
     /*
      * Defines when FinalPM should consider this

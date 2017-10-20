@@ -45,7 +45,7 @@ if (args['help-all']) {
     process.exit(0);
 }
 
-if (args['help'] || args.actionSelect.length === 0 && !args.kill && !args.launch) {
+if (args['help'] || args.actionSelect.length === 0 && !args.kill && !args.launch && !args.force) {
     console.log(commandLineUsage(argsDefinition.help));
     process.exit(0);
 }
@@ -117,9 +117,25 @@ async function runWithConfig(config) {
     const api = client.api();
 
     if (config.applications.length > 0 && !args['no-upload']) {
-        log("Upload", "Uploading application configuration: " + config.applications.map(_ => _.name).join(' '));
+        log("Upload", `Uploading application configuration: ` +
+                      `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
 
-        await api.Daemon.load(config.applications);
+        const rejected = await api.Daemon.load([config.applications, args.force]);
+
+        for (rejection of rejected) {
+            let reason = "for an unknown reason";
+
+            if (rejection.reason === 'path') {
+                reason = "because its configuration path changed"; 
+            }
+
+            err("Upload", `Daemon rejected configuration for [bold]{${rejection.name}} ` +
+                          `${reason}.\nTry using --force or --no-upload.`);
+        };
+
+        if (rejected.length) {
+            return close();
+        }
     }
 
     debug("Download", "Retrieving application and process lists");
@@ -137,9 +153,13 @@ async function runWithConfig(config) {
         await api.Daemon.kill()
     }
 
-    debug("Connection", "Closing Connection");
+    close();
 
-    client._socket.close()
+    function close() {
+        debug("Connection", "Closing Connection");
+
+        client._socket.close()
+    }
 }
 
 async function runAction(api, action, selected) {
@@ -185,14 +205,13 @@ function genFilter(gen) {
     return (process) => {
         for (let sel of select) {
             const genSep = sel.indexOf(':');
-
             if (genSep !== -1) {
                 const selGen = sel.slice(0, genSep);
                 if (selGen !== gen) {
                     continue;
                 }
 
-                sel = sel.slice(0, genSep + 1);
+                sel = sel.slice(genSep + 1);
             }
 
             if (sel === 'all') {
@@ -205,6 +224,16 @@ function genFilter(gen) {
                 }
 
                 return true;
+            }
+
+            const nthSep = sel.indexOf('/');
+            if (nthSep !== -1) {
+                const nth = sel.slice(nthSep + 1);
+                if (nth !== String(process.number)) {
+                    continue;
+                }
+                
+                sel = sel.slice(0, nthSep);
             }
 
             if (sel === process['app-name']) {
