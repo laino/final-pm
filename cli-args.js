@@ -154,7 +154,7 @@ exports.usage = [
             "final-pm start all",
             "",
             "# Override configuration settings and start 4 instances of 'worker'",
-            "final-pm --set worker:intances=4 start worker",   
+            "final-pm --set worker:instances=4 start worker",   
             "",
             "# Stop processes by PID",
             "final-pm stop pid=43342 pid=3452",
