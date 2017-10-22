@@ -70,7 +70,7 @@ examples above.
 
 **Actions**  
 
-Valid actions are **start**, **stop**, **restart**, **kill**, **scale**, **show**, **log**.  
+Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **log**.  
 
 __start__  
 
@@ -85,8 +85,7 @@ will be replaced if _instances_ was exceeded.
 
 __restart__  
 
-Same as **start** except that for each started process at least one is stopped,  
-also stopping additional processes in case N currently exceeds _instances_.  
+Alias of start.  
 
 __stop__  
 
@@ -99,8 +98,9 @@ processes in any **generation**.
 
 __scale__  
 
-Starts or stops processes for each selected application until N matches  
-configured _instances_.  
+Starts or stops processes for each selected application until the number of  
+running processes using the latest configuration matches configured  
+_instances_.  
 
 __show__  
 

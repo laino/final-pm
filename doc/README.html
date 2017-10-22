@@ -96,7 +96,7 @@ examples above.<br>
 </p>
 
 <p>
-Valid actions are <b>start</b>, <b>stop</b>, <b>restart</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>log</b>.<br>
+Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>log</b>.<br>
 </p>
 
 <p>
@@ -115,8 +115,7 @@ will be replaced if <i>instances</i> was exceeded.<br>
 <p>
 <u>restart</u><br>
 <br>
-Same as <b>start</b> except that for each started process at least one is stopped,<br>
-also stopping additional processes in case N currently exceeds <i>instances</i>.<br>
+Alias of start.<br>
 </p>
 
 <p>
@@ -135,8 +134,10 @@ processes in any <b>generation</b>.<br>
 <p>
 <u>scale</u><br>
 <br>
-Starts or stops processes for each selected application until N matches<br>
-configured <i>instances</i>.<br>
+Starts or stops processes for each selected application until the number of<br>
+running processes using the latest configuration matches configured<br>
+<i>instances</i>.<br>
+<br>
 </p>
 
 <p>
