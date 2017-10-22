@@ -18,5 +18,10 @@ module.exports = {
         'ready-on': 'message',
         'stop-timeout': 3000,
         'run': './never-stopping-app.js', 
+    }, {
+        'name': 'zombie',                      
+        'ready-on': 'message',
+        'run': './zombie.js', 
+        'kill-signal': 'SIGTERM'
     }]
 };

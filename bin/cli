@@ -166,6 +166,10 @@ function printInfo(info) {
             if (proc['app']) {
                 name += ' [red]{(old)}';
             }
+            
+            if (proc.killing) {
+                name += ' [green]{(Z)}';
+            }
 
             const runtime = Date.now() - new Date(proc['start-time']).getTime();
             let humanRuntime = humanizeDuration(Math.abs(runtime), {round:true});
@@ -179,7 +183,8 @@ function printInfo(info) {
     }
 
     const legend = " [red]{(old)} [italic]{Outdated Configuration}" +
-                   " [blue]{(!)} [italic]{Start Delay}\n";
+                   " [blue]{(!)} [italic]{Start Delay} " +
+                   " [green]{(Z)} [italic]{Zombie}\n";
 
     cli.reply(cli.table(data) + legend);
 }
