@@ -63,7 +63,7 @@ async function runWithConfig(config) {
     const api = client.api();
 
     if (config.applications.length > 0 && !args['no-upload']) {
-        cli.log("Upload", `Uploading application configuration: ` +
+        cli.debug("Upload", `Uploading application configuration: ` +
                       `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
 
         const results = await Promise.all(config.applications.map(app => {
@@ -189,7 +189,7 @@ function printInfo(info) {
     cli.reply('');
     
     const data = [
-        [ 'Application/Nr.', 'ID', 'PID (OS)', 'Runtime', 'Crashes' ].map(_ => `[bold]{${_}}`)
+        [ 'Application/Nr.', 'ID', 'PID (OS)', 'Uptime', 'Crashes' ].map(_ => `[bold]{${_}}`)
     ];
 
     let zombies = false;
