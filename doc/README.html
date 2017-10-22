@@ -400,17 +400,29 @@ line you receive.<br>
                                                                             
       'ready-on': 'listen',                                                 
       /*                                                                    
-       * Defines how FinalPM should ask a process to shut down              
-       * gracefully.                                                        
+       * Defines how FinalPM should ask a process to stop gracefully.       
        *                                                                    
-       * Valid values are 'SIGINT' and 'disconnect'.                        
+       * Valid values are 'SIGINT', 'SIGTERM' and 'disconnect'.             
        *                                                                    
        * 'SIGINT': FinalPM will send the SIGINT signal.                     
-       *                                                                    
+       * 'SIGTERM': FinalPM will send the SIGTERM signal.                   
        * 'disconnect': FinalPM will use child.disconnect()                  
        */                                                                   
                                                                             
-      'shutdown-signal': 'SIGINT',                                          
+      'stop-signal': 'SIGINT',                                              
+      /*                                                                    
+       * Defines how FinalPM should kill a process.                         
+       *                                                                    
+       * Process which have been sent the kill signal, but which            
+       * haven't terminated yet, are considered "Zombie" processes.         
+       *                                                                    
+       * Valid values are 'SIGTERM' and 'SIGKILL'.                          
+       *                                                                    
+       * 'SIGTERM': FinalPM will send the SIGTERM signal.                   
+       * 'SIGKILL': FinalPM will send the SIGKILL signal.                   
+       */                                                                   
+                                                                            
+      'kill-signal': 'SIGKILL',                                             
                                                                             
       /*                                                                    
        * How many instances / processes FinalPM will                        
