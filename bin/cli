@@ -127,9 +127,26 @@ async function runWithConfig(config) {
             name: 'kill'
         });
     }
-        
-    await api.Daemon.all(actions)
 
+    if (actions.length) {
+        cli.log("[yellow]{Executing}", makeSummary(actions));
+            
+        const results = await api.Daemon.all(actions);
+        const failed = [];
+
+        results.forEach((result, i) => {
+            if (!result.success) {
+                failed.push(actions[i]);
+            }
+        });
+
+        if (failed.length) {
+            cli.log("[red]{Executing}", "[red bold]{Failed:} " + makeSummary(failed));
+        } else {
+            cli.log("[green]{Executing}", "[green bold]{Success.}");
+        }
+    }
+    
     close();
 
     function close() {
@@ -137,6 +154,33 @@ async function runWithConfig(config) {
 
         client._socket.close()
     }
+}
+
+function makeSummary(actions) {
+    const counter = {};
+
+    for (const action of actions) {
+        counter[action.name] = (counter[action.name] || 0) + 1;
+    }
+
+    const plan = [];
+
+    [ 'stop', 'start', 'kill'].forEach((action) => {
+        const count = counter[action + 'Process'];
+        if (count) {
+            plan.push(`${action} ${count} process${count > 1 ? 'es' : ''}`);
+        }
+    });
+    
+    if (counter['wait']) {
+        plan.push("wait for completion");
+    }
+
+    if (counter['kill']) {
+        plan.push("kill daemon");
+    }
+
+    return "[bold]{" + cli.capitalize(plan.join('}, then [bold]{')) + '}.';
 }
 
 function printInfo(info) {
