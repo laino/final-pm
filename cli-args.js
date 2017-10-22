@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-exports.knownActions = ['start', 'restart', 'stop', 'kill', 'show', 'log'];
+exports.knownActions = ['start', 'restart', 'stop', 'scale', 'kill', 'show', 'log'];
 
 exports.options = [
     { 
@@ -185,7 +185,7 @@ exports.usage = [
             "",
             "[bold]{Actions}",
             "",
-            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{restart}, [bold]{kill}, [bold]{scale}, [bold]{show}, [bold]{log}.",
+            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, [bold]{log}.",
             "",
             "[underline]{start}",
             "Start N=[italic]{instances} processes for all selected applications. " + 
@@ -197,8 +197,7 @@ exports.usage = [
             "will be replaced if [italic]{instances} was exceeded.",
             "",
             "[underline]{restart}",
-            "Same as [bold]{start} except that for each started process at least one is stopped, " +
-            "also stopping additional processes in case N currently exceeds [italic]{instances}. ",
+            "Alias of start.",
             "",
             "[underline]{stop}",
             "Gracefully stop all selected [italic]{running}/[italic]{new} processes or applications.",
@@ -207,7 +206,8 @@ exports.usage = [
             "Immediately [bold]{SIGKILL} all selected processes or applications. This works on processes in any [bold]{generation}.",
             "",
             "[underline]{scale}",
-            "Starts or stops processes for each selected application until N matches configured [italic]{instances}.",
+            "Starts or stops processes for each selected application until the number of running processes using the " +
+            "latest configuration matches configured [italic]{instances}.",
             "",
             "[underline]{show}",
             "Show information about all selected applications / processes.",
