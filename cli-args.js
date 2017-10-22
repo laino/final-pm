@@ -153,8 +153,8 @@ exports.usage = [
             "# Start processes of all configured applications.",
             "final-pm start all",
             "",
-            "# For each running process, start a new one",
-            "final-pm restart all",   
+            "# Override configuration settings and start 4 instances of 'worker'",
+            "final-pm --set worker:intances=4 start worker",   
             "",
             "# Stop processes by PID",
             "final-pm stop pid=43342 pid=3452",
@@ -164,6 +164,7 @@ exports.usage = [
             "",
             "# Stop the first and second currently running worker",
             "final-pm stop running:worker/0 running:worker/1",
+
         ],
     },
 ].concat(exports.help).concat([
@@ -174,10 +175,11 @@ exports.usage = [
             "",
             "A selector identifies a process or an application.",
             "",
-            "A selector can either be an [italic]{application name}, or PID (pid=[italic]{id}). " +
+            "A selector can either be an [italic]{application name}, internal process ID (id=[italic]{id}), " +
+            "or OS process ID (pid=[italic]{pid}). " +
             "Using [bold]{all} as a selector will target all applications found in the configuration or " +
             "which are running, depending on the action. An application name followed by /[italic]{N} " +
-            "(slash [italic]{N}) will only select the [italic]{N}-th processes of that application. " +
+            "(slash [italic]{N}) will only select the [italic]{N}-th process of that application. " +
             "Prefix your selector with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} " +
             "to only target processes in that [bold]{generation}. See the usage examples above.",
             "",
@@ -324,7 +326,7 @@ exports.configuration = [
     }
 ];
 
-exports.helpAll = exports.usage.concat(exports.generations, exports.configuration, exports.example);
+exports.all = exports.usage.concat(exports.generations, exports.configuration, exports.example);
 
 exports.isKnownAction = function(arg) {
     return exports.knownActions.indexOf(arg) !== -1;

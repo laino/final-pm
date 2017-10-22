@@ -14,7 +14,13 @@ process.on('SIGINT', () => {
 });
 
 instance.on('kill', () => {
-    console.log("Daemon stopped.");
+    console.log("Daemon stopping.");
+});
+
+process.on('uncaughtException', function(error) {
+    console.error(error.stack);
+    instance.close();
+    process.exit(1);
 });
 
 run();

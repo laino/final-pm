@@ -47,19 +47,21 @@ module.exports = {
     /*
      * Environment variables to pass to the application. 
      *
-     * By default this contains environment variables with which the config was parsed.
+     * By default this contains environment variables with
+     * which the config was parsed.
      *
-     * Since configuration is parsed with the appropriate npm_package_config_*
-     * environment variables of the node package the configuration file resides in,
-     * there is no need for weird hacks such as running final-pm through npm.
+     * Since configuration is parsed with the appropriate
+     * npm_package_config_* environment variables of the 
+     * node package the configuration file resides in,
+     * there is no need for weird hacks such as running
+     * final-pm through npm.
      */
 
     'env': process.env,
 
     /*
-     * Defines when FinalPM should consider this
-     * application to be ready and thus move it
-     * to the 'running' generation.
+     * Defines when FinalPM should consider a process to
+     * be ready and thus move it to the 'running' generation.
      *
      * Valid values are 'listen' and 'message'.
      *
@@ -74,6 +76,19 @@ module.exports = {
      */
 
     'ready-on': 'listen',
+    
+    /*
+     * Defines how FinalPM should ask a process to shut down
+     * gracefully.
+     *
+     * Valid values are 'SIGINT' and 'disconnect'.
+     *
+     * 'SIGINT': FinalPM will send the SIGINT signal.
+     *
+     * 'disconnect': FinalPM will use child.disconnect()
+     */
+
+    'shutdown-signal': 'SIGINT',
 
     /*
      * How many instances / processes FinalPM will
@@ -121,7 +136,7 @@ module.exports = {
      * Time to wait before starting a new process after one crashed.
      */
 
-    'restart-crashing-timeout': 1000,
+    'restart-crashing-delay': 1000,
 
     /*
      * Logger application to use.

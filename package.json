@@ -17,6 +17,7 @@
   "dependencies": {
     "async": "",
     "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
+    "humanize-duration": "",
     "command-line-usage": "",
     "read-package-config": "",
     "noice-json-rpc": "",
@@ -25,7 +26,8 @@
     "ws": "",
     "joi": "",
     "mkdirp": "",
-    "deep-equal": ""
+    "deep-equal": "",
+    "table": ""
   },
   "devDependencies": {
     "ansi-to-html": "",

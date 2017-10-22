@@ -1,69 +1,15 @@
 #!/usr/bin/env node
 
-const finalPM = require('../');
+const humanizeDuration = require('humanize-duration');
 const util = require('util');
-const commandLineArgs = require('command-line-args');
-const commandLineUsage = require('command-line-usage');
-const argsDefinition = require('../cli-args.js');
-const stripAnsi = require('strip-ansi');
-const ansi = require('ansi-escape-sequences');
+const finalPM = require('../');
+const cli = require('../lib/cli-util');
 
 finalPM.registerProcessHandlers();
 
-let args;
-try {
-    args = commandLineArgs(argsDefinition.options, {
-        partial: false,
-        disableGreedyMultiple: true
-    });
-} catch (e) {
-    invalidArgument(e.message);
-}
+cli.parseArgs();
 
-if (args['help-usage']) {
-    console.log(commandLineUsage(argsDefinition.usage));
-    process.exit(0);
-}
-
-if (args['help-generations']) {
-    console.log(commandLineUsage(argsDefinition.generations));
-    process.exit(0);
-}
-
-if (args['help-example']) {
-    console.log(commandLineUsage(argsDefinition.example));
-    process.exit(0);
-}
-
-if (args['help-configuration']) {
-    console.log(commandLineUsage(argsDefinition.configuration));
-    process.exit(0);
-}
-
-if (args['help-all']) {
-    console.log(commandLineUsage(argsDefinition.helpAll));
-    process.exit(0);
-}
-
-if (args['help'] || args.actionSelect.length === 0 && !args.kill && !args.launch && !args.force) {
-    console.log(commandLineUsage(argsDefinition.help));
-    process.exit(0);
-}
-
-if (args.actionSelect.length === 1) {
-    invalidArgument("Missing option: Selector is missing.");
-}
-    
-let action = null;
-let select = [];
-if (args.actionSelect.length > 1) {
-    if (!argsDefinition.isKnownAction(args.actionSelect[0])) {
-        invalidArgument("Unknown action: " + args.actionSelect[0]);
-    }
-
-    action = args.actionSelect[0];
-    select = args.actionSelect.slice(1);
-}
+const args = cli.args;
 
 async function run() {
     const paths = await Promise.all(
@@ -71,7 +17,7 @@ async function run() {
 
     paths.forEach((path, i) => {
         if (!path) {
-            err(`No configuration file found at: ${args.config[i]}`);
+            cli.err(`No configuration file found at: ${args.config[i]}`);
             process.exit(1);
         }
     });
@@ -84,7 +30,7 @@ async function run() {
             });
         } catch (error) {
             if (error.name === 'ConfigError') {
-                invalidConfig(error.path, error.message);
+                cli.invalidConfig(error.path, error.message);
             }
 
             throw error;
@@ -99,7 +45,7 @@ async function run() {
 }
 
 async function runWithConfig(config) {
-    debug("Connection", "Connecting to " + config.socket);
+    cli.debug("Connection", "Connecting to " + config.socket);
 
     let client;
 
@@ -107,7 +53,7 @@ async function runWithConfig(config) {
         client = await connectOrLaunch(config);
     } catch (error) {
         if (error.name === 'ConnectionError') {
-            err("Connection", error.message);
+            cli.err("Connection", error.message);
             return;
         }
         
@@ -117,81 +63,230 @@ async function runWithConfig(config) {
     const api = client.api();
 
     if (config.applications.length > 0 && !args['no-upload']) {
-        log("Upload", `Uploading application configuration: ` +
+        cli.log("Upload", `Uploading application configuration: ` +
                       `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
 
-        const rejected = await api.Daemon.load([config.applications, args.force]);
+        const results = await Promise.all(config.applications.map(app => {
+            return api.Daemon.load([app, args.force]);
+        }));
 
-        for (rejection of rejected) {
+        let failed = false;
+        results.forEach((result, i) => {
+            if (result.success)
+                return;
+
+            const app = config.applications[i];
+
             let reason = "for an unknown reason";
 
-            if (rejection.reason === 'path') {
+            if (result.reason === 'path') {
                 reason = "because its configuration path changed"; 
             }
 
-            err("Upload", `Daemon rejected configuration for [bold]{${rejection.name}} ` +
-                          `${reason}.\nTry using --force or --no-upload.`);
-        };
+            cli.err("Upload", `Daemon rejected configuration for [bold]{${app.name}} ` +
+                              `${reason}.\nTry using --force or --no-upload.`);
 
-        if (rejected.length) {
+            failed = true;
+        });
+
+        if (failed) {
             return close();
         }
     }
 
-    debug("Download", "Retrieving application and process lists");
+    cli.debug("Download", "Retrieving application and process lists");
 
-    const info = filterInfo(await api.Daemon.info(), select);
+    const info = await api.Daemon.info();
 
-    debug("Selector", `Selector matched ${info.applications.length} applications and ${info.all.length} processes`);
+    let actions = [];
 
-    if (action) {
-        await runAction(api, action, info)
+    if (args.action === 'show') {
+        printInfo(info); 
+    }
+
+    if (args.action === 'start') {
+        actions = actions.concat(startAction(info));
+    }
+    
+    if (args.action === 'stop') {
+        actions = actions.concat(stopAction(info, 'stop'));
+    }
+    
+    if (args.action === 'kill') {
+        actions = actions.concat(stopAction(info, 'kill'));
+    }
+    
+    if (args.wait) {
+        cli.log("Action", `Wait for actions to complete`);
+        actions.push({
+            name: 'wait'
+        });
     }
 
     if (args.kill) {
-        log("Daemon", "Stopping Daemon");
-        await api.Daemon.kill()
+        cli.log("Action", `Stopping Daemon`);
+        actions.push({
+            name: 'kill'
+        });
     }
+        
+    await api.Daemon.all(actions)
 
     close();
 
     function close() {
-        debug("Connection", "Closing Connection");
+        cli.debug("Connection", "Closing Connection");
 
         client._socket.close()
     }
 }
 
-async function runAction(api, action, selected) {
-    if (action === 'show') {
-        printInfo(selected); 
-        return;
-    }
-}
+function printInfo(info) {
+    const selected = filterInfo(info, args.select);
 
-function printInfo(selected) {
-    printInfoLine("Known Applications: " + selected.applications.map(_ => _.name).join(' '));
-}
+    cli.reply('');
     
-function printInfoLine(...args) {
-    log("[bold green]{Show}", ...args);
+    const data = [
+        [ 'Application/Nr.', 'ID', 'PID (OS)', 'Runtime' ].map(_ => `[bold]{${_}}`)
+    ];
+    
+    for (const name in selected.processes) {
+        if (!Object.prototype.hasOwnProperty.call(selected.processes, name))
+            continue
+
+        const gen = selected.processes[name];
+
+        if (gen.length === 0) continue;
+
+        data.push([`[bold]{Gen: ${name}} (${gen.length})`, '', '', '']);
+
+        for (const proc of gen) {
+            let name = `${proc['app-name']}/${proc['number']}`;
+
+            if (proc['app']) {
+                name += ' [red]{(old)}';
+            }
+
+            const runtime = Date.now() - new Date(proc['start-time']).getTime();
+            let humanRuntime = humanizeDuration(Math.abs(runtime), {round:true});
+
+            if (runtime < 0) {
+                humanRuntime = "- " + humanRuntime + " [blue]{(!)}";
+            }
+
+            data.push([name, proc['id'], proc['pid'], humanRuntime]);
+        }
+    }
+
+    const legend = " [red]{(old)} [italic]{Outdated Configuration}" +
+                   " [blue]{(!)} [italic]{Start Delay}\n";
+
+    cli.reply(cli.table(data) + legend);
 }
 
-function filterInfo(info, select) {
-    const applications = info.applications.filter((app) => {
-        if (select.indexOf('all') !== -1) {
-            return true;
+function stopAction(info, action) {
+    const selected = filterInfo(info, args.select);
+    const actions = [];
+    const actionName = action + 'Process';
+
+    for (const process of selected.all) {
+        actions.push({
+            name: actionName,
+            args: [{
+                id: process.id
+            }]
+        });
+    }
+    
+    cli.log("Action", `${cli.capitalize(action)} ${actions.length} processes`); 
+    return actions;
+}
+
+function startAction(info) {
+    const actions = [];
+
+    for (const selector of args.select) {
+        if (!selector.app)
+            continue;
+
+        const apps = selector.app === 'all' ?
+            info.applications :  info.applications.filter(_ => _.name === selector.app);
+
+        if (apps.length === 0) {
+            cli.log("Selector", `No such application: [bold]{${selector.app}}`);
+            continue;
         }
 
-        return select.indexOf(app.name) !== -1;
+        for (app of apps) {
+            if (typeof selector.number === 'number') {
+                actions.push({
+                    name: 'startProcess',
+                    args: [app.name, {
+                        number: selector.number
+                    }]
+                });
+                continue;
+            }
+
+            for (var i = 0; i < app.instances; i++) {
+                actions.push({
+                    name: 'startProcess',
+                    args: [app.name, {
+                        number: i
+                    }]
+                });
+            }
+        }
+    }
+
+    cli.log("Action", `Start ${actions.length} processes`);
+
+    return actions;
+}
+
+function filterInfo(info, selectors) {
+    const applications = info.applications.filter((app) => {
+        for (const select of selectors) {
+            if (select.app === 'all' || select.app === app.name)
+                return true;
+        }
+
+        return false;
     });
 
     const processes = {};
     let all = []; 
 
     for (let gen of Object.keys(info.processes)) {
-        processes[gen] = info.processes[gen].filter(genFilter(gen));
+        processes[gen] = info.processes[gen].filter(processFilter(gen));
         all = all.concat(processes[gen]);
+    }
+
+    function processFilter(generation) {
+        return (process) => {
+            for (const select of selectors) {
+                if (select.gen && select.gen !== generation)
+                    continue;
+
+                if (select.app && select.app !== 'all' && select.app !== process['app-name'])
+                    continue;
+
+                if (!match('number', select, process) ||
+                    !match('id', select, process) ||
+                    !match('pid', select, process)) {
+
+                    continue;
+                }
+                
+                return true;
+            }
+
+            return false;
+        };
+    }
+
+    function match(name, select, process) {
+        return typeof select[name] === 'undefined' || select[name] === process[name];
     }
 
     return {
@@ -200,58 +295,14 @@ function filterInfo(info, select) {
         all
     }
 }
-    
-function genFilter(gen) {
-    return (process) => {
-        for (let sel of select) {
-            const genSep = sel.indexOf(':');
-            if (genSep !== -1) {
-                const selGen = sel.slice(0, genSep);
-                if (selGen !== gen) {
-                    continue;
-                }
-
-                sel = sel.slice(genSep + 1);
-            }
-
-            if (sel === 'all') {
-                return true;
-            }
-
-            if (sel.startsWith('pid=')) {
-                if (sel !== 'pid=' + process.pid) {
-                    continue;
-                }
-
-                return true;
-            }
-
-            const nthSep = sel.indexOf('/');
-            if (nthSep !== -1) {
-                const nth = sel.slice(nthSep + 1);
-                if (nth !== String(process.number)) {
-                    continue;
-                }
-                
-                sel = sel.slice(0, nthSep);
-            }
-
-            if (sel === process['app-name']) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
+ 
 async function connectOrLaunch(config) {
     try {
         return await finalPM.client.connect(config['socket']);
     } catch (error) {
         if ((error.name === 'ConnectionError')) {
             if (config['is-local']) {
-                log("Daemon", "Starting Daemon");
+                cli.log("Daemon", "Starting Daemon");
                 await finalPM.daemon.launch(config);
                 return finalPM.client.connect(config['socket']);
             }
@@ -259,53 +310,6 @@ async function connectOrLaunch(config) {
 
         throw error;
     }
-}
-
-function invalidConfig(path, ...info) {
-    err("Configuration", path, ...info);
-    err("Configuration", "Check \"final-pm --help\" for example configurations.");
-    process.exit(1);
-}
-
-function invalidArgument(...info) {
-    err("Arguments", ...info);
-    err("Arguments", "Check \"final-pm --help\" for the correct syntax.");
-    process.exit(1);
-}
-
-function debug(...out) {
-    if (!args.verbose) return;
-
-    console.log(makeLogLine(
-        ['[gray]{DEBUG}'].concat(out),
-        process.stdout.isTTY
-    ));
-}
-
-function log(...args) {
-    console.log(makeLogLine(
-        ['[white]{INFO }'].concat(args),
-        process.stdout.isTTY
-    ));
-}
-
-function err(...args) {
-    console.error(makeLogLine(
-        ['[red]{ERROR}'].concat(args),
-        process.stderr.isTTY
-    ));
-}
-
-function makeLogLine(args, format) {
-    const last = args[args.length - 1];
-    const pre = `[[bold]{${args.slice(0, args.length - 1).join('}] [[bold]{')}}] `;
-    const line = ansi.format(last.split('\n').map(line => pre + line).join('\n'));
-    
-    if (format) {
-        return line;
-    }
-
-    return stripAnsi(line);
 }
 
 run();

@@ -17,7 +17,7 @@ let lineWasEmpty = false;
 
 process.stdout.columns = 500;
 
-const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.helpAll))
+const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.all))
     .split('\n').map(line => {
         const lineIsEmpty = line.trim() === '';
         const length = line.trim().length;
