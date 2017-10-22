@@ -147,7 +147,7 @@ function printInfo(info) {
     cli.reply('');
     
     const data = [
-        [ 'Application/Nr.', 'ID', 'PID (OS)', 'Runtime' ].map(_ => `[bold]{${_}}`)
+        [ 'Application/Nr.', 'ID', 'PID (OS)', 'Runtime', 'Crashes' ].map(_ => `[bold]{${_}}`)
     ];
     
     for (const name in selected.processes) {
@@ -158,7 +158,7 @@ function printInfo(info) {
 
         if (gen.length === 0) continue;
 
-        data.push([`[bold]{Gen: ${name}} (${gen.length})`, '', '', '']);
+        data.push([`[bold]{Gen: ${name}} (${gen.length})`, '', '', '', '']);
 
         for (const proc of gen) {
             let name = `${proc['app-name']}/${proc['number']}`;
@@ -174,7 +174,7 @@ function printInfo(info) {
                 humanRuntime = "- " + humanRuntime + " [blue]{(!)}";
             }
 
-            data.push([name, proc['id'], proc['pid'], humanRuntime]);
+            data.push([name, proc['id'], proc['pid'], humanRuntime, proc['crashes']]);
         }
     }
 
@@ -213,7 +213,7 @@ function startAction(info) {
             info.applications :  info.applications.filter(_ => _.name === selector.app);
 
         if (apps.length === 0) {
-            cli.log("Selector", `No such application: [bold]{${selector.app}}`);
+            cli.err("Selector", `No such application: [bold]{${selector.app}}`);
             continue;
         }
 
