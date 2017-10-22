@@ -149,6 +149,8 @@ function printInfo(info) {
     const data = [
         [ 'Application/Nr.', 'ID', 'PID (OS)', 'Runtime', 'Crashes' ].map(_ => `[bold]{${_}}`)
     ];
+
+    let zombies = false;
     
     for (const name in selected.processes) {
         if (!Object.prototype.hasOwnProperty.call(selected.processes, name))
@@ -169,6 +171,7 @@ function printInfo(info) {
             
             if (proc.killing) {
                 name += ' [green]{(Z)}';
+                zombies = true;
             }
 
             const runtime = Date.now() - new Date(proc['start-time']).getTime();
@@ -187,6 +190,9 @@ function printInfo(info) {
                    " [green]{(Z)} [italic]{Zombie}\n";
 
     cli.reply(cli.table(data) + legend);
+
+    cli.reply("Hint", "You have [green]{Zombie} processes. If they don't go away you should\n" +
+                      "get rid of them manually and check your signal handling.");
 }
 
 function stopAction(info, action) {
