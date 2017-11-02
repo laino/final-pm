@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-exports.knownActions = ['start', 'restart', 'stop', 'scale', 'kill', 'show', 'log'];
+exports.knownActions = ['start', 'restart', 'stop', 'scale', 'kill', 'show', 'log', 'add', 'delete'];
 
 exports.options = [
     { 
@@ -22,7 +22,7 @@ exports.options = [
                      "If you specified a configuration for an already running application, it will only be applied " +
                      "once the application is manually (re-)started, but not when a new process is spawned after a crash.",
         multiple: true,
-        defaultValue: ['.']
+        defaultValue: []
     },
     { 
         name: 'set',
@@ -185,10 +185,11 @@ exports.usage = [
             "",
             "[bold]{Actions}",
             "",
-            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, [bold]{log}.",
+            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, " + 
+            "[bold]{add}, [bold]{delete}, [bold]{log}.",
             "",
-            "[underline]{start}",
-            "Start N=[italic]{instances} processes for all selected applications. " + 
+            "[underline]{start / restart}",
+            "Upload configuration (implies [bold]{add}), then start N=[italic]{instances} processes for all selected applications. " + 
             "When processes are selected this will start one new process for each selected one instead. " +
             "May cause existing processes to be gracefully stopped when the newly started ones are ready, and " +
             "will even implicitly stop more processes than were started when [italic]{instances} was decreased " +
@@ -196,21 +197,24 @@ exports.usage = [
             "if [italic]{unique-instances} is set to [italic]{false}. In which case the oldest ones of that application " +
             "will be replaced if [italic]{instances} was exceeded.",
             "",
-            "[underline]{restart}",
-            "Alias of start.",
-            "",
             "[underline]{stop}",
-            "Gracefully stop all selected [italic]{running}/[italic]{new} processes or applications.",
+            "Gracefully stop all selected [italic]{running/new} processes or applications.",
             "",
             "[underline]{kill}",
             "Immediately [bold]{SIGKILL} all selected processes or applications. This works on processes in any [bold]{generation}.",
             "",
             "[underline]{scale}",
-            "Starts or stops processes for each selected application until the number of running processes using the " +
-            "latest configuration matches configured [italic]{instances}.",
+            "Upload configuration (implies [bold]{add}), then start or stop processes for each selected application " +
+            "until the number of running processes matches configured [italic]{instances}.",
             "",
             "[underline]{show}",
             "Show information about all selected applications / processes.",
+            "",
+            "[underline]{add}",
+            "Upload application configurations to the daemon, replacing older instances of the same configuration.",
+            "",
+            "[underline]{delete}",
+            "Delete application configurations from the daemon.",
             "",
             "[underline]{log}",
             "Show process output. Understands [bold]{--follow} and [bold]{--lines}, which work the same as the UNIX [italic]{tail} command.",

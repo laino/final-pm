@@ -20,7 +20,7 @@
     "humanize-duration": "",
     "command-line-usage": "",
     "read-package-config": "",
-    "noice-json-rpc": "laino/noice-json-rpc",
+    "noice-json-rpc": "",
     "ansi-escape-sequences": "",
     "strip-ansi": "",
     "ws": "",

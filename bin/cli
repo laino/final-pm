@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const humanizeDuration = require('humanize-duration');
-const util = require('util');
 const finalPM = require('../');
 const cli = require('../lib/cli-util');
 
@@ -11,16 +10,21 @@ cli.parseArgs();
 
 const args = cli.args;
 
-async function run() {
-    const paths = await Promise.all(
-        args.config.map(finalPM.config.resolveConfig));
+run();
 
-    paths.forEach((path, i) => {
-        if (!path) {
-            cli.err(`No configuration file found at: ${args.config[i]}`);
-            process.exit(1);
-        }
-    });
+async function run() {
+    const lookupPaths = args.config.slice(0);
+
+    if (!lookupPaths.length) {
+        lookupPaths.push('.');
+    }
+
+    const paths = await Promise.all(lookupPaths.map(finalPM.config.resolveConfig));
+
+    if (paths.includes(null) && args.config.length) {
+        cli.err(`No configuration file found at: ${lookupPaths[paths.indexOf(null)]}`);
+        process.exit(1);
+    }
 
     const configs = await Promise.all(paths.map(async (path) =>  {
         try {
@@ -62,34 +66,10 @@ async function runWithConfig(config) {
 
     const api = client.api();
 
-    if (config.applications.length > 0 && !args['no-upload']) {
-        cli.debug("Upload", `Uploading application configuration: ` +
-                      `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
+    if (['add', 'start', 'restart'].includes(args.action) &&
+            config.applications.length > 0 && !args['no-upload']) {
 
-        const results = await Promise.all(config.applications.map(app => {
-            return api.Daemon.load([app, args.force]);
-        }));
-
-        let failed = false;
-        results.forEach((result, i) => {
-            if (result.success)
-                return;
-
-            const app = config.applications[i];
-
-            let reason = "for an unknown reason";
-
-            if (result.reason === 'path') {
-                reason = "because its configuration path changed"; 
-            }
-
-            cli.err("Upload", `Daemon rejected configuration for [bold]{${app.name}} ` +
-                              `${reason}.\nTry using --force or --no-upload.`);
-
-            failed = true;
-        });
-
-        if (failed) {
+        if (!await uploadConfigurations(api, config)) {
             return close();
         }
     }
@@ -102,6 +82,10 @@ async function runWithConfig(config) {
 
     if (args.action === 'show') {
         printInfo(info); 
+    }
+    
+    if (args.action === 'delete') {
+        actions = actions.concat(deleteAction(info));
     }
 
     if (args.action === 'start' || args.action === 'restart') {
@@ -127,7 +111,7 @@ async function runWithConfig(config) {
             name: 'kill'
         });
     }
-
+    
     if (actions.length) {
         cli.log("[yellow]{Executing}", makeSummary(actions));
             
@@ -152,8 +136,62 @@ async function runWithConfig(config) {
     function close() {
         cli.debug("Connection", "Closing Connection");
 
-        client._socket.close()
+        client._socket.close();
     }
+}
+
+async function uploadConfigurations(api, config) {
+    cli.debug("Upload", `Uploading application configuration: ` +
+                  `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
+
+    const appNames = args.select.map(arg => arg.app).filter(_ => _);
+
+    const applications = config.applications.filter(app => {
+        return appNames.includes('all') || appNames.includes(app.name);
+    });
+
+    const results = await Promise.all(applications.map(app => {
+        return api.Daemon.add([app, args.force]);
+    }));
+
+    let failed = false;
+
+    const updated = [];
+    const added = [];
+
+    results.forEach((result, i) => {
+        const app = applications[i];
+
+        if (result.success) {
+            if (result.changed === true) {
+                added.push(app['name']);
+            } else if (result.changed.length) {
+                updated.push(`[bold]{${app['name']}}{[yellow]{${result.changed.join(',')}}}`);
+            }
+            return;
+        }
+
+        let reason = "for an unknown reason";
+
+        if (result.reason === 'path') {
+            reason = "because its configuration path changed"; 
+        }
+
+        cli.err("Upload", `Daemon rejected configuration for [bold]{${app.name}} ` +
+                          `${reason}.\nTry using --force or --no-upload.`);
+
+        failed = true;
+    });
+
+    if (added.length) {
+        cli.log("[bold green]{Added}", `[bold]{${added.join(' ')}}`);
+    }
+    
+    if (updated.length) {
+        cli.log("[bold yellow]{Updated}", updated.join(' '));
+    }
+
+    return !failed;
 }
 
 function makeSummary(actions) {
@@ -164,8 +202,12 @@ function makeSummary(actions) {
     }
 
     const plan = [];
-
-    [ 'stop', 'start', 'kill'].forEach((action) => {
+    
+    if (counter['delete']) {
+        plan.push(`delete ${counter['delete']} applications`);
+    }
+    
+    ['stop', 'start', 'kill'].forEach((action) => {
         const count = counter[action + 'Process'];
         if (count) {
             plan.push(`${action} ${count} process${count > 1 ? 'es' : ''}`);
@@ -187,6 +229,8 @@ function printInfo(info) {
     const selected = filterInfo(info, args.select);
 
     cli.reply('');
+    cli.reply(` [bold white]{Applications:} [bold]{${info.applications.map(_ => _.name).join(' ')}}`);
+    cli.reply('');
     
     const data = [
         [ 'Application/Nr.', 'ID', 'PID (OS)', 'Uptime', 'Crashes' ].map(_ => `[bold]{${_}}`)
@@ -196,7 +240,7 @@ function printInfo(info) {
     
     for (const name in selected.processes) {
         if (!Object.prototype.hasOwnProperty.call(selected.processes, name))
-            continue
+            continue;
 
         const gen = selected.processes[name];
 
@@ -245,7 +289,7 @@ function scaleAction(info) {
 
     function procFilter(app) {
         return (proc) => {
-            return !proc['app'] && proc['app-name'] === app.name;
+            return proc['app-name'] === app.name;
         };
     }
 
@@ -255,7 +299,7 @@ function scaleAction(info) {
             .sort((a, b) => a.number - b.number);
 
          
-        const number = running.length;
+        let number = running.length;
         const max = app['instances'];
 
         for (; number > max; number--) {
@@ -315,7 +359,7 @@ function startAction(info) {
             continue;
         }
 
-        for (app of apps) {
+        for (const app of apps) {
             if (typeof selector.number === 'number') {
                 actions.push({
                     name: 'startProcess',
@@ -335,6 +379,20 @@ function startAction(info) {
                 });
             }
         }
+    }
+
+    return actions;
+}
+
+function deleteAction(info) {
+    const selected = filterInfo(info, args.select);
+    const actions = [];
+
+    for (const app of selected.applications) {
+        actions.push({
+            name: 'delete',
+            args: [app.name]
+        });
     }
 
     return actions;
@@ -392,7 +450,7 @@ function filterInfo(info, selectors) {
         applications,
         processes,
         all
-    }
+    };
 }
  
 async function connectOrLaunch(config) {
@@ -411,4 +469,3 @@ async function connectOrLaunch(config) {
     }
 }
 
-run();

@@ -55,10 +55,26 @@ module.exports = {
     "npm-user-config": path.resolve(os.homedir(), ".npmrc"),
 
     /*
+     * A list of environment variables that shouldn't be passed
+     * to config scripts. Avoids marking a configuration as outdated
+     * just because some inconsequential environment variable changed.
+     */
+    
+    "ignore-env": [
+        "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID",
+        "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",
+        "SHELL", "SSH_CLIENT", "SSH_TTY", "SSH_CONNECTION", "USER", "LANG",
+        "LOGNAME", "SHLVL", "MAIL", "HOME", "PS1", "PS2", "PS3", "PS4",
+        "PROMPT_COMMAND", "XAUTHORITY", "COLORFGBG", "GITAWAREPROMPT",
+        "LC_MESSAGES", "DISPLAY", "EDITOR", "COLORTERM",
+        "DBUS_SESSION_BUS_ADDRESS"
+    ],
+
+    /*
      * Array of application configurations.
      * Refer to default-application-config.js
      */
 
     "applications": [],
 
-}
+};
