@@ -35,7 +35,8 @@ Comparison Between Process Managers
 1. PM2 may default to ungracefully restarting applications if some conditions are not met, even if graceful restarts were
    configured and intended. Read the note on PM2 at the bottom for more information.
 2. PM2 handles process state transitions by means of imperative, callback based code, making it hard to reason about
-   the effects of multiple concurrent actions.
+   the effects of multiple concurrent actions. FinalPM separates command/signal handlers for each process state
+   and models state transition in an atomic fashion, thus eliminating edge cases.
 3. In many cases PM2 will naively perform dangerous actions which may result in downtime.
 4. FinalPM is very strict in what it will accept, aborting with helpful error messages if anything with your configuration or
    command looks fishy. FinalPM will never try to *assume* anything about what you meant to do, and not default to any 
