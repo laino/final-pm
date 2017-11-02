@@ -70,26 +70,23 @@ examples above.
 
 **Actions**  
 
-Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **log**.  
+Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **add**, **delete**, **log**.  
 
-__start__  
+__start / restart__  
 
-Start N=_instances_ processes for all selected applications. When processes are  
-selected this will start one new process for each selected one instead. May  
-cause existing processes to be gracefully stopped when the newly started ones  
-are ready, and will even implicitly stop more processes than were started  
-when _instances_ was decreased in the configuration. Note that this may replace  
-different processes than the selected ones, or none at all, if _unique-  
-instances_ is set to _false_. In which case the oldest ones of that application  
-will be replaced if _instances_ was exceeded.  
-
-__restart__  
-
-Alias of start.  
+Upload configuration (implies **add**), then start N=_instances_ processes for all  
+selected applications. When processes are selected this will start one new  
+process for each selected one instead. May cause existing processes to be  
+gracefully stopped when the newly started ones are ready, and will even  
+implicitly stop more processes than were started when _instances_ was decreased  
+in the configuration. Note that this may replace different processes than  
+the selected ones, or none at all, if _unique-instances_ is set to _false_. In  
+which case the oldest ones of that application will be replaced if _instances_  
+was exceeded.  
 
 __stop__  
 
-Gracefully stop all selected _running_/_new_ processes or applications.  
+Gracefully stop all selected _running/new_ processes or applications.  
 
 __kill__  
 
@@ -98,13 +95,22 @@ processes in any **generation**.
 
 __scale__  
 
-Starts or stops processes for each selected application until the number of  
-running processes using the latest configuration matches configured  
+Upload configuration (implies **add**), then start or stop processes for each  
+selected application until the number of running processes matches configured  
 _instances_.  
 
 __show__  
 
 Show information about all selected applications / processes.  
+
+__add__  
+
+Upload application configurations to the daemon, replacing older instances of  
+the same configuration.  
+
+__delete__  
+
+Delete application configurations from the daemon.  
 
 __log__  
 
@@ -182,70 +188,85 @@ line you receive.
 
 __Default Config__  
 
-<pre>  // default-config.js                                                
-  const os = require("os");                                           
-  const path = require("path");                                       
-  module.exports = {                                                  
+<pre>  // default-config.js                                                          
+  const os = require("os");                                                     
+  const path = require("path");                                                 
+  module.exports = {                                                            
 
-      /*                                                              
-       * FinalPM will store state and other information here.         
-       * Relative to process.cwd(), but absolute paths are also       
-       * allowed. All other paths in this configuration file are      
-       * relative to this.                                            
-       */                                                             
+      /*                                                                        
+       * FinalPM will store state and other information here.                   
+       * Relative to process.cwd(), but absolute paths are also                 
+       * allowed. All other paths in this configuration file are                
+       * relative to this.                                                      
+       */                                                                       
 
-      "home": path.resolve(os.homedir(), ".final-pm"),                
+      "home": path.resolve(os.homedir(), ".final-pm"),                          
 
-      /*                                                              
-       * Unix domain socket or host:port combination. FinalPM         
-       * will use this socket to communicate with the daemon          
-       * via JSON-RPC 2.0\. URLs must start with either "ws+unix://",  
-       * followed by a relative or absolute paths, or with "ws://",   
-       * followed by a host:port combination. If the given            
-       * host is localhost or an unix domain socket was given,        
-       * a new daemon will automatically be launched if the           
-       * connection fails.                                            
-       *                                                              
-       * Examples:                                                    
-       *                                                              
-       *     ws://localhost:3242                # localhost port 3242 
-       *     ws+unix://./final-pm.sock          # Relative to "home"  
-       *     ws+unix:///home/user/final-pm.sock # Absolute path       
-       *     ws+unix://home/user/final-pm.sock  # Absolute path       
-       */                                                             
+      /*                                                                        
+       * Unix domain socket or host:port combination. FinalPM                   
+       * will use this socket to communicate with the daemon                    
+       * via JSON-RPC 2.0\. URLs must start with either "ws+unix://",            
+       * followed by a relative or absolute paths, or with "ws://",             
+       * followed by a host:port combination. If the given                      
+       * host is localhost or an unix domain socket was given,                  
+       * a new daemon will automatically be launched if the                     
+       * connection fails.                                                      
+       *                                                                        
+       * Examples:                                                              
+       *                                                                        
+       *     ws://localhost:3242                # localhost port 3242           
+       *     ws+unix://./final-pm.sock          # Relative to "home"            
+       *     ws+unix:///home/user/final-pm.sock # Absolute path                 
+       *     ws+unix://home/user/final-pm.sock  # Absolute path                 
+       */                                                                       
 
-      "socket": "ws+unix://./daemon.sock",                            
+      "socket": "ws+unix://./daemon.sock",                                      
 
-      /*                                                              
-       * The daemon's stdout and stderr will be redirected here.      
-       */                                                             
+      /*                                                                        
+       * The daemon's stdout and stderr will be redirected here.                
+       */                                                                       
 
-      "daemon-log": "./daemon.out",                                   
+      "daemon-log": "./daemon.out",                                             
 
-      /*                                                              
-       * Where npm stores its global configuration.                   
-       * Used to generate config environment variables                
-       * when running .js configuration files.                        
-       */                                                             
+      /*                                                                        
+       * Where npm stores its global configuration.                             
+       * Used to generate config environment variables                          
+       * when running .js configuration files.                                  
+       */                                                                       
 
-      "npm-global-config": "/etc/npmrc",                              
+      "npm-global-config": "/etc/npmrc",                                        
 
-      /*                                                              
-       * Where npm stores its per-user configuration.                 
-       * Used to generate config environment variables                
-       * when running .js configuration files.                        
-       */                                                             
+      /*                                                                        
+       * Where npm stores its per-user configuration.                           
+       * Used to generate config environment variables                          
+       * when running .js configuration files.                                  
+       */                                                                       
 
-      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),        
+      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),                  
 
-      /*                                                              
-       * Array of application configurations.                         
-       * Refer to default-application-config.js                       
-       */                                                             
+      /*                                                                        
+       * A list of environment variables that shouldn't be passed               
+       * to config scripts. Avoids marking a configuration as outdated          
+       * just because some inconsequential environment variable changed.        
+       */                                                                       
+      "ignore-env": [                                                           
+          "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID", 
+          "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",  
+          "SHELL", "SSH_CLIENT", "SSH_TTY", "SSH_CONNECTION", "USER", "LANG",   
+          "LOGNAME", "SHLVL", "MAIL", "HOME", "PS1", "PS2", "PS3", "PS4",       
+          "PROMPT_COMMAND", "XAUTHORITY", "COLORFGBG", "GITAWAREPROMPT",        
+          "LC_MESSAGES", "DISPLAY", "EDITOR", "COLORTERM",                      
+          "DBUS_SESSION_BUS_ADDRESS"                                            
+      ],                                                                        
 
-      "applications": [],                                             
+      /*                                                                        
+       * Array of application configurations.                                   
+       * Refer to default-application-config.js                                 
+       */                                                                       
 
-  }                                                                   
+      "applications": [],                                                       
+
+  };                                                                            
 
 </pre>
 

@@ -96,32 +96,27 @@ examples above.<br>
 </p>
 
 <p>
-Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>log</b>.<br>
+Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>add</b>, <b>delete</b>, <b>log</b>.<br>
 </p>
 
 <p>
-<u>start</u><br>
+<u>start / restart</u><br>
 <br>
-Start N=<i>instances</i> processes for all selected applications. When processes are<br>
-selected this will start one new process for each selected one instead. May<br>
-cause existing processes to be gracefully stopped when the newly started ones<br>
-are ready, and will even implicitly stop more processes than were started<br>
-when <i>instances</i> was decreased in the configuration. Note that this may replace<br>
-different processes than the selected ones, or none at all, if <i>unique-<br>
-instances</i> is set to <i>false</i>. In which case the oldest ones of that application<br>
-will be replaced if <i>instances</i> was exceeded.<br>
-</p>
-
-<p>
-<u>restart</u><br>
-<br>
-Alias of start.<br>
+Upload configuration (implies <b>add</b>), then start N=<i>instances</i> processes for all<br>
+selected applications. When processes are selected this will start one new<br>
+process for each selected one instead. May cause existing processes to be<br>
+gracefully stopped when the newly started ones are ready, and will even<br>
+implicitly stop more processes than were started when <i>instances</i> was decreased<br>
+in the configuration. Note that this may replace different processes than<br>
+the selected ones, or none at all, if <i>unique-instances</i> is set to <i>false</i>. In<br>
+which case the oldest ones of that application will be replaced if <i>instances</i><br>
+was exceeded.<br>
 </p>
 
 <p>
 <u>stop</u><br>
 <br>
-Gracefully stop all selected <i>running</i>/<i>new</i> processes or applications.<br>
+Gracefully stop all selected <i>running/new</i> processes or applications.<br>
 </p>
 
 <p>
@@ -134,8 +129,8 @@ processes in any <b>generation</b>.<br>
 <p>
 <u>scale</u><br>
 <br>
-Starts or stops processes for each selected application until the number of<br>
-running processes using the latest configuration matches configured<br>
+Upload configuration (implies <b>add</b>), then start or stop processes for each<br>
+selected application until the number of running processes matches configured<br>
 <i>instances</i>.<br>
 <br>
 </p>
@@ -144,6 +139,19 @@ running processes using the latest configuration matches configured<br>
 <u>show</u><br>
 <br>
 Show information about all selected applications / processes.<br>
+</p>
+
+<p>
+<u>add</u><br>
+<br>
+Upload application configurations to the daemon, replacing older instances of<br>
+the same configuration.<br>
+</p>
+
+<p>
+<u>delete</u><br>
+<br>
+Delete application configurations from the daemon.<br>
 </p>
 
 <p>
@@ -250,71 +258,86 @@ line you receive.<br>
 </p>
 
 <p>
-<pre>  // default-config.js                                                
-  const os = require("os");                                           
-  const path = require("path");                                       
-  module.exports = {                                                  
-                                                                      
-      /*                                                              
-       * FinalPM will store state and other information here.         
-       * Relative to process.cwd(), but absolute paths are also       
-       * allowed. All other paths in this configuration file are      
-       * relative to this.                                            
-       */                                                             
-                                                                      
-      "home": path.resolve(os.homedir(), ".final-pm"),                
-                                                                      
-      /*                                                              
-       * Unix domain socket or host:port combination. FinalPM         
-       * will use this socket to communicate with the daemon          
-       * via JSON-RPC 2.0. URLs must start with either "ws+unix://",  
-       * followed by a relative or absolute paths, or with "ws://",   
-       * followed by a host:port combination. If the given            
-       * host is localhost or an unix domain socket was given,        
-       * a new daemon will automatically be launched if the           
-       * connection fails.                                            
-       *                                                              
-       * Examples:                                                    
-       *                                                              
-       *     ws://localhost:3242                &#35; localhost port 3242 
-       *     ws+unix://./final-pm.sock          &#35; Relative to "home"  
-       *     ws+unix:///home/user/final-pm.sock &#35; Absolute path       
-       *     ws+unix://home/user/final-pm.sock  &#35; Absolute path       
-       */                                                             
-                                                                      
-      "socket": "ws+unix://./daemon.sock",                            
-                                                                      
-      /*                                                              
-       * The daemon's stdout and stderr will be redirected here.      
-       */                                                             
-                                                                      
-      "daemon-log": "./daemon.out",                                   
-                                                                      
-      /*                                                              
-       * Where npm stores its global configuration.                   
-       * Used to generate config environment variables                
-       * when running .js configuration files.                        
-       */                                                             
-                                                                      
-      "npm-global-config": "/etc/npmrc",                              
-                                                                      
-      /*                                                              
-       * Where npm stores its per-user configuration.                 
-       * Used to generate config environment variables                
-       * when running .js configuration files.                        
-       */                                                             
-                                                                      
-      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),        
-                                                                      
-      /*                                                              
-       * Array of application configurations.                         
-       * Refer to default-application-config.js                       
-       */                                                             
-                                                                      
-      "applications": [],                                             
-                                                                      
-  }                                                                   
-                                                                      
+<pre>  // default-config.js                                                          
+  const os = require("os");                                                     
+  const path = require("path");                                                 
+  module.exports = {                                                            
+                                                                                
+      /*                                                                        
+       * FinalPM will store state and other information here.                   
+       * Relative to process.cwd(), but absolute paths are also                 
+       * allowed. All other paths in this configuration file are                
+       * relative to this.                                                      
+       */                                                                       
+                                                                                
+      "home": path.resolve(os.homedir(), ".final-pm"),                          
+                                                                                
+      /*                                                                        
+       * Unix domain socket or host:port combination. FinalPM                   
+       * will use this socket to communicate with the daemon                    
+       * via JSON-RPC 2.0. URLs must start with either "ws+unix://",            
+       * followed by a relative or absolute paths, or with "ws://",             
+       * followed by a host:port combination. If the given                      
+       * host is localhost or an unix domain socket was given,                  
+       * a new daemon will automatically be launched if the                     
+       * connection fails.                                                      
+       *                                                                        
+       * Examples:                                                              
+       *                                                                        
+       *     ws://localhost:3242                &#35; localhost port 3242           
+       *     ws+unix://./final-pm.sock          &#35; Relative to "home"            
+       *     ws+unix:///home/user/final-pm.sock &#35; Absolute path                 
+       *     ws+unix://home/user/final-pm.sock  &#35; Absolute path                 
+       */                                                                       
+                                                                                
+      "socket": "ws+unix://./daemon.sock",                                      
+                                                                                
+      /*                                                                        
+       * The daemon's stdout and stderr will be redirected here.                
+       */                                                                       
+                                                                                
+      "daemon-log": "./daemon.out",                                             
+                                                                                
+      /*                                                                        
+       * Where npm stores its global configuration.                             
+       * Used to generate config environment variables                          
+       * when running .js configuration files.                                  
+       */                                                                       
+                                                                                
+      "npm-global-config": "/etc/npmrc",                                        
+                                                                                
+      /*                                                                        
+       * Where npm stores its per-user configuration.                           
+       * Used to generate config environment variables                          
+       * when running .js configuration files.                                  
+       */                                                                       
+                                                                                
+      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),                  
+                                                                                
+      /*                                                                        
+       * A list of environment variables that shouldn't be passed               
+       * to config scripts. Avoids marking a configuration as outdated          
+       * just because some inconsequential environment variable changed.        
+       */                                                                       
+      "ignore-env": [                                                           
+          "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID", 
+          "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",  
+          "SHELL", "SSH_CLIENT", "SSH_TTY", "SSH_CONNECTION", "USER", "LANG",   
+          "LOGNAME", "SHLVL", "MAIL", "HOME", "PS1", "PS2", "PS3", "PS4",       
+          "PROMPT_COMMAND", "XAUTHORITY", "COLORFGBG", "GITAWAREPROMPT",        
+          "LC_MESSAGES", "DISPLAY", "EDITOR", "COLORTERM",                      
+          "DBUS_SESSION_BUS_ADDRESS"                                            
+      ],                                                                        
+                                                                                
+      /*                                                                        
+       * Array of application configurations.                                   
+       * Refer to default-application-config.js                                 
+       */                                                                       
+                                                                                
+      "applications": [],                                                       
+                                                                                
+  };                                                                            
+                                                                                
 </pre></p>
 
 <p>
