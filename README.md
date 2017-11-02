@@ -45,7 +45,8 @@ Comparison Between Process Managers
    variable or a program argument. PM2 tends to have different names for the same configuration keys across environment variables
    and configuration files, and some closely related keys are even spread out across multiple places.
 6. We don't believe any of these belong directly in a process manager, but FinalPM won't stand in your way of
-   adding such things to your application.
+   adding such things to your application. Due to only focusing on the basics, FinalPM's codebase is smaller
+   by an order of magnitude.
 
 Design Philosophy
 -----------------
