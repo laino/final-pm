@@ -1,7 +1,7 @@
 FinalPM
 =======
 
-Finally a solid process manager. Never unintenionally kill your application in production again.
+Finally a solid process manager. Never unintentionally kill your application in production again.
 
 Getting started
 --------------------
@@ -39,7 +39,7 @@ Comparison Between Process Managers
 3. In many cases PM2 will naively perform dangerous actions which may result in downtime.
 4. FinalPM is very strict in what it will accept, aborting with helpful error messages if anything with your configuration or
    command looks fishy. FinalPM will never try to *assume* anything about what you meant to do, and not default to any 
-   potentially harmful action. We believe not accidentially killing your production application is preferable to easy of use.
+   potentially harmful action. We believe not accidentally killing your production application is preferable to ease of use.
 5. FinalPM treats all configuration keys the same. Each key can be provided by either a configuration file, an environment
    variable or a program argument. PM2 tends to have different names for the same configuration keys across environment variables
    and configuration files, and some closely related keys are even spread out across multiple places.
