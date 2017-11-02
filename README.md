@@ -1,7 +1,7 @@
 FinalPM
 =======
 
-Finally a solid process manager that just works.
+Finally a solid process manager. Never unintenionally kill your application in production again.
 
 Getting started
 --------------------
@@ -17,8 +17,34 @@ Why?
 
 The current state of node.js process managers is terrible. Besides most of them
 trying to be 20 things at once, and not even being decent at any of them, 
-there is hardly one being half as reliable or complete in important features
-as you'd expect of a core component.
+there is hardly one being half as reliable as you'd expect of a core component.
+
+Comparison Between Process Managers
+-------------------------------------------
+
+| Feature | FinalPM | PM2 |
+| --- | --- | --- |
+| Basic Process Management (start / stop / kill) | __Yes__ | __Yes__ |
+| Graceful Restarts | __Yes__ | __Possibly__ (1)
+| FSM-Style Process Lifecycles | __Yes__ | __No__ (2) |
+| Safe by Design | __Yes__ | __No__ (3) |
+| Helpful and Early Errors | __Always__ (4) | __Sometimes__ |
+| Clean Configuration | __Yes__ | __No__ (5) |
+| Metrics and a boatload of other features | __No__ | __Yes__ (6) |
+
+1. PM2 may default to ungracefully restarting applications if some conditions are not met, even if graceful restarts were
+   configured and intended. Read the note on PM2 at the bottom for more information.
+2. PM2 handles process state transitions by means of imperative, callback based code, making it hard to reason about
+   the effects of multiple concurrent actions.
+3. In many cases PM2 will naively perform dangerous actions which may result in downtime.
+4. FinalPM is very strict in what it will accept, aborting with helpful error messages if anything with your configuration or
+   command looks fishy. FinalPM will never try to *assume* anything about what you meant to do, and not default to any 
+   potentially harmful action. We believe not accidentially killing your production application is preferable to easy of use.
+5. FinalPM treats all configuration keys the same. Each key can be provided by either a configuration file, an environment
+   variable or a program argument. PM2 tends to have different names for the same configuration keys across environment variables
+   and configuration files, and some closely related keys are even spread out across multiple places.
+6. We don't believe any of these belong directly in a process manager, but FinalPM won't stand in your way of
+   adding such things to your application.
 
 Design Philosophy
 -----------------
