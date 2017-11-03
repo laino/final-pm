@@ -9,7 +9,9 @@
   "private": false,
   "scripts": {
     "start": "./bin/cli",
-    "build-doc": "./doc/build.js"
+    "build-doc": "./doc/build.js",
+    "lint": "./node_modules/.bin/eslint .",
+    "autofix": "./node_modules/.bin/eslint --fix ."
   },
   "bin": {
     "final-pm": "./bin/cli"
@@ -31,6 +33,7 @@
   },
   "devDependencies": {
     "ansi-to-html": "",
-    "to-markdown": ""
+    "to-markdown": "",
+    "eslint": ""
   }
 }
