@@ -3,5 +3,5 @@ setTimeout(() => {
 }, Math.floor(Math.random() * 2000));
 // Sometimes we are ready before crash...
 setTimeout(() => {
-    process.send('ready'); 
+    process.send('ready');
 }, Math.floor(Math.random() * 2000));

@@ -1,27 +1,27 @@
-// sample-config.js 
+// sample-config.js
 module.exports = {
     'applications': [{
-        'name': 'app',                      
+        'name': 'app',
         'ready-on': 'message',
-        'run': './sample-app.js', 
+        'run': './sample-app.js',
     }, {
-        'name': 'crashingApp',                      
+        'name': 'crashingApp',
         'ready-on': 'message',
-        'run': './crashing-app.js', 
+        'run': './crashing-app.js',
     }, {
-        'name': 'neverStarts',                      
+        'name': 'neverStarts',
         'ready-on': 'message',
         'start-timeout': 3000,
-        'run': './never-starting-app.js', 
+        'run': './never-starting-app.js',
     }, {
-        'name': 'neverStops',                      
+        'name': 'neverStops',
         'ready-on': 'message',
         'stop-timeout': 3000,
-        'run': './never-stopping-app.js', 
+        'run': './never-stopping-app.js',
     }, {
-        'name': 'zombie',                      
+        'name': 'zombie',
         'ready-on': 'message',
-        'run': './zombie.js', 
+        'run': './zombie.js',
         'kill-signal': 'SIGTERM',
         'start-timeout': 500 // immediately become a zombie
     }]
