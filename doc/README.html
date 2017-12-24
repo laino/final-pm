@@ -68,6 +68,7 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
   -v, --verbose              Show debug output.                                                            
+  --dry                      Don't actually do anything, use --verbose for more output.                    
 
 </pre></p>
 
@@ -138,7 +139,8 @@ selected application until the number of running processes matches configured<br
 <p>
 <u>show</u><br>
 <br>
-Show information about all selected applications / processes.<br>
+Show information about all selected applications / processes. To also show<br>
+logging processes, use <b>--verbose</b>.<br>
 </p>
 
 <p>
@@ -249,7 +251,8 @@ final-pm, but creating your own logger is as simple as creating a new<br>
 application 'my-logger' which listens to process.on(...) and setting <i>logger</i><br>
 to 'my-logger' in your main application. Each logger is fed back its own<br>
 output, so make sure you don't accidentally call <i>console.log</i> for each log<br>
-line you receive.<br>
+line you receive. In case your logger crashed, you can check its output with<br>
+`final-pm log <i>logger</i>` or check the daemon log file.<br>
 </p>
 
 <p>
@@ -319,6 +322,7 @@ line you receive.<br>
        * to config scripts. Avoids marking a configuration as outdated          
        * just because some inconsequential environment variable changed.        
        */                                                                       
+                                                                                
       "ignore-env": [                                                           
           "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID", 
           "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",  
@@ -357,11 +361,18 @@ line you receive.<br>
       'name': 'default',                                                    
                                                                             
       /*                                                                    
+       * Whether this is an 'application' or a 'logger'.                    
+       */                                                                   
+                                                                            
+      'type': 'application',                                                
+                                                                            
+      /*                                                                    
        * Defaults to configuration file directory if 'null'.                
        * Other paths are relative to this.                                  
        */                                                                   
                                                                             
       'base-path': null,                                                    
+                                                                            
       /*                                                                    
        * Working directory for this application.                            
        * Relative to base-path.                                             
@@ -423,6 +434,7 @@ line you receive.<br>
        */                                                                   
                                                                             
       'ready-on': 'listen',                                                 
+                                                                            
       /*                                                                    
        * Defines how FinalPM should ask a process to stop gracefully.       
        *                                                                    
@@ -434,6 +446,7 @@ line you receive.<br>
        */                                                                   
                                                                             
       'stop-signal': 'SIGINT',                                              
+                                                                            
       /*                                                                    
        * Defines how FinalPM should kill a process.                         
        *                                                                    
@@ -582,23 +595,23 @@ line you receive.<br>
 </p>
 
 <p>
-<pre>  // sample-app.js                                                         
-  const cluster = require('cluster');                                      
-  const server = require('http').createServer((req, res) => {              
-      res.end(process.argv.join(' ')); // Reply with process arguments     
-  }).listen(3334, (error) => {                                             
-      if (error) {                                                         
-          throw error;                                                     
-      }                                                                    
-      console.log("Process started, telling master we are ready...");      
-      process.send('ready');                                               
-  });                                                                      
-  process.on('SIGINT', () => {                                             
-      console.log("SIGINT received. Performing clean shutdown...");        
-      // Implicitly calls server.close, then disconnects the IPC channel:  
-      cluster.worker.disconnect();                                         
-  });                                                                      
-                                                                           
+<pre>  // sample-app.js                                                        
+  const cluster = require('cluster');                                     
+  require('http').createServer((req, res) => {                            
+      res.end(process.argv.join(' ')); // Reply with process arguments    
+  }).listen(3334, (error) => {                                            
+      if (error) {                                                        
+          throw error;                                                    
+      }                                                                   
+      console.log("Process started, telling master we are ready...");     
+      process.send('ready');                                              
+  });                                                                     
+  process.on('SIGINT', () => {                                            
+      console.log("SIGINT received. Performing clean shutdown...");       
+      // Implicitly calls server.close, then disconnects the IPC channel: 
+      cluster.worker.disconnect();                                        
+  });                                                                     
+                                                                          
 </pre></p>
 
 <p>

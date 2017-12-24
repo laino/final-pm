@@ -53,6 +53,7 @@ __Examples__
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
   -v, --verbose              Show debug output.                                                            
+  --dry                      Don't actually do anything, use --verbose for more output.                    
 
 </pre>
 
@@ -101,7 +102,8 @@ _instances_.
 
 __show__  
 
-Show information about all selected applications / processes.  
+Show information about all selected applications / processes. To also show  
+logging processes, use **--verbose**.  
 
 __add__  
 
@@ -184,7 +186,8 @@ final-pm, but creating your own logger is as simple as creating a new
 application 'my-logger' which listens to process.on(...) and setting _logger_  
 to 'my-logger' in your main application. Each logger is fed back its own  
 output, so make sure you don't accidentally call _console.log_ for each log  
-line you receive.  
+line you receive. In case your logger crashed, you can check its output with  
+`final-pm log _logger_` or check the daemon log file.  
 
 __Default Config__  
 
@@ -249,6 +252,7 @@ __Default Config__
        * to config scripts. Avoids marking a configuration as outdated          
        * just because some inconsequential environment variable changed.        
        */                                                                       
+
       "ignore-env": [                                                           
           "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID", 
           "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",  
@@ -283,11 +287,18 @@ __Default Application Config__
       'name': 'default',                                                    
 
       /*                                                                    
+       * Whether this is an 'application' or a 'logger'.                    
+       */                                                                   
+
+      'type': 'application',                                                
+
+      /*                                                                    
        * Defaults to configuration file directory if 'null'.                
        * Other paths are relative to this.                                  
        */                                                                   
 
       'base-path': null,                                                    
+
       /*                                                                    
        * Working directory for this application.                            
        * Relative to base-path.                                             
@@ -349,6 +360,7 @@ __Default Application Config__
        */                                                                   
 
       'ready-on': 'listen',                                                 
+
       /*                                                                    
        * Defines how FinalPM should ask a process to stop gracefully.       
        *                                                                    
@@ -360,6 +372,7 @@ __Default Application Config__
        */                                                                   
 
       'stop-signal': 'SIGINT',                                              
+
       /*                                                                    
        * Defines how FinalPM should kill a process.                         
        *                                                                    
@@ -497,21 +510,21 @@ _final-pm --config sample-config.js start myApp_
 
 __Example App__  
 
-<pre>  // sample-app.js                                                         
-  const cluster = require('cluster');                                      
-  const server = require('http').createServer((req, res) => {              
-      res.end(process.argv.join(' ')); // Reply with process arguments     
-  }).listen(3334, (error) => {                                             
-      if (error) {                                                         
-          throw error;                                                     
-      }                                                                    
-      console.log("Process started, telling master we are ready...");      
-      process.send('ready');                                               
-  });                                                                      
-  process.on('SIGINT', () => {                                             
-      console.log("SIGINT received. Performing clean shutdown...");        
-      // Implicitly calls server.close, then disconnects the IPC channel:  
-      cluster.worker.disconnect();                                         
-  });                                                                      
+<pre>  // sample-app.js                                                        
+  const cluster = require('cluster');                                     
+  require('http').createServer((req, res) => {                            
+      res.end(process.argv.join(' ')); // Reply with process arguments    
+  }).listen(3334, (error) => {                                            
+      if (error) {                                                        
+          throw error;                                                    
+      }                                                                   
+      console.log("Process started, telling master we are ready...");     
+      process.send('ready');                                              
+  });                                                                     
+  process.on('SIGINT', () => {                                            
+      console.log("SIGINT received. Performing clean shutdown...");       
+      // Implicitly calls server.close, then disconnects the IPC channel: 
+      cluster.worker.disconnect();                                        
+  });                                                                     
 
 </pre>

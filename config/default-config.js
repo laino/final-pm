@@ -23,7 +23,7 @@ module.exports = {
      * connection fails.
      *
      * Examples:
-     * 
+     *
      *     ws://localhost:3242                # localhost port 3242
      *     ws+unix://./final-pm.sock          # Relative to "home"
      *     ws+unix:///home/user/final-pm.sock # Absolute path
@@ -39,7 +39,7 @@ module.exports = {
     "daemon-log": "./daemon.out",
 
     /*
-     * Where npm stores its global configuration. 
+     * Where npm stores its global configuration.
      * Used to generate config environment variables
      * when running .js configuration files.
      */
@@ -47,7 +47,7 @@ module.exports = {
     "npm-global-config": "/etc/npmrc",
 
     /*
-     * Where npm stores its per-user configuration. 
+     * Where npm stores its per-user configuration.
      * Used to generate config environment variables
      * when running .js configuration files.
      */
@@ -59,7 +59,7 @@ module.exports = {
      * to config scripts. Avoids marking a configuration as outdated
      * just because some inconsequential environment variable changed.
      */
-    
+
     "ignore-env": [
         "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID",
         "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",

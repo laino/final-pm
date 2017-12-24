@@ -32,6 +32,9 @@
         ],
         "no-prototype-builtins": [
             "warn"
+        ],
+        "no-trailing-spaces": [
+            "warn"
         ]
     }
 }

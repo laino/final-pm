@@ -10,30 +10,30 @@
   "scripts": {
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
-    "lint": "./node_modules/.bin/eslint .",
-    "autofix": "./node_modules/.bin/eslint --fix ."
+    "lint": "./node_modules/.bin/eslint . bin/*",
+    "autofix": "./node_modules/.bin/eslint --fix . bin/*"
   },
   "bin": {
     "final-pm": "./bin/cli"
   },
   "dependencies": {
-    "async": "",
-    "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
-    "humanize-duration": "",
-    "command-line-usage": "",
-    "read-package-config": "",
-    "noice-json-rpc": "",
-    "ansi-escape-sequences": "",
-    "strip-ansi": "",
-    "ws": "",
+    "final-rpc": "",
     "joi": "",
+    "async": "",
+    "marked": "^0.3.6",
     "mkdirp": "",
+    "ansi-escape-sequences": "laino/ansi-escape-sequences",
+    "command-line-args": "joeferner/command-line-args#disable-greedy-multiple",
+    "command-line-usage": "",
     "deep-equal": "",
+    "humanize-duration": "",
+    "read-package-config": "",
+    "strip-ansi": "",
     "table": ""
   },
   "devDependencies": {
     "ansi-to-html": "",
-    "to-markdown": "",
-    "eslint": ""
+    "eslint": "",
+    "to-markdown": ""
   }
 }

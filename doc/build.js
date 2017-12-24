@@ -30,9 +30,9 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.all))
         if (lineIsEmpty && !lineIsBlock) {
             line = '</p>\n\n<p>';
         }
-        
+
         if (!lineIsBlock && !lineIsEmpty) {
-            line = line.trim() + '<br>'; 
+            line = line.trim() + '<br>';
             if (length < 70 && line.startsWith('<')) {
                 line = line + '\n<br>';
             }
@@ -59,7 +59,7 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.all))
     }).join('') + '</p>';
 
 const html = `<html><body style="margin: 2em; font-size: 15px">${htmlBody}</body></html>`;
-const markdown = toMarkdown(htmlBody, { 
+const markdown = toMarkdown(htmlBody, {
     converters: [{
         filter: 'u',
         replacement: function(content) {

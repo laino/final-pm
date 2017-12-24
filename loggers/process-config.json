@@ -1,0 +1,9 @@
+{
+    "applications": [{
+        "type": "logger",
+        "name": "file-logger",
+        "ready-on": "message",
+        "run": "file.js",
+        "builtin": true
+    }]
+}

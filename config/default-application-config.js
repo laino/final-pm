@@ -9,13 +9,19 @@ module.exports = {
     'name': 'default',
 
     /*
+     * Whether this is an 'application' or a 'logger'.
+     */
+
+    'type': 'application',
+
+    /*
      * Defaults to configuration file directory if 'null'.
      * Other paths are relative to this.
      */
 
     'base-path': null,
-    
-    /* 
+
+    /*
      * Working directory for this application.
      * Relative to base-path.
      */
@@ -38,20 +44,20 @@ module.exports = {
     /*
      * Array of arguments to pass to node.js when
      * starting a new process of this application.
-     * 
+     *
      * Example: ['--harmony']
      */
 
     'node-args': [],
 
     /*
-     * Environment variables to pass to the application. 
+     * Environment variables to pass to the application.
      *
      * By default this contains environment variables with
      * which the config was parsed.
      *
      * Since configuration is parsed with the appropriate
-     * npm_package_config_* environment variables of the 
+     * npm_package_config_* environment variables of the
      * node package the configuration file resides in,
      * there is no need for weird hacks such as running
      * final-pm through npm.
@@ -76,7 +82,7 @@ module.exports = {
      */
 
     'ready-on': 'listen',
-    
+
     /*
      * Defines how FinalPM should ask a process to stop gracefully.
      *
@@ -88,7 +94,7 @@ module.exports = {
      */
 
     'stop-signal': 'SIGINT',
-    
+
     /*
      * Defines how FinalPM should kill a process.
      *
@@ -114,7 +120,7 @@ module.exports = {
      * Whether FinalPM should consider each process
      * of this application to be functionally identical.
      *
-     * 'false': FinalPM will assume instances of this 
+     * 'false': FinalPM will assume instances of this
      *          application are fundamentally the same,
      *          and always replace the oldest processes currently
      *          in the running generation when deciding which
@@ -132,7 +138,7 @@ module.exports = {
     'unique-instances': true,
 
     /*
-     * When true, a new process will be started whenever a 
+     * When true, a new process will be started whenever a
      * running one of this application exited abnormally.
      */
 
@@ -155,7 +161,7 @@ module.exports = {
      * Logger application to use.
      *
      * 'file-logger' is a simple logger shipping with FinalPM.
-     * 
+     *
      * Refer to final-pm --help-all for how to implement your own logger.
      */
 
@@ -167,7 +173,7 @@ module.exports = {
 
     'logger-args': ['log.txt'],
 
-    /* 
+    /*
      * How many past log bytes to buffer in RAM. Mainly used
      * to show past log lines when using 'final-pm log', but
      * also when a logger isn't yet ready (or crashed and
@@ -191,7 +197,7 @@ module.exports = {
 
     /*
      * How much time in milliseconds a process has to become ready.
-     * 
+     *
      * If a timeout occurs the process is terminated with SIGKILL
      * and assumed to have crashed.
      *

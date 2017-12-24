@@ -6,19 +6,19 @@ finalPM.registerProcessHandlers();
 const instance = new finalPM.daemon();
 
 process.on('SIGTERM', () => {
-    instance.kill();
+    instance.killDaemon();
 });
 
 process.on('SIGINT', () => {
-    instance.kill();
+    instance.killDaemon();
 });
 
 instance.on('kill', () => {
-    console.log("Daemon stopping.");
+    console.log("Daemon stopping."); // eslint-disable-line no-console
 });
 
 process.on('uncaughtException', function(error) {
-    console.error(error.stack);
+    console.error(error.stack); // eslint-disable-line no-console
     instance.close();
     process.exit(1);
 });
@@ -28,6 +28,6 @@ run();
 async function run() {
     await instance.listen(process.argv[2]);
 
-    console.log("Daemon running.");
+    console.log("Daemon running."); // eslint-disable-line no-console
     process.send('ready');
 }

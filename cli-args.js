@@ -5,14 +5,14 @@ const path = require('path');
 exports.knownActions = ['start', 'restart', 'stop', 'scale', 'kill', 'show', 'log', 'add', 'delete'];
 
 exports.options = [
-    { 
+    {
         name: 'actionSelect',
         value: String,
         defaultOption: true,
         multiple: true,
         defaultValue: []
     },
-    { 
+    {
         name: 'config',
         alias: 'c',
         typeLabel: '[underline]{File|Folder}',
@@ -24,7 +24,7 @@ exports.options = [
         multiple: true,
         defaultValue: []
     },
-    { 
+    {
         name: 'set',
         typeLabel: '[underline]{app}-[underline]{key}=[underline]{value}',
         type: String,
@@ -32,7 +32,7 @@ exports.options = [
         multiple: true,
         defaultValue: []
     },
-    { 
+    {
         name: 'lines',
         alias: 'n',
         typeLabel: '[underline]{num}',
@@ -41,28 +41,28 @@ exports.options = [
                      "Up to [bold]{max-buffered-log-bytes} (see --help-configuration).",
         defaultValue: 10
     },
-    { 
+    {
         name: 'follow',
         alias: 'f',
         type: Boolean,
         description: "When using the [bold]{log} action, will output new log lines continously as they appear.",
         defaultValue: false
     },
-    { 
+    {
         name: 'launch',
         type: Boolean,
         description: "Start the daemon even if there's nothing to do.",
         defaultValue: false
     },
-    { 
+    {
         name: 'kill',
         type: Boolean,
-        description: "Stop the daemon, ungracefully killing any remaining processes. " + 
+        description: "Stop the daemon, ungracefully killing any remaining processes. " +
                      "This is done after all other commands have been sent to the daemon.\n" +
                      "Use [italic]{'final-pm --wait --kill stop all'} to achieve a graceful stop.",
         defaultValue: false
     },
-    { 
+    {
         name: 'wait',
         type: Boolean,
         description: "Wait for any pending actions to complete. This means final-pm will only return once " +
@@ -75,16 +75,16 @@ exports.options = [
         description: "Make final-pm ignore some safeguards. (I hope you know what you're doing)",
         defaultValue: false
     },
-    { 
+    {
         name: 'no-upload',
         type: Boolean,
         description: "Don't upload new application configurations from config files.",
         defaultValue: false
     },
-    { 
+    {
         name: 'help',
         type: Boolean,
-        description: "Print short usage guide.", 
+        description: "Print short usage guide.",
         defaultValue: false
     },
     {
@@ -93,35 +93,41 @@ exports.options = [
         description: "Print slightly more verbose usage guide.",
         defaultValue: false
     },
-    { 
+    {
         name: 'help-generations',
         type: Boolean,
         description: "Print help page about [bold]{generations}.",
         defaultValue: false
     },
-    { 
+    {
         name: 'help-example',
         type: Boolean,
         description: "Print a short example application.",
         defaultValue: false
     },
-    { 
+    {
         name: 'help-configuration',
         type: Boolean,
         description: "Print full configuration help.",
         defaultValue: false
     },
-    { 
+    {
         name: 'help-all',
         type: Boolean,
         description: "Print full help page.",
         defaultValue: false
     },
-    { 
+    {
         name: 'verbose',
         alias: 'v',
         type: Boolean,
         description: "Show debug output.",
+        defaultValue: false
+    },
+    {
+        name: 'dry',
+        type: Boolean,
+        description: "Don't actually do anything, use [italic]{--verbose} for more output.",
         defaultValue: false
     },
 ];
@@ -154,7 +160,7 @@ exports.usage = [
             "final-pm start all",
             "",
             "# Override configuration settings and start 4 instances of 'worker'",
-            "final-pm --set worker:instances=4 start worker",   
+            "final-pm --set worker:instances=4 start worker",
             "",
             "# Stop processes by PID",
             "final-pm stop pid=43342 pid=3452",
@@ -185,11 +191,11 @@ exports.usage = [
             "",
             "[bold]{Actions}",
             "",
-            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, " + 
+            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, " +
             "[bold]{add}, [bold]{delete}, [bold]{log}.",
             "",
             "[underline]{start / restart}",
-            "Upload configuration (implies [bold]{add}), then start N=[italic]{instances} processes for all selected applications. " + 
+            "Upload configuration (implies [bold]{add}), then start N=[italic]{instances} processes for all selected applications. " +
             "When processes are selected this will start one new process for each selected one instead. " +
             "May cause existing processes to be gracefully stopped when the newly started ones are ready, and " +
             "will even implicitly stop more processes than were started when [italic]{instances} was decreased " +
@@ -208,7 +214,7 @@ exports.usage = [
             "until the number of running processes matches configured [italic]{instances}.",
             "",
             "[underline]{show}",
-            "Show information about all selected applications / processes.",
+            "Show information about all selected applications / processes. To also show logging processes, use [bold]{--verbose}.",
             "",
             "[underline]{add}",
             "Upload application configurations to the daemon, replacing older instances of the same configuration.",
@@ -221,7 +227,7 @@ exports.usage = [
         ]
     }
 ]);
-    
+
 exports.generations = [
     {
         header: "Generations",
@@ -292,7 +298,7 @@ exports.configuration = [
         content: [
             "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
             "On the command line configuration keys may be overriden with [bold]{--set} [italic]{key}=[italic]{value}, where " +
-            "[italic]{key} may be any configuration key. To override keys within an appliaction config, prefix [italic]{key} with " + 
+            "[italic]{key} may be any configuration key. To override keys within an appliaction config, prefix [italic]{key} with " +
             "'[italic]{application-name}:' like so: --set myApp:ready-on=\"message\"",
             "",
             "Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in [italic]{key} " +
@@ -305,7 +311,8 @@ exports.configuration = [
             "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
             "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
             "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
-            "Each logger is fed back its own output, so make sure you don't accidentally call [italic]{console.log} for each log line you receive. "
+            "Each logger is fed back its own output, so make sure you don't accidentally call [italic]{console.log} for each log line you receive. " +
+            "In case your logger crashed, you can check its output with `final-pm log [italic]{logger}` or check the daemon log file."
         ]
     },
     {

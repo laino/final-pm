@@ -25,15 +25,16 @@ Comparison Between Process Managers
 | Feature | FinalPM | PM2 |
 | --- | --- | --- |
 | Basic Process Management (start / stop / kill) | __Yes__ | __Yes__ |
-| Graceful Restarts | __Yes__ | __Possibly__ (1)
+| Graceful Starts/Restarts/Stops | __Yes__ | __Possibly__ (1)
 | FSM-Style Process Lifecycles | __Yes__ | __No__ (2) |
 | Safe by Design | __Yes__ | __No__ (3) |
 | Helpful and Early Errors | __Always__ (4) | __Sometimes__ |
 | Clean Configuration | __Yes__ | __No__ (5) |
 | Metrics and a boatload of other features | __No__ | __Yes__ (6) |
 
-1. PM2 may default to ungracefully restarting applications if some conditions are not met, even if graceful restarts were
-   configured and intended. Read the note on PM2 at the bottom for more information.
+1. PM2 may default to ungracefully restarting/stopping applications if some conditions are not met, for instance:
+   your application isn't considered online yet, you want to use the ``ready`` message, or you're using
+   the ``fork`` mode. FinalPM on the other hand will always complete a clean lifecycle for each started process.
 2. PM2 handles process state transitions by means of imperative, callback based code, making it hard to reason about
    the effects of multiple concurrent actions. FinalPM separates command/signal handlers for each process state
    and models state transition in an atomic fashion, thus eliminating edge cases.
@@ -102,8 +103,9 @@ exec_mode        || (NONE)                          # 'fork' or 'cluster'.
 ```
 1: [Comment](https://github.com/Unitech/pm2/commit/a53fd17a7015cf77dd9a04a01300c60a98c0fc08#commitcomment-24954769)
 
+Graceful restarts in 'fork' mode are nearly impossible with node's default APIs. PM2 only fails to communicate this anywhere by - for instance - rejecting such configuration and failing with an error early.
+Graceful restarts and ``wait_ready`` just don't work together in PM2 pretty much *because*.
+
 Don't trust a process manager that can't get basic stuff like that right, will send you down a goose
 chase with a completely wrong error message and a lack of documentation, then will reveal to you
 that no, you can't have graceful reloads with process.send('ready') actually.
-
-
