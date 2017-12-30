@@ -13,8 +13,8 @@ process.on('message', (message) => {
         return;
     }
 
-    ws.write(`[${date.toISOString()}] [${app}/${message.processNumber} ` +
-             `${process.pid}] [${message.type.toUpperCase()}]: ${message.text}\n`);
+    ws.write(`[${date.toISOString()}] [${app}/${message.process.number} ` +
+             `${message.process.pid}] [${message.type.toUpperCase()}]: ${message.text}\n`);
 });
 
 process.on('SIGINT', () => {
