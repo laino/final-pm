@@ -24,7 +24,7 @@ async function run() {
         lookupPaths.push('.');
     }
 
-    finalPM.config.on("warn", (...args) => {
+    finalPM.config.on('warn', (...args) => {
         cli.warn("Configuration", ...args);
     });
 
@@ -75,6 +75,14 @@ async function runWithConfig(config) {
         throw error;
     }
 
+    client.on('publish', (type, data) => {
+        if (!type.startsWith('log-')) {
+            return;
+        }
+
+        cli.appLog(data);
+    });
+
     if (args.action) {
         cliAction = cli.ACTIONS[args.action];
         upload = config.applications.length > 0 && !args['no-upload'] && cliAction.upload;
@@ -101,7 +109,11 @@ async function runWithConfig(config) {
     }
 
     if (cliAction) {
-        actions = cliAction(info, args) || [];
+        actions = cliAction(info, args, client) || [];
+
+        if (typeof actions.then === 'function') {
+            actions = await actions;
+        }
     }
 
     if (args.wait) {
@@ -135,7 +147,12 @@ async function runWithConfig(config) {
         }
     }
 
-    close();
+    if (args.action === 'log' && args.follow) {
+        cli.debug("Connection", "Keeping connection open until CTRL-C");
+        process.on('SIGINT', close);
+    } else {
+        close();
+    }
 
     function close() {
         cli.debug("Connection", "Closing Connection");

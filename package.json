@@ -29,7 +29,8 @@
     "humanize-duration": "",
     "read-package-config": "",
     "strip-ansi": "",
-    "table": ""
+    "table": "",
+    "stable": ""
   },
   "devDependencies": {
     "ansi-to-html": "",
