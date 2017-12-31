@@ -149,7 +149,7 @@ async function runWithConfig(config) {
 
     if (args.action === 'log' && args.follow) {
         cli.debug("Connection", "Keeping connection open until CTRL-C");
-        process.on('SIGINT', close);
+        process.once('SIGINT', close);
     } else {
         close();
     }
