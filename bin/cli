@@ -24,6 +24,10 @@ async function run() {
         lookupPaths.push('.');
     }
 
+    finalPM.config.on("warn", (...args) => {
+        cli.warn("Configuration", ...args);
+    });
+
     const paths = await Promise.all(lookupPaths.map(finalPM.config.resolveConfig));
 
     if (paths.includes(null) && args.config.length) {
