@@ -37,7 +37,7 @@ __Examples__
   -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
                              to max-buffered-log-bytes (see --help-configuration).                         
   -f, --follow               When using the log action, will output new log lines continously as they      
-                             appear.                                                                       
+                             appear. Cancel with CTRL-C.                                                   
   --launch                   Start the daemon even if there's nothing to do.                               
   --kill                     Stop the daemon, ungracefully killing any remaining processes. This is done   
                              after all other commands have been sent to the daemon.                        
@@ -46,14 +46,14 @@ __Examples__
                              return once the new, old and marked generations are empty.                    
   --force                    Make final-pm ignore some safeguards. (I hope you know what you're doing)     
   --no-upload                Don't upload new application configurations from config files.                
+  --dry                      Don't actually do anything, use --verbose for more output.                    
+  -v, --verbose              Show debug output.                                                            
   --help                     Print short usage guide.                                                      
-  --help-usage               Print slightly more verbose usage guide.                                      
+  --help-usage               Print full usage guide including actions.                                     
   --help-generations         Print help page about generations.                                            
   --help-example             Print a short example application.                                            
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
-  -v, --verbose              Show debug output.                                                            
-  --dry                      Don't actually do anything, use --verbose for more output.                    
 
 </pre>
 
@@ -184,10 +184,9 @@ your application, and is stopped once the last process of your application
 exits. By default all applications use the simple file-logger that ships with  
 final-pm, but creating your own logger is as simple as creating a new  
 application 'my-logger' which listens to process.on(...) and setting _logger_  
-to 'my-logger' in your main application. Each logger is fed back its own  
-output, so make sure you don't accidentally call _console.log_ for each log  
-line you receive. In case your logger crashed, you can check its output with  
-`final-pm log _logger_` or check the daemon log file.  
+to 'my-logger' in your main application. All output of logger processes will  
+end up in the daemon log file (_daemon-log_). In case your logger crashed, you  
+can check its output with `final-pm log _logger_` or check the daemon log file.  
 
 __Default Config__  
 
@@ -460,7 +459,14 @@ __Default Application Config__
        * This value is per-application.                                     
        */                                                                   
 
-      'max-buffered-log-bytes': 1000000,                                    
+      'max-buffered-log-bytes': 1024 * 1024,                                
+
+      /*                                                                    
+       * Buffer at most this many bytes per log line, before                
+       * truncating any additional characters.                              
+       */                                                                   
+
+      'max-log-line-length': 1024 * 5,                                      
 
       /*                                                                    
        * How much time in milliseconds a process has to terminate           

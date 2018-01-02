@@ -1,0 +1,18 @@
+{
+  "plugins": [
+    "mocha"
+  ],
+  "globals": {
+    "it": true,
+    "should": true,
+    "describe": true
+  },
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": "should|expect"
+      }
+    ]
+  }
+}

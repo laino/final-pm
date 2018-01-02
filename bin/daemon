@@ -29,6 +29,7 @@ process.on('uncaughtException', function(error) {
 run();
 
 async function run() {
+    await instance.loadBuiltins();
     await instance.listen(process.argv[2]);
 
     log("Daemon", "Daemon running.");

@@ -11,6 +11,7 @@
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
     "lint": "./node_modules/.bin/eslint . bin/*",
+    "test": "./node_modules/.bin/mocha . test/tests",
     "autofix": "./node_modules/.bin/eslint --fix . bin/*"
   },
   "bin": {
@@ -35,6 +36,9 @@
   "devDependencies": {
     "ansi-to-html": "",
     "eslint": "",
-    "to-markdown": ""
+    "eslint-plugin-mocha": "",
+    "to-markdown": "",
+    "mocha": "",
+    "tmp": ""
   }
 }
