@@ -116,6 +116,7 @@ exports.tmp = () => {
 };
 
 exports.exists = util.promisify(fs.exists);
+exports.readFile = util.promisify(fs.readFile);
 
 afterEach(async function() { //eslint-disable-line no-undef
     let hadDaemon = false;
@@ -138,13 +139,14 @@ afterEach(async function() { //eslint-disable-line no-undef
             const logfile = path.resolve(dir, 'log.txt');
 
             if (await exports.exists(logfile)) {
-                console.log("Application log file for previously failed test (log.txt):");
-                console.log(await exports.readFile(logfile).toString() + '\n\n');
+                console.log(`--- Application log file (${logfile}) ---`);
+                const contents = (await exports.readFile(logfile)).toString();
+                console.log((contents.trim().length ? contents : '***empty***') + '\n');
             }
         }
 
         if (output.length) {
-            console.log("Daemon output:");
+            console.log("--- Daemon output ---");
 
             output.forEach((args) => console.log(args.join(' | ')));
 
@@ -152,7 +154,7 @@ afterEach(async function() { //eslint-disable-line no-undef
         }
 
         if (processes.length) {
-            console.log("Remaining daemon processes: ");
+            console.log("--- Remaining processes ---");
 
             processes.forEach((proc) => {
                 console.log(`${proc['app-name']}/${proc.number} ${proc.generation} ` +
