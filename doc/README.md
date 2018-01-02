@@ -6,7 +6,8 @@ By default all actions are **graceful**. Old processes will always be cleanly st
 
 __Examples__  
 
-<pre>  # Start processes of all configured applications.                                                                                        
+```
+  # Start processes of all configured applications.                                                                                        
   final-pm start all                                                                                                                       
 
   # Override configuration settings and start 4 instances of 'worker'                                                                      
@@ -21,11 +22,11 @@ __Examples__
   # Stop the first and second currently running worker                                                                                     
   final-pm stop running:worker/0 running:worker/1                                                                                          
 
-</pre>
-
+```
 ### Options  
 
-<pre>  # final-pm [--config File|Folder] [Action Select...] 
+```
+  # final-pm [--config File|Folder] [Action Select...] 
 
   -c, --config File|Folder   Default: process-config.{js,json}                                             
                              Load a configuration file. If the path doesn't begin with ./ or /, also       
@@ -54,7 +55,7 @@ __Examples__
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
 
-</pre>
+```
 
 **Selectors**  
 
@@ -132,7 +133,8 @@ Logging is done by a logging process started for each application, which will be
 
 __Default Config__  
 
-<pre>  // default-config.js                                                          
+```js
+  // default-config.js                                                          
   const os = require("os");                                                     
   const path = require("path");                                                 
   module.exports = {                                                            
@@ -213,11 +215,12 @@ __Default Config__
 
   };                                                                            
 
-</pre>
+```
 
 __Default Application Config__  
 
-<pre>  // default-application-config.js                                          
+```js
+  // default-application-config.js                                          
   module.exports = {                                                        
 
       /*                                                                    
@@ -434,7 +437,7 @@ __Default Application Config__
 
   };                                                                        
 
-</pre>
+```
 
 ### Example  
 
@@ -442,7 +445,8 @@ __Example Config__
 
 _final-pm --config sample-config.js start myApp_  
 
-<pre>  // sample-config.js                                                  
+```js
+  // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
           'name': 'myApp',                                             
@@ -454,11 +458,12 @@ _final-pm --config sample-config.js start myApp_
       }]                                                               
   };                                                                   
 
-</pre>
+```
 
 __Example App__  
 
-<pre>  // sample-app.js                                                        
+```js
+  // sample-app.js                                                        
   const cluster = require('cluster');                                     
   require('http').createServer((req, res) => {                            
       res.end(process.argv.join(' ')); // Reply with process arguments    
@@ -475,4 +480,4 @@ __Example App__
       cluster.worker.disconnect();                                        
   });                                                                     
 
-</pre>
+```

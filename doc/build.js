@@ -84,6 +84,16 @@ const markdown = toMarkdown(htmlBody, {
         replacement: function(content) {
             return '__' + content + '__';
         }
+    }, {
+        filter: 'pre',
+        replacement: function(content) {
+            let type = '';
+            if (/([ \n\r])*\/\/.*\.js *\n/.test(content)) {
+                type = 'js';
+            }
+
+            return '```' + type + '\n' + content + '```\n';
+        }
     }]
 }).replace(/__\*\*(\w.*?\w)\*\*__/g, '### $1');
 
