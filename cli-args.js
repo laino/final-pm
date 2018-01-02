@@ -45,7 +45,8 @@ exports.options = [
         name: 'follow',
         alias: 'f',
         type: Boolean,
-        description: "When using the [bold]{log} action, will output new log lines continously as they appear.",
+        description: "When using the [bold]{log} action, will output new log lines continously as they appear. " +
+                     "Cancel with [italic]{CTRL-C}.",
         defaultValue: false
     },
     {
@@ -82,6 +83,19 @@ exports.options = [
         defaultValue: false
     },
     {
+        name: 'dry',
+        type: Boolean,
+        description: "Don't actually do anything, use [italic]{--verbose} for more output.",
+        defaultValue: false
+    },
+    {
+        name: 'verbose',
+        alias: 'v',
+        type: Boolean,
+        description: "Show debug output.",
+        defaultValue: false
+    },
+    {
         name: 'help',
         type: Boolean,
         description: "Print short usage guide.",
@@ -90,7 +104,7 @@ exports.options = [
     {
         name: 'help-usage',
         type: Boolean,
-        description: "Print slightly more verbose usage guide.",
+        description: "Print full usage guide including [bold]{actions}.",
         defaultValue: false
     },
     {
@@ -115,19 +129,6 @@ exports.options = [
         name: 'help-all',
         type: Boolean,
         description: "Print full help page.",
-        defaultValue: false
-    },
-    {
-        name: 'verbose',
-        alias: 'v',
-        type: Boolean,
-        description: "Show debug output.",
-        defaultValue: false
-    },
-    {
-        name: 'dry',
-        type: Boolean,
-        description: "Don't actually do anything, use [italic]{--verbose} for more output.",
         defaultValue: false
     },
 ];
