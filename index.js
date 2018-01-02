@@ -6,8 +6,7 @@ module.exports = {
 
     registerProcessHandlers() {
         process.on('unhandledRejection', (error) => {
-            console.error(error.stack || error); // eslint-disable-line no-console
-            process.exit(1);
+            throw error;
         });
     }
 };

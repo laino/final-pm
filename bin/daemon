@@ -14,11 +14,14 @@ process.on('SIGINT', () => {
 });
 
 instance.on('kill', () => {
-    console.log("Daemon stopping."); // eslint-disable-line no-console
+    log("Daemon", "Daemon stopping.");
 });
 
+instance.on('log', log);
+
 process.on('uncaughtException', function(error) {
-    console.error(error.stack); // eslint-disable-line no-console
+    err(error.stack);
+
     instance.close();
     process.exit(1);
 });
@@ -28,6 +31,21 @@ run();
 async function run() {
     await instance.listen(process.argv[2]);
 
-    console.log("Daemon running."); // eslint-disable-line no-console
+    log("Daemon", "Daemon running.");
     process.send('ready');
+}
+
+function err(...args) {
+    console.error(makeLogLine(args)); // eslint-disable-line no-console
+}
+
+function log(...args) {
+    console.log(makeLogLine(args)); // eslint-disable-line no-console
+}
+
+function makeLogLine(args) {
+    const last = args[args.length - 1];
+    const pre = `[${args.slice(0, args.length - 1).join('] [')}] `;
+
+    return pre + last;
 }
