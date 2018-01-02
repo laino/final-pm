@@ -1,4 +1,4 @@
-FinalPM
+FinalPM <img src="https://travis-ci.org/laino/final-pm.svg?branch=master"></img>
 =======
 
 Finally a solid process manager. Never unintentionally kill your application in production again.
