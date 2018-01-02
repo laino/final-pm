@@ -6,7 +6,7 @@ Finally a solid process manager. Never unintentionally kill your application in 
 TODO
 ====
 
-- More Test Cases
+- More test cases, especially for negatives
 - Cleanup daemon API
 - Validate daemon API arguments
 

@@ -79,9 +79,10 @@ exports.daemonWithSamples = async () => {
     return daemon;
 };
 
+exports.sampleConfigPath = path.resolve(__dirname, '..', 'examples', 'process-config.js');
 
 exports.samples = () => {
-    return exports.loadConfig(path.resolve(__dirname, '..', 'examples', 'process-config.js'));
+    return exports.loadConfig(exports.sampleConfigPath);
 };
 
 exports.loadConfig = async (path) => {
