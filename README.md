@@ -3,6 +3,13 @@ FinalPM [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)
 
 Finally a solid process manager. Never unintentionally kill your application in production again.
 
+TODO
+====
+
+- More Test Cases
+- Cleanup daemon API
+- Validate daemon API arguments
+
 Getting started
 --------------------
 
