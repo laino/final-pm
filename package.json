@@ -39,6 +39,7 @@
     "eslint-plugin-mocha": "",
     "to-markdown": "",
     "mocha": "",
-    "tmp": ""
+    "tmp": "",
+    "rmdir": ""
   }
 }
