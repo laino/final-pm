@@ -16,11 +16,13 @@ describe('daemon', function() {
 
         await daemon.listen('ws+unix://' + file);
 
-        assert.equal(await common.exists(file), true);
+        assert.equal(await common.exists(file), true,
+            "unix socket exists");
 
         await daemon.close();
 
-        assert.equal(await common.exists(file), false);
+        assert.equal(await common.exists(file), false,
+            "unix socket was removed");
 
         await daemon.killDaemon();
     });
@@ -38,11 +40,45 @@ describe('daemon', function() {
             .map((app) => app.name));
 
         samples.forEach((sample) => {
-            assert.equal(names.has(sample.name), true);
+            assert.equal(names.has(sample.name), true, sample.name + " config exists");
             names.delete(sample.name);
         });
 
-        assert.equal(names.size, 0);
+        assert.equal(names.size, 0, "no extranous configs exist");
+
+        await daemon.killDaemon();
+    });
+
+    it('should start/stop apps and their loggers', async function() {
+        const daemon = await common.daemonWithSamples();
+
+        daemon.start('app');
+
+        await daemon.wait();
+
+        let info = daemon.info();
+
+        const runningApp = common.matchingObjects(info.processes, {
+            'generation': 'running',
+            'app-name': 'app',
+            'crashes': 0
+        });
+
+        assert.equal(1, runningApp.length, "one instance of 'app' is running");
+
+        assert.equal(1, common.matchingObjects(info.processes, {
+            'generation': 'running',
+            'app-name': 'file-logger',
+            'crashes': 0
+        }).length, "one instance of 'file-logger' is running");
+
+        daemon.stop({id: runningApp[0].id});
+
+        await daemon.wait();
+
+        info = daemon.info();
+
+        assert.equal(info.processes.length, 0, "everything was stopped");
 
         await daemon.killDaemon();
     });

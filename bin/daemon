@@ -20,7 +20,7 @@ instance.on('kill', () => {
 instance.on('log', log);
 
 process.on('uncaughtException', function(error) {
-    err(error.stack);
+    err("Daemon", error.stack);
 
     instance.close();
     process.exit(1);

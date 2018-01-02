@@ -167,10 +167,11 @@ async function runAll(client, actions, showBlocking) {
     async function printBlocking() {
         cli.debugCommand("info");
         const info = await client.invoke('info');
-        const {new: _new, old, marked} = info.processes;
+        const starting = info.processes.filter((proc) => proc.generation === 'new');
+        const stopping = info.processes.filter((proc) => ['old', 'marked'].includes(proc.generation));
 
-        cli.log('Wait', `Processes: [bold]{${_new.length}} starting, ` +
-                        `[bold]{${old.length + marked.length}} stopping`);
+        cli.log('Wait', `Processes: [bold]{${starting.length}} starting, ` +
+                        `[bold]{${stopping.length}} stopping`);
 
         printTimeout = setTimeout(printBlocking, 5000);
     }
