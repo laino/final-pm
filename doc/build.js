@@ -33,7 +33,7 @@ definition.forEach((section) => {
         };
     }
 
-    section.content.options.maxWidth = Number.MAX_VALUE;
+    section.content.options.noWrap = true;
 });
 
 const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))
