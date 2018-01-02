@@ -8,11 +8,6 @@ process.on('message', (message) => {
     const app = message.app;
     const date = new Date(message.timestamp);
 
-    // Ignore our own output. There shouldn't be any anyways.
-    if (app === 'file-logger') {
-        return;
-    }
-
     ws.write(`[${date.toISOString()}] [${app}/${message.process.number} ` +
              `${message.process.pid}] [${message.type.toUpperCase()}]: ${message.text}\n`);
 });

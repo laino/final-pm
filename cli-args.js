@@ -311,7 +311,7 @@ exports.configuration = [
             "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
             "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
             "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
-            "Each logger is fed back its own output, so make sure you don't accidentally call [italic]{console.log} for each log line you receive. " +
+            "All output of logger processes will end up in the daemon log file ([italic]{daemon-log}). " +
             "In case your logger crashed, you can check its output with `final-pm log [italic]{logger}` or check the daemon log file."
         ]
     },

@@ -182,7 +182,14 @@ module.exports = {
      * This value is per-application.
      */
 
-    'max-buffered-log-bytes': 1000000,
+    'max-buffered-log-bytes': 1024 * 1024,
+
+    /*
+     * Buffer at most this many bytes per log line, before
+     * truncating any additional characters.
+     */
+
+    'max-log-line-length': 1024 * 5,
 
     /*
      * How much time in milliseconds a process has to terminate
