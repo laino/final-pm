@@ -2,25 +2,24 @@
 
 _Finally a good process manager._  
 
-By default all actions are **graceful**. Old processes will always be cleanly  
-stopped only once new processes have indicated they are **ready**.  
+By default all actions are **graceful**. Old processes will always be cleanly stopped only once new processes have indicated they are **ready**.  
 
 __Examples__  
 
-<pre>  # Start processes of all configured applications.                             
-  final-pm start all                                                            
+<pre>  # Start processes of all configured applications.                                                                                        
+  final-pm start all                                                                                                                       
 
-  # Override configuration settings and start 4 instances of 'worker'           
-  final-pm --set worker:instances=4 start worker                                
+  # Override configuration settings and start 4 instances of 'worker'                                                                      
+  final-pm --set worker:instances=4 start worker                                                                                           
 
-  # Stop processes by PID                                                       
-  final-pm stop pid=43342 pid=3452                                              
+  # Stop processes by PID                                                                                                                  
+  final-pm stop pid=43342 pid=3452                                                                                                         
 
-  # Stop processes by application name 'worker'                                 
-  final-pm stop worker                                                          
+  # Stop processes by application name 'worker'                                                                                            
+  final-pm stop worker                                                                                                                     
 
-  # Stop the first and second currently running worker                          
-  final-pm stop running:worker/0 running:worker/1                               
+  # Stop the first and second currently running worker                                                                                     
+  final-pm stop running:worker/0 running:worker/1                                                                                          
 
 </pre>
 
@@ -61,13 +60,7 @@ __Examples__
 
 A selector identifies a process or an application.  
 
-A selector can either be an _application name_, internal process ID (id=_id_), or  
-OS process ID (pid=_pid_). Using **all** as a selector will target all  
-applications found in the configuration or which are running, depending on  
-the action. An application name followed by /_N_ (slash _N_) will only select the  
-_N_-th process of that application. Prefix your selector with **new:**, **running:**,  
-**old:**, or **marked:** to only target processes in that **generation**. See the usage  
-examples above.  
+A selector can either be an _application name_, internal process ID (id=_id_), or OS process ID (pid=_pid_). Using **all** as a selector will target all applications found in the configuration or which are running, depending on the action. An application name followed by /_N_ (slash _N_) will only select the _N_-th process of that application. Prefix your selector with **new:**, **running:**, **old:**, or **marked:** to only target processes in that **generation**. See the usage examples above.  
 
 **Actions**  
 
@@ -75,15 +68,7 @@ Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **add**, *
 
 __start / restart__  
 
-Upload configuration (implies **add**), then start N=_instances_ processes for all  
-selected applications. When processes are selected this will start one new  
-process for each selected one instead. May cause existing processes to be  
-gracefully stopped when the newly started ones are ready, and will even  
-implicitly stop more processes than were started when _instances_ was decreased  
-in the configuration. Note that this may replace different processes than  
-the selected ones, or none at all, if _unique-instances_ is set to _false_. In  
-which case the oldest ones of that application will be replaced if _instances_  
-was exceeded.  
+Upload configuration (implies **add**), then start N=_instances_ processes for all selected applications. When processes are selected this will start one new process for each selected one instead. May cause existing processes to be gracefully stopped when the newly started ones are ready, and will even implicitly stop more processes than were started when _instances_ was decreased in the configuration. Note that this may replace different processes than the selected ones, or none at all, if _unique-instances_ is set to _false_. In which case the oldest ones of that application will be replaced if _instances_ was exceeded.  
 
 __stop__  
 
@@ -91,24 +76,19 @@ Gracefully stop all selected _running/new_ processes or applications.
 
 __kill__  
 
-Immediately **SIGKILL** all selected processes or applications. This works on  
-processes in any **generation**.  
+Immediately **SIGKILL** all selected processes or applications. This works on processes in any **generation**.  
 
 __scale__  
 
-Upload configuration (implies **add**), then start or stop processes for each  
-selected application until the number of running processes matches configured  
-_instances_.  
+Upload configuration (implies **add**), then start or stop processes for each selected application until the number of running processes matches configured _instances_.  
 
 __show__  
 
-Show information about all selected applications / processes. To also show  
-logging processes, use **--verbose**.  
+Show information about all selected applications / processes. To also show logging processes, use **--verbose**.  
 
 __add__  
 
-Upload application configurations to the daemon, replacing older instances of  
-the same configuration.  
+Upload application configurations to the daemon, replacing older instances of the same configuration.  
 
 __delete__  
 
@@ -116,8 +96,7 @@ Delete application configurations from the daemon.
 
 __log__  
 
-Show process output. Understands **--follow** and **--lines**, which work the same as  
-the UNIX _tail_ command.  
+Show process output. Understands **--follow** and **--lines**, which work the same as the UNIX _tail_ command.  
 
 ### Generations  
 
@@ -126,67 +105,30 @@ The **new**, **running**, **old**, and **marked generation**.
 
 __New Generation__  
 
-The **new generation** is where processes remain until they are considered **ready**.  
-A process is considered to be **ready** on the cluster **listen** event or when it  
-sends the **ready** message, depending on the configuration (config: **ready-on**).  
-Once a process is **ready** it is moved to the **running generation**. If a process  
-is asked to be stopped while in the new generation, it is moved to the **marked  
-generation** instead. If a process exits abnormally while in the new  
-generation, a new one is started (config: **restart-new-crashing**).  
+The **new generation** is where processes remain until they are considered **ready**. A process is considered to be **ready** on the cluster **listen** event or when it sends the **ready** message, depending on the configuration (config: **ready-on**). Once a process is **ready** it is moved to the **running generation**. If a process is asked to be stopped while in the new generation, it is moved to the **marked generation** instead. If a process exits abnormally while in the new generation, a new one is started (config: **restart-new-crashing**).  
 
 __Running Generation__  
 
-The **running generation** is where processes remain until they are **stopped**. At  
-most the configured amount of processes for each application may reside here.  
-If _unique-instances_ is set to _false_ and the maximum _instances_ was exceeded  
-because new processes were started, the oldest processes will be moved to the  
-**old generation**. If _unique-instances_ is set to _true_, each process will  
-replace its counterpart 1:1 instead, and only then will additional processes  
-be stopped if _instances_ is exceeded. If a process exits abnormally while in  
-the running generation, a new one is started (config: **restart-crashing**). Note  
-that an older process can never replace a process that was started later,  
-ensuring always the latest processes are running even if startup time wildly  
-varies.  
+The **running generation** is where processes remain until they are **stopped**. At most the configured amount of processes for each application may reside here. If _unique-instances_ is set to _false_ and the maximum _instances_ was exceeded because new processes were started, the oldest processes will be moved to the **old generation**. If _unique-instances_ is set to _true_, each process will replace its counterpart 1:1 instead, and only then will additional processes be stopped if _instances_ is exceeded. If a process exits abnormally while in the running generation, a new one is started (config: **restart-crashing**). Note that an older process can never replace a process that was started later, ensuring always the latest processes are running even if startup time wildly varies.  
 
 __Old Generation__  
 
-The **old generation** is where processes remain when they should be **stopped**  
-until they finally **exit**. A process moved to the **old generation** is sent the  
-**SIGINT** signal. If the process does not exit within **stop-timeout** (default is  
-no timeout), it is sent **SIGKILL** and removed from the old generation.  
+The **old generation** is where processes remain when they should be **stopped** until they finally **exit**. A process moved to the **old generation** is sent the **SIGINT** signal. If the process does not exit within **stop-timeout** (default is no timeout), it is sent **SIGKILL** and removed from the old generation.  
 
 __Marked Generation__  
 
-New processes who were asked to stop are kept here, then are moved to the **old  
-generation** once they are **ready**. This means the programmer never has to worry  
-about handling **SIGINT** signals during startup.  
+New processes who were asked to stop are kept here, then are moved to the **old generation** once they are **ready**. This means the programmer never has to worry about handling **SIGINT** signals during startup.  
 
 ### Configuration  
 
-Configuration may be done in either JSON or JS, as well as environment  
-variables and command line arguments. On the command line configuration keys  
-may be overriden with **--set** _key_=_value_, where _key_ may be any configuration  
-key. To override keys within an appliaction config, prefix _key_ with  
-'_application-name_:' like so: --set myApp:ready-on="message"  
+Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. On the command line configuration keys may be overriden with **--set** _key_=_value_, where _key_ may be any configuration key. To override keys within an appliaction config, prefix _key_ with '_application-name_:' like so: --set myApp:ready-on="message"  
 
-Each configuration key can also be overriden with an environment variable by  
-replacing all dashes and colons in _key_ with underscores and translating it to  
-uppercase, finally prefixed with FINAL_PM_CONFIG_,  
+Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in _key_ with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_,  
 i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.  
 
 __Logging__  
 
-Logging is done by a logging process started for each application, which will  
-be fed logging output via process.send(logLine). Logger processes are  
-started with the same CWD as your application. Keep this in mind when passing  
-relative paths to loggers. The logging process is automatically started with  
-your application, and is stopped once the last process of your application  
-exits. By default all applications use the simple file-logger that ships with  
-final-pm, but creating your own logger is as simple as creating a new  
-application 'my-logger' which listens to process.on(...) and setting _logger_  
-to 'my-logger' in your main application. All output of logger processes will  
-end up in the daemon log file (_daemon-log_). In case your logger crashed, you  
-can check its output with `final-pm log _logger_` or check the daemon log file.  
+Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. The logging process is automatically started with your application, and is stopped once the last process of your application exits. By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as creating a new application 'my-logger' which listens to process.on(...) and setting _logger_ to 'my-logger' in your main application. All output of logger processes will end up in the daemon log file (_daemon-log_). In case your logger crashed, you can check its output with `final-pm log _logger_` or check the daemon log file.  
 
 __Default Config__  
 

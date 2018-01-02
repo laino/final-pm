@@ -15,9 +15,28 @@ const AnsiToHtml = new (require('ansi-to-html'))({
 let inBlock = false;
 let lineWasEmpty = false;
 
-process.stdout.columns = 500;
+const definition = argsDefinition.all;
 
-const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(argsDefinition.all))
+definition.forEach((section) => {
+    if (!section.content) {
+        return;
+    }
+
+    if (section.content instanceof Array) {
+        section.content = {
+            options: {},
+            data: section.content.map((row) => {
+                return {
+                    col: row
+                };
+            })
+        };
+    }
+
+    section.content.options.maxWidth = Number.MAX_VALUE;
+});
+
+const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))
     .split('\n').map(line => {
         const lineIsEmpty = line.trim() === '';
         const length = line.trim().length;

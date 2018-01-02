@@ -11,8 +11,7 @@
 </p>
 
 <p>
-By default all actions are <b>graceful</b>. Old processes will always be cleanly<br>
-stopped only once new processes have indicated they are <b>ready</b>.<br>
+By default all actions are <b>graceful</b>. Old processes will always be cleanly stopped only once new processes have indicated they are <b>ready</b>.<br>
 </p>
 
 <p>
@@ -21,20 +20,20 @@ stopped only once new processes have indicated they are <b>ready</b>.<br>
 </p>
 
 <p>
-<pre>  &#35; Start processes of all configured applications.                             
-  final-pm start all                                                            
-                                                                                
-  &#35; Override configuration settings and start 4 instances of 'worker'           
-  final-pm --set worker:instances=4 start worker                                
-                                                                                
-  &#35; Stop processes by PID                                                       
-  final-pm stop pid=43342 pid=3452                                              
-                                                                                
-  &#35; Stop processes by application name 'worker'                                 
-  final-pm stop worker                                                          
-                                                                                
-  &#35; Stop the first and second currently running worker                          
-  final-pm stop running:worker/0 running:worker/1                               
+<pre>  &#35; Start processes of all configured applications.                                                                                        
+  final-pm start all                                                                                                                       
+                                                                                                                                           
+  &#35; Override configuration settings and start 4 instances of 'worker'                                                                      
+  final-pm --set worker:instances=4 start worker                                                                                           
+                                                                                                                                           
+  &#35; Stop processes by PID                                                                                                                  
+  final-pm stop pid=43342 pid=3452                                                                                                         
+                                                                                                                                           
+  &#35; Stop processes by application name 'worker'                                                                                            
+  final-pm stop worker                                                                                                                     
+                                                                                                                                           
+  &#35; Stop the first and second currently running worker                                                                                     
+  final-pm stop running:worker/0 running:worker/1                                                                                          
 
 </pre><u><b>Options</b></u><br>
 <br>
@@ -82,13 +81,7 @@ A selector identifies a process or an application.<br>
 </p>
 
 <p>
-A selector can either be an <i>application name</i>, internal process ID (id=<i>id</i>), or<br>
-OS process ID (pid=<i>pid</i>). Using <b>all</b> as a selector will target all<br>
-applications found in the configuration or which are running, depending on<br>
-the action. An application name followed by /<i>N</i> (slash <i>N</i>) will only select the<br>
-<i>N</i>-th process of that application. Prefix your selector with <b>new:</b>, <b>running:</b>,<br>
-<b>old:</b>, or <b>marked:</b> to only target processes in that <b>generation</b>. See the usage<br>
-examples above.<br>
+A selector can either be an <i>application name</i>, internal process ID (id=<i>id</i>), or OS process ID (pid=<i>pid</i>). Using <b>all</b> as a selector will target all applications found in the configuration or which are running, depending on the action. An application name followed by /<i>N</i> (slash <i>N</i>) will only select the <i>N</i>-th process of that application. Prefix your selector with <b>new:</b>, <b>running:</b>, <b>old:</b>, or <b>marked:</b> to only target processes in that <b>generation</b>. See the usage examples above.<br>
 </p>
 
 <p>
@@ -103,15 +96,7 @@ Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show<
 <p>
 <u>start / restart</u><br>
 <br>
-Upload configuration (implies <b>add</b>), then start N=<i>instances</i> processes for all<br>
-selected applications. When processes are selected this will start one new<br>
-process for each selected one instead. May cause existing processes to be<br>
-gracefully stopped when the newly started ones are ready, and will even<br>
-implicitly stop more processes than were started when <i>instances</i> was decreased<br>
-in the configuration. Note that this may replace different processes than<br>
-the selected ones, or none at all, if <i>unique-instances</i> is set to <i>false</i>. In<br>
-which case the oldest ones of that application will be replaced if <i>instances</i><br>
-was exceeded.<br>
+Upload configuration (implies <b>add</b>), then start N=<i>instances</i> processes for all selected applications. When processes are selected this will start one new process for each selected one instead. May cause existing processes to be gracefully stopped when the newly started ones are ready, and will even implicitly stop more processes than were started when <i>instances</i> was decreased in the configuration. Note that this may replace different processes than the selected ones, or none at all, if <i>unique-instances</i> is set to <i>false</i>. In which case the oldest ones of that application will be replaced if <i>instances</i> was exceeded.<br>
 </p>
 
 <p>
@@ -123,31 +108,25 @@ Gracefully stop all selected <i>running/new</i> processes or applications.<br>
 <p>
 <u>kill</u><br>
 <br>
-Immediately <b>SIGKILL</b> all selected processes or applications. This works on<br>
-processes in any <b>generation</b>.<br>
+Immediately <b>SIGKILL</b> all selected processes or applications. This works on processes in any <b>generation</b>.<br>
 </p>
 
 <p>
 <u>scale</u><br>
 <br>
-Upload configuration (implies <b>add</b>), then start or stop processes for each<br>
-selected application until the number of running processes matches configured<br>
-<i>instances</i>.<br>
-<br>
+Upload configuration (implies <b>add</b>), then start or stop processes for each selected application until the number of running processes matches configured <i>instances</i>.<br>
 </p>
 
 <p>
 <u>show</u><br>
 <br>
-Show information about all selected applications / processes. To also show<br>
-logging processes, use <b>--verbose</b>.<br>
+Show information about all selected applications / processes. To also show logging processes, use <b>--verbose</b>.<br>
 </p>
 
 <p>
 <u>add</u><br>
 <br>
-Upload application configurations to the daemon, replacing older instances of<br>
-the same configuration.<br>
+Upload application configurations to the daemon, replacing older instances of the same configuration.<br>
 </p>
 
 <p>
@@ -159,8 +138,7 @@ Delete application configurations from the daemon.<br>
 <p>
 <u>log</u><br>
 <br>
-Show process output. Understands <b>--follow</b> and <b>--lines</b>, which work the same as<br>
-the UNIX <i>tail</i> command.<br>
+Show process output. Understands <b>--follow</b> and <b>--lines</b>, which work the same as the UNIX <i>tail</i> command.<br>
 </p>
 
 <p>
@@ -176,46 +154,25 @@ The <b>new</b>, <b>running</b>, <b>old</b>, and <b>marked generation</b>.<br>
 <p>
 <u>New Generation</u><br>
 <br>
-The <b>new generation</b> is where processes remain until they are considered <b>ready</b>.<br>
-A process is considered to be <b>ready</b> on the cluster <b>listen</b> event or when it<br>
-sends the <b>ready</b> message, depending on the configuration (config: <b>ready-on</b>).<br>
-Once a process is <b>ready</b> it is moved to the <b>running generation</b>. If a process<br>
-is asked to be stopped while in the new generation, it is moved to the <b>marked<br>
-generation</b> instead. If a process exits abnormally while in the new<br>
-generation, a new one is started (config: <b>restart-new-crashing</b>).<br>
+The <b>new generation</b> is where processes remain until they are considered <b>ready</b>. A process is considered to be <b>ready</b> on the cluster <b>listen</b> event or when it sends the <b>ready</b> message, depending on the configuration (config: <b>ready-on</b>). Once a process is <b>ready</b> it is moved to the <b>running generation</b>. If a process is asked to be stopped while in the new generation, it is moved to the <b>marked generation</b> instead. If a process exits abnormally while in the new generation, a new one is started (config: <b>restart-new-crashing</b>).<br>
 </p>
 
 <p>
 <u>Running Generation</u><br>
 <br>
-The <b>running generation</b> is where processes remain until they are <b>stopped</b>. At<br>
-most the configured amount of processes for each application may reside here.<br>
-If <i>unique-instances</i> is set to <i>false</i> and the maximum <i>instances</i> was exceeded<br>
-because new processes were started, the oldest processes will be moved to the<br>
-<b>old generation</b>. If <i>unique-instances</i> is set to <i>true</i>, each process will<br>
-replace its counterpart 1:1 instead, and only then will additional processes<br>
-be stopped if <i>instances</i> is exceeded. If a process exits abnormally while in<br>
-the running generation, a new one is started (config: <b>restart-crashing</b>). Note<br>
-that an older process can never replace a process that was started later,<br>
-ensuring always the latest processes are running even if startup time wildly<br>
-varies.<br>
+The <b>running generation</b> is where processes remain until they are <b>stopped</b>. At most the configured amount of processes for each application may reside here. If <i>unique-instances</i> is set to <i>false</i> and the maximum <i>instances</i> was exceeded because new processes were started, the oldest processes will be moved to the <b>old generation</b>. If <i>unique-instances</i> is set to <i>true</i>, each process will replace its counterpart 1:1 instead, and only then will additional processes be stopped if <i>instances</i> is exceeded. If a process exits abnormally while in the running generation, a new one is started (config: <b>restart-crashing</b>). Note that an older process can never replace a process that was started later, ensuring always the latest processes are running even if startup time wildly varies.<br>
 </p>
 
 <p>
 <u>Old Generation</u><br>
 <br>
-The <b>old generation</b> is where processes remain when they should be <b>stopped</b><br>
-until they finally <b>exit</b>. A process moved to the <b>old generation</b> is sent the<br>
-<b>SIGINT</b> signal. If the process does not exit within <b>stop-timeout</b> (default is<br>
-no timeout), it is sent <b>SIGKILL</b> and removed from the old generation.<br>
+The <b>old generation</b> is where processes remain when they should be <b>stopped</b> until they finally <b>exit</b>. A process moved to the <b>old generation</b> is sent the <b>SIGINT</b> signal. If the process does not exit within <b>stop-timeout</b> (default is no timeout), it is sent <b>SIGKILL</b> and removed from the old generation.<br>
 </p>
 
 <p>
 <u>Marked Generation</u><br>
 <br>
-New processes who were asked to stop are kept here, then are moved to the <b>old<br>
-generation</b> once they are <b>ready</b>. This means the programmer never has to worry<br>
-about handling <b>SIGINT</b> signals during startup.<br>
+New processes who were asked to stop are kept here, then are moved to the <b>old generation</b> once they are <b>ready</b>. This means the programmer never has to worry about handling <b>SIGINT</b> signals during startup.<br>
 </p>
 
 <p>
@@ -224,34 +181,18 @@ about handling <b>SIGINT</b> signals during startup.<br>
 </p>
 
 <p>
-Configuration may be done in either JSON or JS, as well as environment<br>
-variables and command line arguments. On the command line configuration keys<br>
-may be overriden with <b>--set</b> <i>key</i>=<i>value</i>, where <i>key</i> may be any configuration<br>
-key. To override keys within an appliaction config, prefix <i>key</i> with<br>
-'<i>application-name</i>:' like so: --set myApp:ready-on="message"<br>
+Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. On the command line configuration keys may be overriden with <b>--set</b> <i>key</i>=<i>value</i>, where <i>key</i> may be any configuration key. To override keys within an appliaction config, prefix <i>key</i> with '<i>application-name</i>:' like so: --set myApp:ready-on="message"<br>
 </p>
 
 <p>
-Each configuration key can also be overriden with an environment variable by<br>
-replacing all dashes and colons in <i>key</i> with underscores and translating it to<br>
-uppercase, finally prefixed with FINAL_PM_CONFIG_,<br>
+Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in <i>key</i> with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_,<br>
 i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.<br>
 </p>
 
 <p>
 <u>Logging</u><br>
 <br>
-Logging is done by a logging process started for each application, which will<br>
-be fed logging output via process.send(logLine). Logger processes are<br>
-started with the same CWD as your application. Keep this in mind when passing<br>
-relative paths to loggers. The logging process is automatically started with<br>
-your application, and is stopped once the last process of your application<br>
-exits. By default all applications use the simple file-logger that ships with<br>
-final-pm, but creating your own logger is as simple as creating a new<br>
-application 'my-logger' which listens to process.on(...) and setting <i>logger</i><br>
-to 'my-logger' in your main application. All output of logger processes will<br>
-end up in the daemon log file (<i>daemon-log</i>). In case your logger crashed, you<br>
-can check its output with `final-pm log <i>logger</i>` or check the daemon log file.<br>
+Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. The logging process is automatically started with your application, and is stopped once the last process of your application exits. By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as creating a new application 'my-logger' which listens to process.on(...) and setting <i>logger</i> to 'my-logger' in your main application. All output of logger processes will end up in the daemon log file (<i>daemon-log</i>). In case your logger crashed, you can check its output with `final-pm log <i>logger</i>` or check the daemon log file.<br>
 </p>
 
 <p>
