@@ -17,7 +17,7 @@ instance.on('kill', () => {
     log("Daemon", "Daemon stopping.");
 });
 
-instance.on('log', log);
+instance.on('logger-output', log.bind('Logger'));
 
 process.on('uncaughtException', function(error) {
     err("Daemon", error.stack);

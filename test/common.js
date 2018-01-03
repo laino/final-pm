@@ -10,14 +10,17 @@ const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
 const deepEqual = require('deep-equal');
 const rmdir = util.promisify(require('rmdir'));
+const {Client} = require('final-rpc');
 
 chai.use(chaiAsPromised);
 
 let exitCode = 0;
-let runningDaemons = new Set();
-let tmpfiles  = new Set();
-let appdirs  = new Set();
-let daemonOut = new WeakMap();
+const runningDaemons = new Set();
+const clients = new Set();
+const tmpfiles  = new Set();
+const appdirs  = new Set();
+const daemonOut = new WeakMap();
+const daemonSocks = new WeakMap();
 
 process.on("unhandledRejection", (reason) => {
     console.error("unhandled rejection:", reason);
@@ -33,22 +36,37 @@ process.prependListener("exit", (code) => {
 
 exports.daemon = async () => {
     const daemon = new finalPM.daemon();
+    const socket = 'ws+unix://' + path.join(exports.tmpdir(), 'daemon.sock');
     const output = [];
 
     runningDaemons.add(daemon);
     daemonOut.set(daemon, output);
-
-    await daemon.loadBuiltins();
+    daemonSocks.set(daemon, socket);
 
     daemon.on('kill', () => {
         runningDaemons.delete(daemon);
     });
 
-    daemon.on('log', (...args) => {
-        output.push(args);
+    daemon.on('logger-output', (...args) => {
+        output.push(['Logger', ...args]);
     });
 
+    await daemon.loadBuiltins();
+    await daemon.listen(socket);
+
     return daemon;
+};
+
+exports.client = async(daemon) => {
+    const client = await new Client(daemonSocks.get(daemon)).waitOpen();
+
+    clients.add(client);
+
+    client.on('close', () => {
+        clients.delete(client);
+    });
+
+    return client;
 };
 
 exports.deepEqual = deepEqual;
@@ -120,9 +138,18 @@ exports.readFile = util.promisify(fs.readFile);
 
 afterEach(async function() { //eslint-disable-line no-undef
     let hadDaemon = false;
+    let hadClient = false;
     let failed = this.currentTest.state === 'failed';
     let processes = [];
     let output = [];
+
+    if (clients.size) {
+        for (const client of clients) {
+            await client.close();
+        }
+
+        hadClient = true;
+    }
 
     if (runningDaemons.size) {
         for (const daemon of runningDaemons.values()) {
@@ -179,6 +206,10 @@ afterEach(async function() { //eslint-disable-line no-undef
     tmpfiles.clear();
 
     if (hadDaemon && !failed) {
-        throw new Error("A daemon was still running after the test");
+        throw new Error("A daemon was still running after the test.");
+    }
+
+    if (hadClient && !failed) {
+        throw new Error("A client was still connected after the test.");
     }
 });

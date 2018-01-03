@@ -189,14 +189,17 @@ async function runAll(client, actions, showBlocking) {
     });
 
     if (args.dry) {
-        result = Array(actions.length).fill({success: true});
+        result = {
+            results: Array(actions.length).fill({success: true}),
+            success: true
+        };
     } else {
         result = await client.invoke('all', actions);
     }
 
     clearTimeout(printTimeout);
 
-    return result;
+    return result.results;
 }
 
 function filterApplications(applications) {

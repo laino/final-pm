@@ -12,6 +12,9 @@ describe('daemon', function() {
     it('should listen to unix sockets', async function() {
         const daemon = await common.daemon();
 
+        // Close default socket
+        await daemon.close();
+
         const file = common.tmp();
 
         await daemon.listen('ws+unix://' + file);
@@ -29,13 +32,16 @@ describe('daemon', function() {
 
     it('should load configurations', async function() {
         const daemon = await common.daemon();
+        const client = await common.client(daemon);
         const samples = await common.loadConfig();
 
-        samples.forEach((sample) => {
-            daemon.add(sample);
-        });
+        for (const sample of samples) {
+            await client.invoke('add', sample);
+        }
 
-        const names = new Set(daemon.info().applications
+        const info = await client.invoke('info');
+
+        const names = new Set(info.applications
             .filter((app) => !app.builtin)
             .map((app) => app.name));
 
@@ -46,17 +52,20 @@ describe('daemon', function() {
 
         assert.equal(names.size, 0, "no extranous configs exist");
 
+        await client.close();
         await daemon.killDaemon();
     });
 
     it('should start/stop apps and their loggers', async function() {
         const daemon = await common.daemonWithConfig();
+        const client = await common.client(daemon);
 
-        daemon.start('app');
+        await client.invoke('all', [
+            { name: 'start', args: ['app'] },
+            { name: 'wait' },
+        ]);
 
-        await daemon.wait();
-
-        let info = daemon.info();
+        let info = await client.invoke('info');
 
         const runningApp = common.matchingObjects(info.processes, {
             'generation': 'running',
@@ -72,14 +81,14 @@ describe('daemon', function() {
             'crashes': 0
         }).length, "one instance of 'file-logger' is running");
 
-        daemon.stop({id: runningApp[0].id});
+        await client.invoke('stop', runningApp[0].id);
+        await client.invoke('wait');
 
-        await daemon.wait();
-
-        info = daemon.info();
+        info = await client.invoke('info');
 
         assert.equal(info.processes.length, 0, "everything was stopped");
 
+        await client.close();
         await daemon.killDaemon();
     });
 });
