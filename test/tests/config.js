@@ -6,6 +6,8 @@ const {assert, expect} = require('chai');
 
 describe('config', function() {
     const JS_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.js');
+    const JS_FN_CONFIG = path.resolve(__dirname, '..', 'configs', 'working-fn.js');
+    const JS_PROMISE_CONFIG = path.resolve(__dirname, '..', 'configs', 'working-promise.js');
     const JSON_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.json');
 
     const MALFORMED_CONFIGS = [
@@ -20,7 +22,15 @@ describe('config', function() {
 
     async function testConfig(configPath) {
         const config = await finalPM.config.getConfig(configPath);
-        const compareTo = require(configPath);
+        let compareTo = require(configPath);
+
+        if (typeof compareTo === 'function') {
+            compareTo = compareTo();
+        }
+
+        if (typeof compareTo.then === 'function') {
+            compareTo = await compareTo;
+        }
 
         assert.equal(config['config-path'], configPath,
             "Contains the full configuration path");
@@ -45,6 +55,8 @@ describe('config', function() {
 
     it('should load JavaScript configuration files correctly', async function() {
         await testConfig(JS_CONFIG);
+        await testConfig(JS_PROMISE_CONFIG);
+        await testConfig(JS_FN_CONFIG);
     });
 
     it('should load JSON configuration files correctly', async function() {
@@ -53,12 +65,18 @@ describe('config', function() {
 
     it('should parse JS and JSON configuration files the same', async function() {
         const JS = await finalPM.config.getConfig(JS_CONFIG);
+        const JS_PROMISE = await finalPM.config.getConfig(JS_PROMISE_CONFIG);
+        const JS_FN = await finalPM.config.getConfig(JS_FN_CONFIG);
         const JSON = await finalPM.config.getConfig(JSON_CONFIG);
 
         stripPaths(JS);
+        stripPaths(JS_PROMISE);
+        stripPaths(JS_FN);
         stripPaths(JSON);
 
         assert.deepEqual(JS, JSON, "JS and JSON configs should be the same");
+        assert.deepEqual(JS_PROMISE, JSON, "JS (promise) and JSON configs should be the same");
+        assert.deepEqual(JS_FN, JSON, "JS (function) and JSON configs should be the same");
     });
 
     it('should reject malformed configurations', async function() {
