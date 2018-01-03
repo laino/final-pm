@@ -1,6 +1,6 @@
 
 const common = require('../common');
-const assert = require('assert');
+const assert = require('chai').assert;
 
 describe('daemon', function() {
     it('should start and stop', async function() {
@@ -29,7 +29,7 @@ describe('daemon', function() {
 
     it('should load configurations', async function() {
         const daemon = await common.daemon();
-        const samples = await common.samples();
+        const samples = await common.loadConfig();
 
         samples.forEach((sample) => {
             daemon.add(sample);
@@ -50,7 +50,7 @@ describe('daemon', function() {
     });
 
     it('should start/stop apps and their loggers', async function() {
-        const daemon = await common.daemonWithSamples();
+        const daemon = await common.daemonWithConfig();
 
         daemon.start('app');
 

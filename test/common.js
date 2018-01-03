@@ -5,9 +5,13 @@ const finalPM = require('../');
 const tmp = require('tmp');
 const path = require('path');
 const fs = require('fs');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
 const deepEqual = require('deep-equal');
 const rmdir = util.promisify(require('rmdir'));
+
+chai.use(chaiAsPromised);
 
 let exitCode = 0;
 let runningDaemons = new Set();
@@ -68,9 +72,9 @@ exports.matchingObjects = (array, obj) => {
 };
 
 
-exports.daemonWithSamples = async () => {
+exports.daemonWithConfig = async (name = 'working.js') => {
     const daemon = await exports.daemon();
-    const samples = await exports.samples();
+    const samples = await exports.loadConfig(name);
 
     samples.forEach((sample) => {
         daemon.add(sample);
@@ -79,14 +83,9 @@ exports.daemonWithSamples = async () => {
     return daemon;
 };
 
-exports.sampleConfigPath = path.resolve(__dirname, '..', 'examples', 'process-config.js');
-
-exports.samples = () => {
-    return exports.loadConfig(exports.sampleConfigPath);
-};
-
-exports.loadConfig = async (path) => {
-    const config = await finalPM.config.getConfig(path);
+exports.loadConfig = async (name = 'working.js') => {
+    const config = await finalPM.config.getConfig(
+        path.resolve(__dirname, 'configs', name));
 
     config.applications.forEach((app) => {
         // Change each applications CWD to a custom tmp dir.

@@ -1,0 +1,7 @@
+{
+    "applications": [{
+        "name": "app",
+        "ready-on": "message",
+        "run": "../../examples/sample-app.js"
+    }
+}

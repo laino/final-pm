@@ -39,6 +39,8 @@
     "eslint-plugin-mocha": "",
     "to-markdown": "",
     "mocha": "",
+    "chai": "",
+    "chai-as-promised": "",
     "tmp": "",
     "rmdir": ""
   }
