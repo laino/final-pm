@@ -8,9 +8,15 @@ describe('config', function() {
     const JS_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.js');
     const JSON_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.json');
 
-    const MALFORMED_CONFIG1 = path.resolve(__dirname, '..', 'configs', 'broken1.json');
-    const MALFORMED_CONFIG2 = path.resolve(__dirname, '..', 'configs', 'broken2.json');
-    const MALFORMED_CONFIG3 = path.resolve(__dirname, '..', 'configs', 'broken3.json');
+    const MALFORMED_CONFIGS = [
+        ['broken1.json', 'Unexpected token'],
+        ['broken2.json', '$$$ERROR$$$'],
+        ['broken3.json', 'app/0'],
+        ['broken4.js', '$$$ERROR$$$'],
+        ['broken5.js', '$$$ERROR$$$'],
+        ['broken6.js', '$$$ERROR$$$'],
+        ['broken7.js', '$$$ERROR$$$']
+    ];
 
     async function testConfig(configPath) {
         const config = await finalPM.config.getConfig(configPath);
@@ -58,14 +64,12 @@ describe('config', function() {
     it('should reject malformed configurations', async function() {
         const ConfigError = finalPM.config.ConfigError;
 
-        await expect(finalPM.config.getConfig(MALFORMED_CONFIG1))
-            .to.be.rejectedWith(ConfigError, 'Unexpected token');
+        for (const [name, err] of MALFORMED_CONFIGS) {
+            const configPath = path.resolve(__dirname, '..', 'configs', name);
 
-        await expect(finalPM.config.getConfig(MALFORMED_CONFIG2))
-            .to.be.rejectedWith('$$$ERROR$$$');
-
-        await expect(finalPM.config.getConfig(MALFORMED_CONFIG3))
-            .to.be.rejectedWith(ConfigError, 'app/0');
+            await expect(finalPM.config.getConfig(configPath))
+                .to.be.rejectedWith(ConfigError, err);
+        }
     });
 });
 
