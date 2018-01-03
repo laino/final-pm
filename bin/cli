@@ -33,7 +33,7 @@ async function run() {
 
     const configs = await Promise.all(paths.map(async (path) =>  {
         const timeout = setTimeout(() => {
-            cli.err(`Loading ${path} is taking a long time. You should make sure it terminates.`);
+            cli.warn(`Loading [italic]{${path}} is taking a long time. You should make sure it terminates.`);
         }, 10000);
 
         try {
