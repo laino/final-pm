@@ -1,6 +1,6 @@
 // sample-config.js
-module.exports = new Promise((resolve) => {
-    resolve({
+module.exports = async function() {
+    return {
         'applications': [{
             'name': 'app',
             'ready-on': 'message',
@@ -26,5 +26,5 @@ module.exports = new Promise((resolve) => {
             'kill-signal': 'SIGTERM',
             'start-timeout': 500 // immediately become a zombie
         }]
-    });
-});
+    };
+};
