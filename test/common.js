@@ -139,7 +139,7 @@ exports.readFile = util.promisify(fs.readFile);
 afterEach(async function() { //eslint-disable-line no-undef
     let hadDaemon = false;
     let hadClient = false;
-    let failed = this.currentTest.state === 'failed';
+    let failed = !this.currentTest || this.currentTest.state === 'failed';
     let processes = [];
     let output = [];
 
