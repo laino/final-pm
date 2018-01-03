@@ -18,7 +18,9 @@ describe('config', function() {
         ['broken4.js', '$$$ERROR$$$'],
         ['broken5.js', '$$$ERROR$$$'],
         ['broken6.js', '$$$ERROR$$$'],
-        ['broken7.js', '$$$ERROR$$$']
+        ['broken7.js', '$$$ERROR$$$'],
+        ['404.ASF', 'Unknown file extension'],
+        ['404.json', 'ENOENT', Error]
     ];
 
     async function testConfig(configPath) {
@@ -86,11 +88,11 @@ describe('config', function() {
     it('should reject malformed configurations', async function() {
         const ConfigError = finalPM.config.ConfigError;
 
-        for (const [name, err] of MALFORMED_CONFIGS) {
+        for (const [name, err, errorClass] of MALFORMED_CONFIGS) {
             const configPath = path.resolve(__dirname, '..', 'configs', name);
 
             await expect(finalPM.config.getConfig(configPath))
-                .to.be.rejectedWith(ConfigError, err);
+                .to.be.rejectedWith(errorClass || ConfigError, err);
         }
     });
 });
