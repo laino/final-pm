@@ -10,6 +10,15 @@ The current state of node.js process managers is terrible. Besides most of them
 trying to be 20 things at once, and not even being decent at any of them, 
 there is hardly one being half as reliable as you'd expect of a core component.
 
+Features
+--------
+
+- Easy [configuration](https://github.com/laino/final-pm/blob/master/config/default-application-config.js) in either JSON or JS
+- Graceful restarting of applications by default
+- Clean process lifecycle management without the 
+  possibility of edge cases or race conditions
+- Simple and Safe
+
 Design Philosophy
 -----------------
 
@@ -142,6 +151,7 @@ TODO
 
 - More test cases, especially for negatives
 - Documentation for using FinalPM programmatically / Daemon API
+- Support arbitrary processes (non-node, non-cluster)
 
 Comparison Between Process Managers
 -------------------------------------------
