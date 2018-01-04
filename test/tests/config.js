@@ -19,6 +19,7 @@ describe('config', function() {
         ['broken5.js', '$$$ERROR$$$'],
         ['broken6.js', '$$$ERROR$$$'],
         ['broken7.js', '$$$ERROR$$$'],
+        ['broken8.js', '$$$ERROR$$$'],
         ['404.ASF', 'Unknown file extension'],
         ['404.json', 'ENOENT', Error]
     ];
