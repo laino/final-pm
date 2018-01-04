@@ -7,8 +7,6 @@ TODO
 ====
 
 - More test cases, especially for negatives
-- Cleanup daemon API
-- Validate daemon API arguments
 
 Getting started
 --------------------
