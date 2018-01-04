@@ -127,7 +127,9 @@ at all. But let's just replace it with a new process to get rid of that pesky "(
 
 What this will do is start a new process for `myApp/0`, then stop the old process once the new instance has
 become ready. Zero Downtime. Also `restart` is really just an alias for `start`, since FinalPM always
-stops old processes once new instances of them become ready.
+stops old processes once new instances of them become ready. Instead of `scale myApp` we also could
+have just used `restart myApp` from the get-go, arriving at same final result of 4 processes without any
+old configurations.
 
 We have hardly scratched the surface of what FinalPM can do, though this is the end of this quick start guide.
 For further reading check `final-pm --help-usage`, `final-pm --help-configuration`, `final-pm --help-generations` etc.
