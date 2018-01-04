@@ -3,19 +3,21 @@ FinalPM [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)
 
 Finally a solid process manager. Never unintentionally kill your application in production again.
 
+Documentation
+-------------
+
+Documentation for the CLI/architecture can be found [here](https://github.com/laino/final-pm/blob/master/doc/README.md).
+The same information is also accessible via `final-pm --help-all`.
+
+Also check out the [/examples](https://github.com/laino/final-pm/blob/master/examples/) directory.
+If you have cloned this repository, the easiest way to start playing around with them is `cd`'ing into
+that directory and running `final-pm start all`.
+
 TODO
 ====
 
 - More test cases, especially for negatives
-
-Getting started
---------------------
-
-The project is currently in the works, but you can already check out some
-
-[Documentation](https://github.com/laino/final-pm/blob/master/doc/README.md)
-
-[and Examples](https://github.com/laino/final-pm/blob/master/examples/)
+- Documentation for using FinalPM programmatically / Daemon API
 
 Why?
 ----
