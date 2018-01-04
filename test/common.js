@@ -14,7 +14,6 @@ const {Client} = require('final-rpc');
 
 chai.use(chaiAsPromised);
 
-let exitCode = 0;
 const runningDaemons = new Set();
 const clients = new Set();
 const tmpfiles  = new Set();
@@ -24,14 +23,7 @@ const daemonSocks = new WeakMap();
 
 process.on("unhandledRejection", (reason) => {
     console.error("unhandled rejection:", reason);
-    exitCode = 1;
     throw reason;
-});
-
-process.prependListener("exit", (code) => {
-    if (code === 0) {
-        process.exit(exitCode);
-    }
 });
 
 exports.daemon = async () => {

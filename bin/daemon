@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 const finalPM = require('../');
 
-finalPM.registerProcessHandlers();
-
 const instance = new finalPM.daemon();
 
 process.on('SIGTERM', () => {
@@ -18,6 +16,10 @@ instance.on('kill', () => {
 });
 
 instance.on('logger-output', log.bind('Logger'));
+
+process.on('unhandledRejection', (error) => {
+    throw error;
+});
 
 process.on('uncaughtException', function(error) {
     err("Daemon", error.stack);

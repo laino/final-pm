@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
+process.on('unhandledRejection', (error) => {
+    throw error;
+});
+
 const finalPM = require('../');
 const cli = require('../lib/cli');
-
-finalPM.registerProcessHandlers();
 
 cli.parseArgs();
 
