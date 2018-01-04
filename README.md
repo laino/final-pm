@@ -82,7 +82,7 @@ file created in the same directory:
 ```
 
 Now, because we are expecting a heavy load on our application, we may be inclined to
-start multiple instances of our application. For this we will modify `process-config.json`
+start multiple instances of it. For this we will modify `process-config.json`
 to look like this:
 
 ```json
@@ -110,6 +110,11 @@ In our case this is not important, since the new configuration doesn't affect th
 at all. But let's just replace it with a new process to get rid of that pesky "(old)":
 
 `final-pm restart myApp/0`
+
+```
+[INFO ] [Action] Start 1 process...
+[INFO ] [Action] Success
+```
 
 What this will do is start a new process for `myApp/0`, then stop the old process once the new instance has
 become ready. Zero Downtime. Also `restart` is really just an alias for `start`, since FinalPM always
