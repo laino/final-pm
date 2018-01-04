@@ -3,6 +3,125 @@ FinalPM [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)
 
 Finally a solid process manager. Never unintentionally kill your application in production again.
 
+Why?
+----
+
+The current state of node.js process managers is terrible. Besides most of them
+trying to be 20 things at once, and not even being decent at any of them, 
+there is hardly one being half as reliable as you'd expect of a core component.
+
+Design Philosophy
+-----------------
+
+Most of the complicated logic resides outside of the daemon itself, either sandboxed
+into other processes (Loggers) or moved up the chain (clients). The daemon should only support
+a minimal set of generic functions, which can be used to create higher level interfaces,
+such as the CLI.
+
+Process state is managed in [generations](https://github.com/laino/final-pm/tree/master/doc#generations),
+which are exclusively managed by synchronous code, asynchronous operations such as timeouts being hidden
+by the Process object and their state robustly managed there. This avoids weird or buggy behavior due to
+multiple asynchronous operations creating race conditions, from which many process managers suffer.
+
+Taken together these design decisions should create an extremely robust daemon process on which
+your application can rely. A crashing daemon process means crashing applications - A component
+meant to make your application more reliable should avoid introducing additional points of failure.
+
+Quick Start
+-----------
+
+Install FinalPM with your preferred node package manager and make sure it is working:
+
+```bash
+yarn global add final-pm
+final-pm --help
+```
+
+Create a bare-bones configuration `process-config.json`:
+```json
+{
+    "applications": [{
+        "name": "myApp",
+        "run": "app.js"
+    }]
+}
+```
+
+And a simple application `app.js`:
+```js
+require('http').createServer((req, res) => {
+    console.log(req.url);
+    res.end("Hello World!");
+}).listen(5555);
+
+// If the master asks us to stop, do so
+process.on('SIGINT', () => {
+    console.log("Goodbye World!");
+
+    // Implicitly calls server.close, then disconnects the IPC channel:
+    require('cluster').worker.disconnect();
+});
+```
+
+Once you have done so, in the same directory, run `final-pm start myApp`:
+```
+[...]
+[INFO ] [Action] Start 1 process...
+[INFO ] [Action] Success
+```
+
+If you navigate to [http://localhost:5555/](http://localhost:5555/) now, you should
+be greeted with "Hello World!".
+
+You can watch your app's console output with `final-pm log -f` or check the `log.txt`
+file created in the same directory:
+```
+[...]
+[LOG  ] [10:24:36 AM] [myApp/0] [STDOUT] /
+[LOG  ] [10:24:36 AM] [myApp/0] [STDOUT] /favicon.ico
+```
+
+Now, because we are expecting a heavy load on our application, we may be inclined to
+start multiple instances of our application. For this we will modify `process-config.json`
+to look like this:
+
+```json
+{
+    "applications": [{
+        "name": "myApp",
+        "run": "app.js",
+        "instances": 4
+    }]
+}
+```
+
+Use `final-pm scale myApp` to make FinalPM automatically figure out how many new processes to start:
+```
+[INFO ] [Config] myApp{instances} updated
+[INFO ] [Action] Start 3 processes...
+[INFO ] [Action] Success
+```
+
+`final-pm show` will show an overview of all currently running processes. There you may notice that
+one of our processes (myApp/0) has a little indicator saying "(old)" behind its name. This means
+that the process was started using an older configuration (before we added instances: 4).
+
+In our case this is not important, since the new configuration doesn't affect the behavior of our processes
+at all. But let's just replace it with a new process to get rid of that pesky "(old)":
+
+`final-pm restart myApp/0`
+
+What this will do is start a new process for `myApp/0`, then stop the old process once the new instance has
+become ready. Zero Downtime. Also `restart` is really just an alias for `start`, since FinalPM always
+stops old processes once new instances of them become ready.
+
+We have hardly scratched the surface of what FinalPM can do, though this is the end of this quick start guide.
+For further reading check `final-pm --help-usage`, `final-pm --help-configuration`, `final-pm --help-generations` etc.
+
+To stop the daemon and kill all remaining processes, do:
+
+`final-pm --kill`
+
 Documentation
 -------------
 
@@ -10,21 +129,14 @@ Documentation for the CLI/architecture can be found [here](https://github.com/la
 The same information is also accessible via `final-pm --help-all`.
 
 Also check out the [/examples](https://github.com/laino/final-pm/blob/master/examples/) directory.
-If you have cloned this repository, the easiest way to start playing around with them is `cd`'ing into
-that directory and running `final-pm start all`.
+If you have cloned this repository locally, the easiest way to start playing around with them is
+`cd examples && final-pm start all`.
 
 TODO
-====
+----
 
 - More test cases, especially for negatives
 - Documentation for using FinalPM programmatically / Daemon API
-
-Why?
-----
-
-The current state of node.js process managers is terrible. Besides most of them
-trying to be 20 things at once, and not even being decent at any of them, 
-there is hardly one being half as reliable as you'd expect of a core component.
 
 Comparison Between Process Managers
 -------------------------------------------
@@ -55,23 +167,6 @@ Comparison Between Process Managers
 6. We don't believe any of these belong directly in a process manager, but FinalPM won't stand in your way of
    adding such things to your application. Due to only focusing on the basics, FinalPM's codebase is smaller
    by an order of magnitude.
-
-Design Philosophy
------------------
-
-Most of the complicated logic resides outside of the daemon itself, either sandboxed
-into other processes (Loggers) or moved up the chain (clients). The daemon should only support
-a minimal set of generic functions, which can be used to create higher level interfaces,
-such as the CLI.
-
-Process state is managed in [https://github.com/laino/final-pm/tree/master/doc#generations](generations),
-which are exclusively managed by synchronous code, asynchronous operations such as timeouts being hidden
-by the Process object and their state robustly managed there. This avoids weird or buggy behavior due to
-multiple asynchronous operations creating race conditions, from which many process managers suffer.
-
-Taken together these design decisions should create an extremely robust daemon process on which
-your application can rely. A crashing daemon process means crashing applications - A component
-meant to make your application more reliable should avoid introducing additional points of failure.
 
 A note on PM2
 ------------
