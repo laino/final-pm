@@ -26,7 +26,7 @@ exports.options = [
     },
     {
         name: 'set',
-        typeLabel: '[underline]{app}-[underline]{key}=[underline]{value}',
+        typeLabel: '[[underline]{app}:][underline]{key}=[underline]{value}',
         type: String,
         description: "Override a configuration key.",
         multiple: true,
