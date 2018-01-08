@@ -91,4 +91,28 @@ describe('daemon', function() {
         await client.close();
         await daemon.killDaemon();
     });
+
+    it('should restart crashing applications', async function() {
+        this.timeout(3000);
+
+        const daemon = await common.daemonWithConfig();
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'crashingApp');
+
+        await common.wait(1500);
+
+        let crashingApp = common.matchingObjects((await client.invoke('info')).processes, {
+            'app-name': 'crashingApp',
+        });
+
+        assert.equal(1, crashingApp.length, "one instance of 'crashingApp' is running");
+
+        crashingApp = crashingApp[0];
+
+        assert.notEqual(0, crashingApp.crashes, "was restart at least once");
+
+        await client.close();
+        await daemon.killDaemon();
+    });
 });

@@ -107,6 +107,12 @@ exports.loadConfig = async (name = 'working.js') => {
     return config.applications;
 };
 
+exports.wait = (ms) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+};
+
 exports.appdir = () => {
     const dir = exports.tmpdir();
     appdirs.add(dir);
