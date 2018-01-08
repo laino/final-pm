@@ -33,7 +33,7 @@ __Examples__
                              checks parent folders. If you specified a configuration for an already        
                              running application, it will only be applied once the application is manually 
                              (re-)started, but not when a new process is spawned after a crash.            
-  --set app-key=value        Override a configuration key.                                                 
+  --set [app:]key=value      Override a configuration key.                                                 
   -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
                              to max-buffered-log-bytes (see --help-configuration).                         
   -f, --follow               When using the log action, will output new log lines continously as they      
@@ -129,7 +129,9 @@ i.e. myApp:ready-on="message" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.
 
 __Logging__  
 
-Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. The logging process is automatically started with your application, and is stopped once the last process of your application exits. By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as creating a new application 'my-logger' which listens to process.on(...) and setting _logger_ to 'my-logger' in your main application. All output of logger processes will end up in the daemon log file (_daemon-log_). In case your logger crashed, you can check its output with `final-pm log _logger_` or check the daemon log file.  
+Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. The logging process is automatically started with your application, and is stopped once the last process of your application exits. By default all applications use the simple file-logger that ships with final-pm, but creating a custom logger is very simple. Have a look at the file-logger if you're curious how to create your own logger:  
+https://github.com/laino/final-pm/blob/master/loggers/file.js  
+All output of logger processes themselves will end up in the daemon log file (_daemon-log_).  
 
 __Default Config__  
 

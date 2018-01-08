@@ -310,10 +310,10 @@ exports.configuration = [
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
             "Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. " +
             "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
-            "By default all applications use the simple file-logger that ships with final-pm, but creating your own logger is as simple as " +
-            "creating a new application 'my-logger' which listens to process.on(...) and setting [italic]{logger} to 'my-logger' in your main application. " +
-            "All output of logger processes will end up in the daemon log file ([italic]{daemon-log}). " +
-            "In case your logger crashed, you can check its output with `final-pm log [italic]{logger}` or check the daemon log file."
+            "By default all applications use the simple file-logger that ships with final-pm, but creating a custom logger is very simple. " +
+            "Have a look at the file-logger if you're curious how to create your own logger: ",
+            "https://github.com/laino/final-pm/blob/master/loggers/file.js",
+            "All output of logger processes themselves will end up in the daemon log file ([italic]{daemon-log})."
         ]
     },
     {
