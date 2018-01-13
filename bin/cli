@@ -104,6 +104,13 @@ async function runWithConfig(config) {
 
     const info = await client.invoke('info');
 
+    if (info.version !== finalPM.version) {
+        cli.warn("Version",
+            `Daemon version (${info.version || '<2.1.0'}) differs from CLI (${finalPM.version})`);
+    } else {
+        cli.debug("Version", `Daemon and CLI version: ${info.version}`);
+    }
+
     // Add applications we would've uploaded in a dry run
     if (upload && args.dry) {
         const filtered = filterApplications(config.applications);

@@ -34,7 +34,7 @@ async function run() {
     await instance.loadBuiltins();
     await instance.listen(process.argv[2]);
 
-    log("Daemon", "Daemon running.");
+    log("Daemon", `Daemon ${finalPM.version} running.`);
     process.send('ready');
 }
 
