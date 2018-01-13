@@ -166,7 +166,7 @@ Comparison Between Process Managers
 | Safe by Design | __Yes__ | __No__ (3) |
 | Helpful and Early Errors | __Always__ (4) | __Sometimes__ |
 | Clean Configuration | __Yes__ | __No__ (5) |
-| Lines Of Code | ~3,000 | ~20,000 |
+| Lines of Code | ~__3,000__ | ~__20,000__ |
 | Metrics and a boatload of other features | __No__ | __Yes__ (6) |
 
 1. PM2 may default to ungracefully restarting/stopping applications if some conditions are not met, for instance:
