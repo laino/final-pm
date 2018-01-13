@@ -1,10 +1,17 @@
 {
   "name": "final-pm",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": "laino",
   "description": "The Final Process Manager",
   "main": "index.js",
   "repository": "https://github.com/laino/final-pm",
+  "keywords": [
+    "process manager", "process", "manager", "graceful", "restarts",
+    "pm2", "cli", "fault tolerant", "forever", "load balancer", "production",
+    "runtime", "load-balancer", "Keep process alive", "autorestart",
+    "daemon", "final-pm", "finalpm", "supervisor", "supervisord",
+    "load balancer", "load", "balancer"
+  ],
   "license": "MIT",
   "private": false,
   "scripts": {
