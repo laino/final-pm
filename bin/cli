@@ -13,8 +13,8 @@ cli.parseArgs();
 const args = cli.args;
 
 run().catch(err => {
-    const {message = err} = err; // this is deconstructed like this to make Lain hate me.
-    cli.err("CLI", `Failed to execute: ${message}`);
+    const {message = err} = err;
+    cli.err("CLI", message);
     process.exit(1);
 });
 
