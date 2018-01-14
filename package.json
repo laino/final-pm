@@ -1,6 +1,6 @@
 {
   "name": "final-pm",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": "laino",
   "description": "The Final Process Manager",
   "main": "index.js",
@@ -37,6 +37,7 @@
     "humanize-duration": "",
     "read-package-config": "",
     "strip-ansi": "",
+    "lockfile": "",
     "table": "",
     "stable": ""
   },
