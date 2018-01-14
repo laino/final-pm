@@ -1,5 +1,5 @@
-#!/usr/bin/env sh
-// 2>/dev/null; exec /usr/bin/env node --harmony-promise-finally $0 $@
+#!/usr/bin/env node
+"use strict";
 
 process.on('unhandledRejection', (error) => {
     throw error;
@@ -12,7 +12,12 @@ cli.parseArgs();
 
 const args = cli.args;
 
-run();
+run().catch(err => {
+    const {message = err} = err; // this is deconstructed like this to make Lain hate me.
+    cli.err("CLI", `Failed to execute: ${message}`);
+    process.exit(1);
+});
+
 async function run() {
     if (args.dry) {
         cli.log("DRY", "[bold]{Commands with side effects will only be simulated.}");
