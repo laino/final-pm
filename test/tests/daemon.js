@@ -1,6 +1,6 @@
 
 const common = require('../common');
-const assert = require('chai').assert;
+const {assert, expect} = require('chai');
 
 describe('daemon', function() {
     it('should start and stop', async function() {
@@ -27,6 +27,23 @@ describe('daemon', function() {
         assert.equal(await common.exists(file), false,
             "unix socket was removed");
 
+        await daemon.killDaemon();
+    });
+
+    it('should reject malformed API calls', async function() {
+        const daemon = await common.daemon();
+        const client = await common.client(daemon);
+
+        await expect(client.invoke("info", "derp"))
+            .to.be.rejectedWith('Arguments mismatch');
+
+        await expect(client.invoke("404"))
+            .to.be.rejectedWith('no such method');
+
+        await expect(client.invoke("start"))
+            .to.be.rejectedWith('Arguments mismatch');
+
+        await client.close();
         await daemon.killDaemon();
     });
 
