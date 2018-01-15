@@ -14,13 +14,12 @@ module.exports = {
 
     /*
      * Unix domain socket or host:port combination. FinalPM
-     * will use this socket to communicate with the daemon
-     * via JSON-RPC 2.0. URLs must start with either "ws+unix://",
-     * followed by a relative or absolute paths, or with "ws://",
-     * followed by a host:port combination. If the given
-     * host is localhost or an unix domain socket was given,
-     * a new daemon will automatically be launched if the
-     * connection fails.
+     * will use this socket to communicate with the daemon.
+     * URLs must start with either "ws+unix://", followed by
+     * either a relative or absolute path, or with "ws://",
+     * followed by a host:port combination. If the given host is
+     * localhost or an unix domain socket was given, a new daemon
+     * will automatically be launched if the connection fails.
      *
      * Examples:
      *
