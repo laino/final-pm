@@ -10,6 +10,10 @@ describe('daemon', function() {
     });
 
     it('should listen to unix sockets', async function() {
+        if (common.isWindows()) {
+            return;
+        }
+
         const daemon = await common.daemon();
 
         // Close default socket

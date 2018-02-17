@@ -29,7 +29,7 @@ module.exports = {
      *     ws+unix://home/user/final-pm.sock  # Absolute path
      */
 
-    "socket": "ws+unix://./daemon.sock",
+    "socket": os.platform() === "win32" ? "ws://localhost:34253" : "ws+unix://./daemon.sock",
 
     /*
      * The daemon's stdout and stderr will be redirected here.

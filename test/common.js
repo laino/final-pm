@@ -5,6 +5,7 @@ const finalPM = require('../');
 const tmp = require('tmp');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
@@ -26,9 +27,19 @@ process.on("unhandledRejection", (reason) => {
     throw reason;
 });
 
+let portCounter = 30511;
+
 exports.daemon = async () => {
     const daemon = new finalPM.daemon();
-    const socket = 'ws+unix://' + path.join(exports.tmpdir(), 'daemon.sock');
+
+    let socket;
+
+    if (exports.isWindows()) {
+        socket = 'ws://localhost:' + (portCounter++);
+    } else {
+        socket = 'ws+unix://' + path.join(exports.tmpdir(), 'daemon.sock');
+    }
+
     const output = [];
 
     runningDaemons.add(daemon);
@@ -47,6 +58,10 @@ exports.daemon = async () => {
     await daemon.listen(socket);
 
     return daemon;
+};
+
+exports.isWindows = () => {
+    return os.platform() === 'win32';
 };
 
 exports.client = async(daemon) => {
