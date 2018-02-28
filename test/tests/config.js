@@ -20,6 +20,8 @@ describe('config', function() {
         ['broken6.js', '$$$ERROR$$$'],
         ['broken7.js', '$$$ERROR$$$'],
         ['broken8.js', '$$$ERROR$$$'],
+        ['broken9.json', 'will have no effect'],
+        ['broken10.json', 'only supported in cluster mode'],
         ['invalid-extension.ASF', 'Unknown file extension'],
         ['404.json', 'ENOENT', Error]
     ];

@@ -1,0 +1,8 @@
+{
+    "applications": [{
+        "name": "app",
+        "mode": "fork",
+        "ready-on": "listen",
+        "run": "../../examples/sample-app.js"
+    }]
+}
