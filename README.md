@@ -153,7 +153,7 @@ TODO
 
 - More test cases, especially for negatives
 - Documentation for using FinalPM programmatically / Daemon API
-- Support arbitrary processes (non-node, non-cluster)
+- Support arbitrary processes (non-node)
 
 Comparison Between Process Managers
 -------------------------------------------

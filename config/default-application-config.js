@@ -15,6 +15,15 @@ module.exports = {
     'type': 'application',
 
     /*
+     * Whether this applicaton should be started using node.js' cluster
+     * mode or as a standalone node process.
+     *
+     * 'cluster': Use node.js' cluster mode
+     * 'fork':    Use child_process.fork()
+     */
+    'mode': 'cluster',
+
+    /*
      * Defaults to configuration file directory if 'null'.
      * Other paths are relative to this.
      */
@@ -69,16 +78,19 @@ module.exports = {
      * Defines when FinalPM should consider a process to
      * be ready and thus move it to the 'running' generation.
      *
-     * Valid values are 'listen' and 'message'.
+     * Valid values are 'listen', 'message', 'instant'.
      *
      * 'listen': FinalPM waits for the cluster 'listen'
      *           event, which is emitted when the application
      *           begins to listen on a socket.
+     *           Only available in cluster mode.
      *
      * 'message': FinalPM will ignore the cluster 'listen'
      *            event and instead wait for the process to
      *            send a 'ready' message with IPC,
      *            i.e. process.send('ready')
+     *
+     * 'instant': Process is immediately considered ready.
      */
 
     'ready-on': 'listen',

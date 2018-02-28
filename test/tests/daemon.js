@@ -77,8 +77,7 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('should start/stop apps and their loggers', async function() {
-        const daemon = await common.daemonWithConfig();
+    async function startStopTest(daemon) {
         const client = await common.client(daemon);
 
         await client.invoke('all', [
@@ -111,12 +110,19 @@ describe('daemon', function() {
 
         await client.close();
         await daemon.killDaemon();
+    }
+
+    it('should start/stop apps and their loggers in cluster mode', async function() {
+        const daemon = await common.daemonWithConfig();
+        await startStopTest(daemon);
     });
 
-    it('should restart crashing applications', async function() {
-        this.timeout(3000);
+    it('should start/stop apps and their loggers in fork mode', async function() {
+        const daemon = await common.daemonWithConfig('working-fork.js');
+        await startStopTest(daemon);
+    });
 
-        const daemon = await common.daemonWithConfig();
+    async function restartCrashingTest(daemon) {
         const client = await common.client(daemon);
 
         await client.invoke('start', 'crashingApp');
@@ -135,5 +141,19 @@ describe('daemon', function() {
 
         await client.close();
         await daemon.killDaemon();
+    }
+
+    it('should restart crashing applications in cluster mode', async function() {
+        this.timeout(3000);
+
+        const daemon = await common.daemonWithConfig();
+        await restartCrashingTest(daemon);
+    });
+
+    it('should restart crashing applications in fork mode', async function() {
+        this.timeout(3000);
+
+        const daemon = await common.daemonWithConfig('working-fork.js');
+        await restartCrashingTest(daemon);
     });
 });
