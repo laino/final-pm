@@ -1,0 +1,6 @@
+{
+    "name": "testpackage",
+    "config": {
+        "test": "a"
+    }
+}

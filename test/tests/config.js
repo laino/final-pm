@@ -20,7 +20,7 @@ describe('config', function() {
         ['broken6.js', '$$$ERROR$$$'],
         ['broken7.js', '$$$ERROR$$$'],
         ['broken8.js', '$$$ERROR$$$'],
-        ['404.ASF', 'Unknown file extension'],
+        ['invalid-extension.ASF', 'Unknown file extension'],
         ['404.json', 'ENOENT', Error]
     ];
 
@@ -95,6 +95,45 @@ describe('config', function() {
             await expect(finalPM.config.getConfig(configPath))
                 .to.be.rejectedWith(errorClass || ConfigError, err);
         }
+    });
+
+    it('should read config values from a package.json and npm config', async function() {
+        const JS = await finalPM.config.getConfig(JS_CONFIG);
+
+        assert.deepEqual(JS.applications[0].env['npm_package_config_test'], 'a',
+            "Config values from package.json appear in application envirnment.");
+
+        const JS_ARGS_USER = await finalPM.config.getConfig({
+            path: JS_CONFIG,
+            args: ['npm-user-config=' + path.resolve(__dirname, '..', 'configs', 'customconfig')]
+        });
+
+        assert.deepEqual(JS_ARGS_USER.applications[0].env['npm_package_config_test'], 'b',
+            "CLI: Custom user config can override package.json config values.");
+
+        const JS_ENV_USER = await finalPM.config.getConfig({
+            path: JS_CONFIG,
+            env: {'FINAL_PM_CONFIG_NPM_USER_CONFIG': path.resolve(__dirname, '..', 'configs', 'customconfig')}
+        });
+
+        assert.deepEqual(JS_ENV_USER.applications[0].env['npm_package_config_test'], 'b',
+            "ENV: Custom user config can override package.json config values.");
+
+        const JS_ARGS_GLOBAL = await finalPM.config.getConfig({
+            path: JS_CONFIG,
+            args: ['npm-global-config=' + path.resolve(__dirname, '..', 'configs', 'customconfig')]
+        });
+
+        assert.deepEqual(JS_ARGS_GLOBAL.applications[0].env['npm_package_config_test'], 'b',
+            "CLI: Custom global config can override package.json config values.");
+
+        const JS_ENV_GLOBAL = await finalPM.config.getConfig({
+            path: JS_CONFIG,
+            env: {'FINAL_PM_CONFIG_NPM_GLOBAL_CONFIG': path.resolve(__dirname, '..', 'configs', 'customconfig')}
+        });
+
+        assert.deepEqual(JS_ENV_GLOBAL.applications[0].env['npm_package_config_test'], 'b',
+            "ENV: Custom global config can override package.json config values.");
     });
 });
 
