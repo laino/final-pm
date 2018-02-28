@@ -28,36 +28,32 @@ __Examples__
 ```
   # final-pm [--config File|Folder] [Action Select...] 
 
-  -c, --config File|Folder   Default: process-config.{js,json}                                 
-                             Load a configuration file. If the path doesn't begin with ./ or   
-                             /, also checks parent folders. If you specified a configuration   
-                             for an already running application, it will only be applied once  
-                             the application is manually (re-)started, but not when a new      
-                             process is spawned after a crash.                                 
-  --set [app:]key=value      Override a configuration key.                                     
-  -n, --lines num            When using the log action, sets the number of past log lines to   
-                             display. Up to max-buffered-log-bytes (see --help-configuration). 
-  -f, --follow               When using the log action, will output new log lines continously  
-                             as they appear. Cancel with CTRL-C.                               
-  --launch                   Start the daemon even if there's nothing to do.                   
-  --kill                     Stop the daemon, ungracefully killing any remaining processes.    
-                             This is done after all other commands have been sent to the       
-                             daemon.                                                           
-                             Use 'final-pm --wait --kill stop all' to achieve a graceful stop. 
-  --wait                     Wait for any pending actions to complete. This means final-pm     
-                             will only return once the new, old and marked generations are     
-                             empty.                                                            
-  --force                    Make final-pm ignore some safeguards. (I hope you know what       
-                             you're doing)                                                     
-  --no-upload                Don't upload new application configurations from config files.    
-  --dry                      Don't actually do anything, use --verbose for more output.        
-  -v, --verbose              Show debug output.                                                
-  --help                     Print short usage guide.                                          
-  --help-usage               Print full usage guide including actions.                         
-  --help-generations         Print help page about generations.                                
-  --help-example             Print a short example application.                                
-  --help-configuration       Print full configuration help.                                    
-  --help-all                 Print full help page.                                             
+  -c, --config File|Folder   Default: process-config.{js,json}                                             
+                             Load a configuration file. If the path doesn't begin with ./ or /, also       
+                             checks parent folders. If you specified a configuration for an already        
+                             running application, it will only be applied once the application is manually 
+                             (re-)started, but not when a new process is spawned after a crash.            
+  --set [app:]key=value      Override a configuration key.                                                 
+  -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
+                             to max-buffered-log-bytes (see --help-configuration).                         
+  -f, --follow               When using the log action, will output new log lines continously as they      
+                             appear. Cancel with CTRL-C.                                                   
+  --launch                   Start the daemon even if there's nothing to do.                               
+  --kill                     Stop the daemon, ungracefully killing any remaining processes. This is done   
+                             after all other commands have been sent to the daemon.                        
+                             Use 'final-pm --wait --kill stop all' to achieve a graceful stop.             
+  --wait                     Wait for any pending actions to complete. This means final-pm will only       
+                             return once the new, old and marked generations are empty.                    
+  --force                    Make final-pm ignore some safeguards. (I hope you know what you're doing)     
+  --no-upload                Don't upload new application configurations from config files.                
+  --dry                      Don't actually do anything, use --verbose for more output.                    
+  -v, --verbose              Show debug output.                                                            
+  --help                     Print short usage guide.                                                      
+  --help-usage               Print full usage guide including actions.                                     
+  --help-generations         Print help page about generations.                                            
+  --help-example             Print a short example application.                                            
+  --help-configuration       Print full configuration help.                                                
+  --help-all                 Print full help page.                                                         
 
 ```
 
@@ -140,85 +136,85 @@ All output of logger processes themselves will end up in the daemon log file (_d
 __Default Config__  
 
 ```js
-  // default-config.js                                                          
-  const os = require("os");                                                     
-  const path = require("path");                                                 
-  module.exports = {                                                            
+  // default-config.js                                                                          
+  const os = require("os");                                                                     
+  const path = require("path");                                                                 
+  module.exports = {                                                                            
 
-      /*                                                                        
-       * FinalPM will store state and other information here.                   
-       * Relative to process.cwd(), but absolute paths are also                 
-       * allowed. All other paths in this configuration file are                
-       * relative to this.                                                      
-       */                                                                       
+      /*                                                                                        
+       * FinalPM will store state and other information here.                                   
+       * Relative to process.cwd(), but absolute paths are also                                 
+       * allowed. All other paths in this configuration file are                                
+       * relative to this.                                                                      
+       */                                                                                       
 
-      "home": path.resolve(os.homedir(), ".final-pm"),                          
+      "home": path.resolve(os.homedir(), ".final-pm"),                                          
 
-      /*                                                                        
-       * Unix domain socket or host:port combination. FinalPM                   
-       * will use this socket to communicate with the daemon.                   
-       * URLs must start with either "ws+unix://", followed by                  
-       * either a relative or absolute path, or with "ws://",                   
-       * followed by a host:port combination. If the given host is              
-       * localhost or an unix domain socket was given, a new daemon             
-       * will automatically be launched if the connection fails.                
-       *                                                                        
-       * Examples:                                                              
-       *                                                                        
-       *     ws://localhost:3242                # localhost port 3242           
-       *     ws+unix://./final-pm.sock          # Relative to "home"            
-       *     ws+unix:///home/user/final-pm.sock # Absolute path                 
-       *     ws+unix://home/user/final-pm.sock  # Absolute path                 
-       */                                                                       
+      /*                                                                                        
+       * Unix domain socket or host:port combination. FinalPM                                   
+       * will use this socket to communicate with the daemon.                                   
+       * URLs must start with either "ws+unix://", followed by                                  
+       * either a relative or absolute path, or with "ws://",                                   
+       * followed by a host:port combination. If the given host is                              
+       * localhost or an unix domain socket was given, a new daemon                             
+       * will automatically be launched if the connection fails.                                
+       *                                                                                        
+       * Examples:                                                                              
+       *                                                                                        
+       *     ws://localhost:3242                # localhost port 3242                           
+       *     ws+unix://./final-pm.sock          # Relative to "home"                            
+       *     ws+unix:///home/user/final-pm.sock # Absolute path                                 
+       *     ws+unix://home/user/final-pm.sock  # Absolute path                                 
+       */                                                                                       
 
-      "socket": "ws+unix://./daemon.sock",                                      
+      "socket": os.platform() === "win32" ? "ws://localhost:34253" : "ws+unix://./daemon.sock", 
 
-      /*                                                                        
-       * The daemon's stdout and stderr will be redirected here.                
-       */                                                                       
+      /*                                                                                        
+       * The daemon's stdout and stderr will be redirected here.                                
+       */                                                                                       
 
-      "daemon-log": "./daemon.out",                                             
+      "daemon-log": "./daemon.out",                                                             
 
-      /*                                                                        
-       * Where npm stores its global configuration.                             
-       * Used to generate config environment variables                          
-       * when running .js configuration files.                                  
-       */                                                                       
+      /*                                                                                        
+       * Where npm stores its global configuration.                                             
+       * Used to generate config environment variables                                          
+       * when running .js configuration files.                                                  
+       */                                                                                       
 
-      "npm-global-config": "/etc/npmrc",                                        
+      "npm-global-config": "/etc/npmrc",                                                        
 
-      /*                                                                        
-       * Where npm stores its per-user configuration.                           
-       * Used to generate config environment variables                          
-       * when running .js configuration files.                                  
-       */                                                                       
+      /*                                                                                        
+       * Where npm stores its per-user configuration.                                           
+       * Used to generate config environment variables                                          
+       * when running .js configuration files.                                                  
+       */                                                                                       
 
-      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),                  
+      "npm-user-config": path.resolve(os.homedir(), ".npmrc"),                                  
 
-      /*                                                                        
-       * A list of environment variables that shouldn't be passed               
-       * to config scripts. Avoids marking a configuration as outdated          
-       * just because some inconsequential environment variable changed.        
-       */                                                                       
+      /*                                                                                        
+       * A list of environment variables that shouldn't be passed                               
+       * to config scripts. Avoids marking a configuration as outdated                          
+       * just because some inconsequential environment variable changed.                        
+       */                                                                                       
 
-      "ignore-env": [                                                           
-          "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID", 
-          "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",  
-          "SHELL", "SSH_CLIENT", "SSH_TTY", "SSH_CONNECTION", "USER", "LANG",   
-          "LOGNAME", "SHLVL", "MAIL", "HOME", "PS1", "PS2", "PS3", "PS4",       
-          "PROMPT_COMMAND", "XAUTHORITY", "COLORFGBG", "GITAWAREPROMPT",        
-          "LC_MESSAGES", "DISPLAY", "EDITOR", "COLORTERM",                      
-          "DBUS_SESSION_BUS_ADDRESS"                                            
-      ],                                                                        
+      "ignore-env": [                                                                           
+          "PWD", "OLDPWD", "_", "WINDOWPATH", "WINDOWID", "DESKTOP_STARTUP_ID",                 
+          "XDG_VTNR", "XDG_SESSION_ID", "XDG_SEAT", "XDG_RUNTIME_DIR", "TERM",                  
+          "SHELL", "SSH_CLIENT", "SSH_TTY", "SSH_CONNECTION", "USER", "LANG",                   
+          "LOGNAME", "SHLVL", "MAIL", "HOME", "PS1", "PS2", "PS3", "PS4",                       
+          "PROMPT_COMMAND", "XAUTHORITY", "COLORFGBG", "GITAWAREPROMPT",                        
+          "LC_MESSAGES", "DISPLAY", "EDITOR", "COLORTERM",                                      
+          "DBUS_SESSION_BUS_ADDRESS"                                                            
+      ],                                                                                        
 
-      /*                                                                        
-       * Array of application configurations.                                   
-       * Refer to default-application-config.js                                 
-       */                                                                       
+      /*                                                                                        
+       * Array of application configurations.                                                   
+       * Refer to default-application-config.js                                                 
+       */                                                                                       
 
-      "applications": [],                                                       
+      "applications": [],                                                                       
 
-  };                                                                            
+  };                                                                                            
 
 ```
 
@@ -240,6 +236,15 @@ __Default Application Config__
        */                                                                   
 
       'type': 'application',                                                
+
+      /*                                                                    
+       * Whether this applicaton should be started using node.js' cluster   
+       * mode or as a standalone node process.                              
+       *                                                                    
+       * 'cluster': Use node.js' cluster mode                               
+       * 'fork':    Use child_process.fork()                                
+       */                                                                   
+      'mode': 'cluster',                                                    
 
       /*                                                                    
        * Defaults to configuration file directory if 'null'.                
@@ -296,16 +301,19 @@ __Default Application Config__
        * Defines when FinalPM should consider a process to                  
        * be ready and thus move it to the 'running' generation.             
        *                                                                    
-       * Valid values are 'listen' and 'message'.                           
+       * Valid values are 'listen', 'message', 'instant'.                   
        *                                                                    
        * 'listen': FinalPM waits for the cluster 'listen'                   
        *           event, which is emitted when the application             
        *           begins to listen on a socket.                            
+       *           Only available in cluster mode.                          
        *                                                                    
        * 'message': FinalPM will ignore the cluster 'listen'                
        *            event and instead wait for the process to               
        *            send a 'ready' message with IPC,                        
        *            i.e. process.send('ready')                              
+       *                                                                    
+       * 'instant': Process is immediately considered ready.                
        */                                                                   
 
       'ready-on': 'listen',                                                 
