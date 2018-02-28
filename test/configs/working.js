@@ -5,6 +5,14 @@ module.exports = {
         'ready-on': 'message',
         'run': '../../examples/sample-app.js',
     }, {
+        'name': 'app-listen',
+        'ready-on': 'listen',
+        'run': '../../examples/sample-app.js',
+    }, {
+        'name': 'app-instant',
+        'ready-on': 'instant',
+        'run': '../../examples/sample-app.js',
+    }, {
         'name': 'crashingApp',
         'ready-on': 'message',
         'run': '../../examples/crashing-app.js',
@@ -12,16 +20,16 @@ module.exports = {
         'name': 'neverStarts',
         'ready-on': 'message',
         'start-timeout': 3000,
-        'run': './../../examples/never-starting-app.js',
+        'run': './../apps/never-starting-app.js',
     }, {
         'name': 'neverStops',
         'ready-on': 'message',
         'stop-timeout': 3000,
-        'run': './../../examples/never-stopping-app.js',
+        'run': './../apps/never-stopping-app.js',
     }, {
         'name': 'zombie',
         'ready-on': 'message',
-        'run': './../../examples/zombie.js',
+        'run': './../apps/zombie.js',
         'kill-signal': 'SIGTERM',
         'start-timeout': 500 // immediately become a zombie
     }]

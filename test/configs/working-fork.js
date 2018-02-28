@@ -6,6 +6,16 @@ module.exports = {
         'ready-on': 'message',
         'run': '../../examples/sample-app.js',
     }, {
+        'name': 'app-listen',
+        'mode': 'fork',
+        'ready-on': 'instant', // Can't use 'listen' in fork mode
+        'run': '../../examples/sample-app.js',
+    }, {
+        'name': 'app-instant',
+        'mode': 'fork',
+        'ready-on': 'instant',
+        'run': '../../examples/sample-app.js',
+    }, {
         'name': 'crashingApp',
         'mode': 'fork',
         'ready-on': 'message',
@@ -15,18 +25,18 @@ module.exports = {
         'ready-on': 'message',
         'mode': 'fork',
         'start-timeout': 3000,
-        'run': './../../examples/never-starting-app.js',
+        'run': './../apps/never-starting-app.js',
     }, {
         'name': 'neverStops',
         'mode': 'fork',
         'ready-on': 'message',
         'stop-timeout': 3000,
-        'run': './../../examples/never-stopping-app.js',
+        'run': './../apps/never-stopping-app.js',
     }, {
         'name': 'zombie',
         'mode': 'fork',
         'ready-on': 'message',
-        'run': './../../examples/zombie.js',
+        'run': './../apps/zombie.js',
         'kill-signal': 'SIGTERM',
         'start-timeout': 500 // immediately become a zombie
     }]
