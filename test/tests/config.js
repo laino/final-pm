@@ -59,6 +59,13 @@ describe('config', function() {
         }
     }
 
+    it('should return the global config when called without a path', async function() {
+        const config = await finalPM.config.getConfig();
+
+        assert.equal(config['config-path'], null, 'global config should have no config path');
+        assert.equal(config.applications.length, 0, 'global config should have no applications');
+    });
+
     it('should load JavaScript configuration files correctly', async function() {
         await testConfig(JS_CONFIG);
         await testConfig(JS_PROMISE_CONFIG);
