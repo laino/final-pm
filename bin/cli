@@ -13,8 +13,7 @@ cli.parseArgs();
 const args = cli.args;
 
 run().catch(err => {
-    const {message = err} = err;
-    const {stack = err} = err;
+    const {message = err, stack = err} = err;
     cli.err("CLI", message);
     cli.debug("CLI", stack);
     process.exit(1);
