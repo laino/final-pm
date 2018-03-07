@@ -22,6 +22,7 @@ module.exports = {
         'name': 'zombie',
         'ready-on': 'message',
         'run': './zombie.js',
+        'max-instances': 2,
         'kill-signal': 'SIGTERM',
         'start-timeout': 500 // immediately become a zombie
     }]

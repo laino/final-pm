@@ -129,6 +129,19 @@ module.exports = {
     'instances': 1,
 
     /*
+     * How many instances of this application should at most
+     * be allowed to run at the same time. At least 'instances' + 1.
+     *
+     * If this limit is reached, FinalPM will delay starting
+     * new processes until an old one has stopped. This
+     * can thus be used to implement staggered restarts.
+     *
+     * '0' for no limit.
+     */
+
+    'max-instances': 0,
+
+    /*
      * Whether FinalPM should consider each process
      * of this application to be functionally identical.
      *

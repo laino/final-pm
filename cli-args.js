@@ -67,7 +67,7 @@ exports.options = [
         name: 'wait',
         type: Boolean,
         description: "Wait for any pending actions to complete. This means final-pm will only return once " +
-                     "the [bold]{new}, [bold]{old} and [bold]{marked generations} are empty.",
+                     "the [bold]{queue}, [bold]{new}, [bold]{old} and [bold]{marked generations} are empty.",
         defaultValue: false
     },
     {
@@ -234,7 +234,11 @@ exports.generations = [
         header: "Generations",
         content: [
             "Processes are grouped in generations:",
-            "The [bold]{new}, [bold]{running}, [bold]{old}, and [bold]{marked generation}.",
+            "The [bold]{queue}, [bold]{new}, [bold]{running}, [bold]{old}, and [bold]{marked generation}.",
+            "",
+            "[underline]{Queue Generation}",
+            "All processes begin in this generation and remain here until they can be started. Usually " +
+            "they can be started immediately unless [bold]{max-instances} is reached.",
             "",
             "[underline]{New Generation}",
             "The [bold]{new generation} is where processes remain until they are considered [bold]{ready}. " +
