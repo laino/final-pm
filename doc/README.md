@@ -65,7 +65,7 @@ A selector can either be an _application name_, internal process ID (id=_id_), o
 
 **Actions**  
 
-Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **add**, **delete**, **log**.  
+Valid actions are **start**, **stop**, **kill**, **scale**, **show**, **inspect**, **add**, **delete**, **log**.  
 
 __start / restart__  
 
@@ -85,7 +85,13 @@ Upload configuration (implies **add**), then start or stop processes for each se
 
 __show__  
 
-Show information about all selected applications / processes. To also show logging processes, use **--verbose**.  
+Show an overview of (selected) processes.  
+Use **--verbose** to also show logging processes.  
+
+__inspect__  
+
+Show detailed information for all selected applications / processes.  
+Use **--verbose** to show even more detailed information.  
 
 __add__  
 
@@ -330,6 +336,7 @@ __Default Application Config__
        * 'SIGINT': FinalPM will send the SIGINT signal.                     
        * 'SIGTERM': FinalPM will send the SIGTERM signal.                   
        * 'disconnect': FinalPM will use child.disconnect()                  
+       * 'message': FinalPM will send a 'stop' message.                     
        */                                                                   
 
       'stop-signal': 'SIGINT',                                              

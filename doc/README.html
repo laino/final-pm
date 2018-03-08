@@ -90,7 +90,7 @@ A selector can either be an <i>application name</i>, internal process ID (id=<i>
 </p>
 
 <p>
-Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>add</b>, <b>delete</b>, <b>log</b>.<br>
+Valid actions are <b>start</b>, <b>stop</b>, <b>kill</b>, <b>scale</b>, <b>show</b>, <b>inspect</b>, <b>add</b>, <b>delete</b>, <b>log</b>.<br>
 </p>
 
 <p>
@@ -120,7 +120,15 @@ Upload configuration (implies <b>add</b>), then start or stop processes for each
 <p>
 <u>show</u><br>
 <br>
-Show information about all selected applications / processes. To also show logging processes, use <b>--verbose</b>.<br>
+Show an overview of (selected) processes.<br>
+Use <b>--verbose</b> to also show logging processes.<br>
+</p>
+
+<p>
+<u>inspect</u><br>
+<br>
+Show detailed information for all selected applications / processes.<br>
+Use <b>--verbose</b> to show even more detailed information.<br>
 </p>
 
 <p>
@@ -402,6 +410,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
        * 'SIGINT': FinalPM will send the SIGINT signal.                     
        * 'SIGTERM': FinalPM will send the SIGTERM signal.                   
        * 'disconnect': FinalPM will use child.disconnect()                  
+       * 'message': FinalPM will send a 'stop' message.                     
        */                                                                   
                                                                             
       'stop-signal': 'SIGINT',                                              
