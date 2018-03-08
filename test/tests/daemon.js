@@ -164,7 +164,7 @@ describe('daemon', function() {
         await restartCrashingTest(daemon);
     });
 
-    it('should queue instances', async function() {
+    it('should queue instances when max-instances is reached', async function() {
         const daemon = await common.daemonWithConfig();
         const client = await common.client(daemon);
 
