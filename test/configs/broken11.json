@@ -1,0 +1,8 @@
+{
+    "applications": [{
+        "name": "app",
+        "instances": 1,
+        "max-instances": 1,
+        "run": "../../examples/sample-app.js"
+    }]
+}

@@ -3,22 +3,23 @@ module.exports = {
     'applications': [{
         'name': 'app',
         'ready-on': 'message',
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'app-listen',
         'ready-on': 'listen',
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'app-instant',
         'ready-on': 'instant',
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'crashingApp',
         'ready-on': 'message',
-        'run': '../../examples/crashing-app.js',
+        'run': './../apps/crashing-app.js',
     }, {
         'name': 'neverStarts',
         'ready-on': 'message',
+        'max-instances': 2,
         'start-timeout': 3000,
         'run': './../apps/never-starting-app.js',
     }, {

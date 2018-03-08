@@ -4,26 +4,27 @@ module.exports = {
         'name': 'app',
         'mode': 'fork',
         'ready-on': 'message',
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'app-listen',
         'mode': 'fork',
         'ready-on': 'instant', // Can't use 'listen' in fork mode
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'app-instant',
         'mode': 'fork',
         'ready-on': 'instant',
-        'run': '../../examples/sample-app.js',
+        'run': './../apps/sample-app.js',
     }, {
         'name': 'crashingApp',
         'mode': 'fork',
         'ready-on': 'message',
-        'run': '../../examples/crashing-app.js',
+        'run': './../apps/crashing-app.js',
     }, {
         'name': 'neverStarts',
         'ready-on': 'message',
         'mode': 'fork',
+        'max-instances': 2,
         'start-timeout': 3000,
         'run': './../apps/never-starting-app.js',
     }, {

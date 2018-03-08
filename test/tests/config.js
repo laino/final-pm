@@ -22,6 +22,7 @@ describe('config', function() {
         ['broken8.js', '$$$ERROR$$$'],
         ['broken9.json', 'will have no effect'],
         ['broken10.json', 'only supported in cluster mode'],
+        ['broken11.json', 'max-instances must be larger'],
         ['invalid-extension.ASF', 'Unknown file extension'],
         ['404.json', 'ENOENT', Error]
     ];

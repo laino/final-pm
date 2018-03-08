@@ -133,7 +133,7 @@ describe('daemon', function() {
 
         await client.invoke('start', 'crashingApp');
 
-        await common.wait(1500);
+        await common.wait(250);
 
         let crashingApp = common.matchingObjects((await client.invoke('info')).processes, {
             'app-name': 'crashingApp',
@@ -143,7 +143,7 @@ describe('daemon', function() {
 
         crashingApp = crashingApp[0];
 
-        assert.notEqual(crashingApp.crashes, 0, "was restart at least once");
+        assert.notEqual(crashingApp.crashes, 0, "was restartet at least once");
 
         await client.close();
         await daemon.killDaemon();
@@ -161,5 +161,33 @@ describe('daemon', function() {
 
         const daemon = await common.daemonWithConfig('working-fork.js');
         await restartCrashingTest(daemon);
+    });
+
+    it('should queue instances', async function() {
+        const daemon = await common.daemonWithConfig();
+        const client = await common.client(daemon);
+
+        await client.invoke('all', [
+            { name: 'start', args: ['neverStarts'] },
+            { name: 'start', args: ['neverStarts'] },
+            { name: 'start', args: ['neverStarts'] }
+        ]);
+
+        const info = await client.invoke('info');
+
+        assert.equal(common.matchingObjects(info.processes, {
+            'generation': 'new',
+            'app-name': 'neverStarts',
+            'crashes': 0
+        }).length, 2, `two instances of 'neverStarts' are starting`);
+
+        assert.equal(common.matchingObjects(info.processes, {
+            'generation': 'queue',
+            'app-name': 'neverStarts',
+            'crashes': 0
+        }).length, 1, `one instance of 'neverStarts' is queued`);
+
+        await client.close();
+        await daemon.killDaemon();
     });
 });
