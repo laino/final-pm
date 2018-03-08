@@ -2,7 +2,10 @@
 const fs = require('fs');
 const path = require('path');
 
-exports.knownActions = ['start', 'restart', 'stop', 'scale', 'kill', 'show', 'log', 'add', 'delete'];
+exports.knownActions = [
+    'start', 'restart', 'stop',
+    'scale', 'kill', 'show',
+    'log', 'add', 'delete', 'inspect'];
 
 exports.options = [
     {
@@ -193,7 +196,7 @@ exports.usage = [
             "[bold]{Actions}",
             "",
             "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, " +
-            "[bold]{add}, [bold]{delete}, [bold]{log}.",
+            "[bold]{inspect}, [bold]{add}, [bold]{delete}, [bold]{log}.",
             "",
             "[underline]{start / restart}",
             "Upload configuration (implies [bold]{add}), then start N=[italic]{instances} processes for all selected applications. " +
@@ -215,7 +218,12 @@ exports.usage = [
             "until the number of running processes matches configured [italic]{instances}.",
             "",
             "[underline]{show}",
-            "Show information about all selected applications / processes. To also show logging processes, use [bold]{--verbose}.",
+            "Show an overview of (selected) processes.",
+            "Use [bold]{--verbose} to also show logging processes.",
+            "",
+            "[underline]{inspect}",
+            "Show detailed information for all selected applications / processes.",
+            "Use [bold]{--verbose} to show even more detailed information.",
             "",
             "[underline]{add}",
             "Upload application configurations to the daemon, replacing older instances of the same configuration.",
