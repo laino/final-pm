@@ -486,7 +486,7 @@ _final-pm --config sample-config.js start myApp_
   // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
-          'name': 'myApp',                                             
+          'name': 'app',                                               
           'run': './sample-app.js',                                    
           'args': ['arg1', 'arg2'],                                    
           'node-args': ['--harmony'],                                  

@@ -138,7 +138,7 @@ To stop the daemon and kill all remaining processes, do:
 
 `final-pm --kill`
 
-Documentation
+[(CLI) Documentation](https://github.com/laino/final-pm/blob/master/doc/README.md)
 -------------
 
 Documentation for the CLI/architecture can be found [here](https://github.com/laino/final-pm/blob/master/doc/README.md).
