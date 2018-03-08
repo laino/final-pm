@@ -11,6 +11,11 @@ module.exports = {
         'ready-on': 'instant', // Can't use 'listen' in fork mode
         'run': './../apps/sample-app.js',
     }, {
+        'name': 'app-message',
+        'ready-on': 'message',
+        'stop-signal': 'message',
+        'run': './../apps/sample-app.js',
+    }, {
         'name': 'app-instant',
         'mode': 'fork',
         'ready-on': 'instant',

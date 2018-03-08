@@ -9,6 +9,11 @@ module.exports = {
         'ready-on': 'listen',
         'run': './../apps/sample-app.js',
     }, {
+        'name': 'app-message',
+        'ready-on': 'message',
+        'stop-signal': 'message',
+        'run': './../apps/sample-app.js',
+    }, {
         'name': 'app-instant',
         'ready-on': 'instant',
         'run': './../apps/sample-app.js',

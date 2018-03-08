@@ -113,6 +113,7 @@ describe('daemon', function() {
         await startStopTestSingleApp(client, 'app');
         await startStopTestSingleApp(client, 'app-listen');
         await startStopTestSingleApp(client, 'app-instant');
+        await startStopTestSingleApp(client, 'app-message');
 
         await client.close();
         await daemon.killDaemon();
