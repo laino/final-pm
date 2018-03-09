@@ -20,7 +20,7 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
 </p>
 
 <p>
-<pre><code>  &#35; Start processes of all configured applications.                                                                                        
+<pre><code class="">  &#35; Start processes of all configured applications.                                                                                        
   final-pm start all                                                                                                                       
                                                                                                                                            
   &#35; Override configuration settings and start 4 instances of 'worker'                                                                      
@@ -40,7 +40,7 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
 </p>
 
 <p>
-<pre><code>  &#35; final-pm [--config File|Folder] [Action Select...] 
+<pre><code class="">  &#35; final-pm [--config File|Folder] [Action Select...] 
 
   -c, --config File|Folder   Default: process-config.{js,json}                                             
                              Load a configuration file. If the path doesn't begin with ./ or /, also       
@@ -217,7 +217,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre><code>  // default-config.js                                                                          
+<pre><code class="language-javascript">  // default-config.js                                                                          
   const os = require("os");                                                                     
   const path = require("path");                                                                 
   module.exports = {                                                                            
@@ -305,7 +305,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre><code>  // default-application-config.js                                          
+<pre><code class="language-javascript">  // default-application-config.js                                          
   module.exports = {                                                        
                                                                             
       /*                                                                    
@@ -563,7 +563,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre><code>  // sample-config.js                                                  
+<pre><code class="language-javascript">  // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
           'name': 'app',                                               
@@ -583,7 +583,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre><code>  // sample-app.js                                                        
+<pre><code class="language-javascript">  // sample-app.js                                                        
   const cluster = require('cluster');                                     
   require('http').createServer((req, res) => {                            
       res.end(process.argv.join(' ')); // Reply with process arguments    

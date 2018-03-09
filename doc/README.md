@@ -157,7 +157,7 @@ All output of logger processes themselves will end up in the daemon log file (_d
 __Default Config__  
   
 
-```
+```javascript
   // default-config.js                                                                          
   const os = require("os");                                                                     
   const path = require("path");                                                                 
@@ -244,7 +244,7 @@ __Default Config__
 __Default Application Config__  
   
 
-```
+```javascript
   // default-application-config.js                                          
   module.exports = {                                                        
                                                                             
@@ -499,7 +499,7 @@ __Example Config__
 _final-pm --config sample-config.js start myApp_  
   
 
-```
+```javascript
   // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
@@ -518,7 +518,7 @@ _final-pm --config sample-config.js start myApp_
 __Example App__  
   
 
-```
+```javascript
   // sample-app.js                                                        
   const cluster = require('cluster');                                     
   require('http').createServer((req, res) => {                            

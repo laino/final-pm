@@ -63,7 +63,12 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))
 
         if (lineIsBlock !== inBlock) {
             if (lineIsBlock) {
-                line = '<pre><code>' + line;
+                let lang = '';
+
+                if (/\/\/.*\.js *$/.test(line))
+                    lang = 'language-javascript';
+
+                line = `<pre><code class="${lang}">` + line;
             } else {
                 line = '</code></pre>' + line;
             }
