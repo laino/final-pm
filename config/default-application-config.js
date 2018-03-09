@@ -101,6 +101,9 @@ module.exports = {
      *
      * Valid values are 'SIGINT', 'SIGTERM' and 'disconnect'.
      *
+     * On Windows platforms sending 'SIGINT' is unsupported and
+     * FinalPM will default to 'message' instead.
+     *
      * 'SIGINT': FinalPM will send the SIGINT signal.
      * 'SIGTERM': FinalPM will send the SIGTERM signal.
      * 'disconnect': FinalPM will use child.disconnect()

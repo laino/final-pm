@@ -21,6 +21,9 @@ module.exports = {
      * localhost or an unix domain socket was given, a new daemon
      * will automatically be launched if the connection fails.
      *
+     * On Windows platforms only host:port combinations are supported
+     * and FinalPM will default to port 34253 on localhost.
+     *
      * Examples:
      *
      *     ws://localhost:3242                # localhost port 3242

@@ -181,6 +181,9 @@ __Default Config__
        * localhost or an unix domain socket was given, a new daemon                             
        * will automatically be launched if the connection fails.                                
        *                                                                                        
+       * On Windows platforms only host:port combinations are supported                         
+       * and FinalPM will default to port 34253 on localhost.                                   
+       *                                                                                        
        * Examples:                                                                              
        *                                                                                        
        *     ws://localhost:3242                # localhost port 3242                           
@@ -246,6 +249,7 @@ __Default Application Config__
 
 ```javascript
   // default-application-config.js                                          
+  const os = require("os");                                                 
   module.exports = {                                                        
                                                                             
       /*                                                                    
@@ -347,13 +351,16 @@ __Default Application Config__
        *                                                                    
        * Valid values are 'SIGINT', 'SIGTERM' and 'disconnect'.             
        *                                                                    
+       * On Windows platforms sending 'SIGINT' is unsupported and           
+       * FinalPM will default to 'message' instead.                         
+       *                                                                    
        * 'SIGINT': FinalPM will send the SIGINT signal.                     
        * 'SIGTERM': FinalPM will send the SIGTERM signal.                   
        * 'disconnect': FinalPM will use child.disconnect()                  
        * 'message': FinalPM will send a 'stop' message.                     
        */                                                                   
                                                                             
-      'stop-signal': 'SIGINT',                                              
+      'stop-signal': os.platform() === "win32" ? "message" : "SIGINT",      
                                                                             
       /*                                                                    
        * Defines how FinalPM should kill a process.                         
