@@ -4,7 +4,11 @@ const path = require('path');
 const fs = require('fs');
 const argsDefinition = require('../cli-args.js');
 const commandLineUsage = require('command-line-usage');
-const turndownService = new (require('turndown'));
+const turndownService = new (require('turndown'))({
+    codeBlockStyle: 'fenced',
+    fence: '```'
+});
+
 const AnsiToHtml = new (require('ansi-to-html'))({
     standalone: true,
     bg: "#FAFAFA",
@@ -59,9 +63,9 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))
 
         if (lineIsBlock !== inBlock) {
             if (lineIsBlock) {
-                line = '<pre>' + line;
+                line = '<pre><code>' + line;
             } else {
-                line = '</pre>' + line;
+                line = '</code></pre>' + line;
             }
         }
 
@@ -83,18 +87,6 @@ turndownService.addRule('u', {
     filter: 'u',
     replacement: function(content) {
         return '__' + content + '__';
-    }
-});
-
-turndownService.addRule('pre', {
-    filter: 'pre',
-    replacement: function(content) {
-        let type = '';
-        if (/([ \n\r])*\/\/.*\.js *\n/.test(content)) {
-            type = 'js';
-        }
-
-        return '```' + type + '\n' + content + '```\n';
     }
 });
 

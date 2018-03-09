@@ -20,7 +20,7 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
 </p>
 
 <p>
-<pre>  &#35; Start processes of all configured applications.                                                                                        
+<pre><code>  &#35; Start processes of all configured applications.                                                                                        
   final-pm start all                                                                                                                       
                                                                                                                                            
   &#35; Override configuration settings and start 4 instances of 'worker'                                                                      
@@ -35,12 +35,12 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
   &#35; Stop the first and second currently running worker                                                                                     
   final-pm stop running:worker/0 running:worker/1                                                                                          
 
-</pre><u><b>Options</b></u><br>
+</code></pre><u><b>Options</b></u><br>
 <br>
 </p>
 
 <p>
-<pre>  &#35; final-pm [--config File|Folder] [Action Select...] 
+<pre><code>  &#35; final-pm [--config File|Folder] [Action Select...] 
 
   -c, --config File|Folder   Default: process-config.{js,json}                                             
                              Load a configuration file. If the path doesn't begin with ./ or /, also       
@@ -69,7 +69,7 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
   --help-configuration       Print full configuration help.                                                
   --help-all                 Print full help page.                                                         
 
-</pre></p>
+</code></pre></p>
 
 <p>
 <b>Selectors</b><br>
@@ -217,7 +217,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre>  // default-config.js                                                                          
+<pre><code>  // default-config.js                                                                          
   const os = require("os");                                                                     
   const path = require("path");                                                                 
   module.exports = {                                                                            
@@ -297,7 +297,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
                                                                                                 
   };                                                                                            
                                                                                                 
-</pre></p>
+</code></pre></p>
 
 <p>
 <u>Default Application Config</u><br>
@@ -305,7 +305,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre>  // default-application-config.js                                          
+<pre><code>  // default-application-config.js                                          
   module.exports = {                                                        
                                                                             
       /*                                                                    
@@ -548,7 +548,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
                                                                             
   };                                                                        
                                                                             
-</pre></p>
+</code></pre></p>
 
 <p>
 <u><b>Example</b></u><br>
@@ -563,7 +563,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre>  // sample-config.js                                                  
+<pre><code>  // sample-config.js                                                  
   module.exports = {                                                   
       'applications': [{                                               
           'name': 'app',                                               
@@ -575,7 +575,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
       }]                                                               
   };                                                                   
                                                                        
-</pre></p>
+</code></pre></p>
 
 <p>
 <u>Example App</u><br>
@@ -583,7 +583,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
 </p>
 
 <p>
-<pre>  // sample-app.js                                                        
+<pre><code>  // sample-app.js                                                        
   const cluster = require('cluster');                                     
   require('http').createServer((req, res) => {                            
       res.end(process.argv.join(' ')); // Reply with process arguments    
@@ -600,7 +600,7 @@ All output of logger processes themselves will end up in the daemon log file (<i
       cluster.worker.disconnect();                                        
   });                                                                     
                                                                           
-</pre></p>
+</code></pre></p>
 
 <p>
 </p></body></html>
