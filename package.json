@@ -1,6 +1,6 @@
 {
   "name": "final-pm",
-  "version": "2.11.0",
+  "version": "2.11.1",
   "author": "laino",
   "description": "The Final Process Manager",
   "main": "index.js",
@@ -28,7 +28,6 @@
     "final-rpc": "",
     "joi": "",
     "async": "",
-    "marked": "",
     "mkdirp": "",
     "ansi-escape-sequences": "laino/ansi-escape-sequences",
     "command-line-args": "",
