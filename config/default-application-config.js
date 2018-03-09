@@ -1,4 +1,5 @@
 // default-application-config.js
+const os = require("os");
 module.exports = {
 
     /*
@@ -106,7 +107,7 @@ module.exports = {
      * 'message': FinalPM will send a 'stop' message.
      */
 
-    'stop-signal': 'SIGINT',
+    'stop-signal': os.platform() === "win32" ? "message" : "SIGINT",
 
     /*
      * Defines how FinalPM should kill a process.
