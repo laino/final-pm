@@ -24,7 +24,7 @@ exports.options = [
                      "Load a configuration file. If the path doesn't begin with ./ or /, also checks parent folders. " +
                      "If you specified a configuration for an already running application, it will only be applied " +
                      "once the application is manually (re-)started, but not when a new process is spawned after a crash.",
-        multiple: true,
+        lazyMultiple: true,
         defaultValue: []
     },
     {
@@ -32,7 +32,7 @@ exports.options = [
         typeLabel: '[[underline]{app}:][underline]{key}=[underline]{value}',
         type: String,
         description: "Override a configuration key.",
-        multiple: true,
+        lazyMultiple: true,
         defaultValue: []
     },
     {
