@@ -109,6 +109,8 @@ describe('daemon', function() {
 
     inAllModes(async function(getDaemon) {
         it('should start/stop apps and their loggers', async function() {
+            this.timeout(4000);
+
             const daemon = await getDaemon();
             const client = await common.client(daemon);
 
@@ -122,8 +124,6 @@ describe('daemon', function() {
         });
 
         it('should restart crashing applications', async function() {
-            this.timeout(3000);
-
             const daemon = await getDaemon();
 
             const client = await common.client(daemon);

@@ -18,7 +18,7 @@
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
     "lint": "./node_modules/.bin/eslint . bin/*",
-    "test": "./node_modules/.bin/mocha . test/tests",
+    "test": "./node_modules/.bin/mocha --slow 1300ms . test/tests",
     "autofix": "./node_modules/.bin/eslint --fix . bin/*"
   },
   "bin": {
