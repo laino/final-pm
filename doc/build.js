@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const argsDefinition = require('../cli-args.js');
 const commandLineUsage = require('command-line-usage');
-const toMarkdown = require('to-markdown');
+const turndownService = new (require('turndown'));
 const AnsiToHtml = new (require('ansi-to-html'))({
     standalone: true,
     bg: "#FAFAFA",
@@ -78,24 +78,27 @@ const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))
     }).join('') + '</p>';
 
 const html = `<html><body style="margin: 2em; font-size: 15px">${htmlBody}</body></html>`;
-const markdown = toMarkdown(htmlBody, {
-    converters: [{
-        filter: 'u',
-        replacement: function(content) {
-            return '__' + content + '__';
-        }
-    }, {
-        filter: 'pre',
-        replacement: function(content) {
-            let type = '';
-            if (/([ \n\r])*\/\/.*\.js *\n/.test(content)) {
-                type = 'js';
-            }
 
-            return '```' + type + '\n' + content + '```\n';
+turndownService.addRule('u', {
+    filter: 'u',
+    replacement: function(content) {
+        return '__' + content + '__';
+    }
+});
+
+turndownService.addRule('pre', {
+    filter: 'pre',
+    replacement: function(content) {
+        let type = '';
+        if (/([ \n\r])*\/\/.*\.js *\n/.test(content)) {
+            type = 'js';
         }
-    }]
-}).replace(/__\*\*(\w.*?\w)\*\*__/g, '### $1');
+
+        return '```' + type + '\n' + content + '```\n';
+    }
+});
+
+const markdown = turndownService.turndown(htmlBody).replace(/__\*\*(\w.*?\w)\*\*__/g, '### $1');
 
 fs.writeFileSync(path.resolve(__dirname, 'README.html'), html);
 fs.writeFileSync(path.resolve(__dirname, 'README.md'), markdown);

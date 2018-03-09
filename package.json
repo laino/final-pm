@@ -44,7 +44,7 @@
     "ansi-to-html": "",
     "eslint": "",
     "eslint-plugin-mocha": "",
-    "to-markdown": "",
+    "turndown": "",
     "mocha": "",
     "chai": "",
     "chai-as-promised": "",
