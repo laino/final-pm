@@ -1,4 +1,4 @@
-FinalPM [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)](https://travis-ci.org/laino/final-pm)
+FinalPM [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)](https://travis-ci.org/laino/final-pm) [![David](https://img.shields.io/david/laino/final-pm.svg)](https://david-dm.org/laino/final-pm) [![GitHub package version](https://img.shields.io/github/package-json/v/laino/final-pm.svg)](https://github.com/laino/final-pm) [![npm](https://img.shields.io/npm/v/final-pm.svg)](https://www.npmjs.com/package/final-pm)
 =======
 
 Finally a solid process manager. Never unintentionally kill your application in production again.
