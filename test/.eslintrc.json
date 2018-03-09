@@ -5,6 +5,7 @@
   "globals": {
     "it": true,
     "should": true,
+    "context": true,
     "describe": true
   },
   "rules": {

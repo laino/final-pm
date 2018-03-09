@@ -107,88 +107,107 @@ describe('daemon', function() {
         assert.equal(info.processes.length, 0, `instance of ${appName} was stopped`);
     }
 
-    async function startStopTest(daemon) {
-        const client = await common.client(daemon);
+    inAllModes(async function(getDaemon) {
+        it('should start/stop apps and their loggers', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
 
-        await startStopTestSingleApp(client, 'app');
-        await startStopTestSingleApp(client, 'app-listen');
-        await startStopTestSingleApp(client, 'app-instant');
-        await startStopTestSingleApp(client, 'app-message');
+            await startStopTestSingleApp(client, 'app');
+            await startStopTestSingleApp(client, 'app-listen');
+            await startStopTestSingleApp(client, 'app-instant');
+            await startStopTestSingleApp(client, 'app-message');
 
-        await client.close();
-        await daemon.killDaemon();
-    }
-
-    it('should start/stop apps and their loggers in cluster mode', async function() {
-        const daemon = await common.daemonWithConfig();
-        await startStopTest(daemon);
-    });
-
-    it('should start/stop apps and their loggers in fork mode', async function() {
-        const daemon = await common.daemonWithConfig('working-fork.js');
-        await startStopTest(daemon);
-    });
-
-    async function restartCrashingTest(daemon) {
-        const client = await common.client(daemon);
-
-        await client.invoke('start', 'crashingApp');
-
-        await common.wait(250);
-
-        let crashingApp = common.matchingObjects((await client.invoke('info')).processes, {
-            'app-name': 'crashingApp',
+            await client.close();
+            await daemon.killDaemon();
         });
 
-        assert.equal(crashingApp.length, 1, "one instance of 'crashingApp' is running");
+        it('should restart crashing applications', async function() {
+            this.timeout(3000);
 
-        crashingApp = crashingApp[0];
+            const daemon = await getDaemon();
 
-        assert.notEqual(crashingApp.crashes, 0, "was restartet at least once");
+            const client = await common.client(daemon);
 
-        await client.close();
-        await daemon.killDaemon();
-    }
+            await client.invoke('start', 'crashingApp');
 
-    it('should restart crashing applications in cluster mode', async function() {
-        this.timeout(3000);
+            await common.wait(250);
 
-        const daemon = await common.daemonWithConfig();
-        await restartCrashingTest(daemon);
-    });
+            let crashingApp = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'crashingApp',
+            });
 
-    it('should restart crashing applications in fork mode', async function() {
-        this.timeout(3000);
+            assert.equal(crashingApp.length, 1, "one instance of 'crashingApp' is running");
 
-        const daemon = await common.daemonWithConfig('working-fork.js');
-        await restartCrashingTest(daemon);
-    });
+            crashingApp = crashingApp[0];
 
-    it('should queue instances when max-instances is reached', async function() {
-        const daemon = await common.daemonWithConfig();
-        const client = await common.client(daemon);
+            assert.notEqual(crashingApp.crashes, 0, "was restartet at least once");
 
-        await client.invoke('all', [
-            { name: 'start', args: ['neverStarts'] },
-            { name: 'start', args: ['neverStarts'] },
-            { name: 'start', args: ['neverStarts'] }
-        ]);
+            await client.close();
+            await daemon.killDaemon();
+        });
 
-        const info = await client.invoke('info');
+        it('should queue instances when max-instances is reached', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
 
-        assert.equal(common.matchingObjects(info.processes, {
-            'generation': 'new',
-            'app-name': 'neverStarts',
-            'crashes': 0
-        }).length, 2, `two instances of 'neverStarts' are starting`);
+            await client.invoke('all', [
+                { name: 'start', args: ['neverStarts'] },
+                { name: 'start', args: ['neverStarts'] },
+                { name: 'start', args: ['neverStarts'] }
+            ]);
 
-        assert.equal(common.matchingObjects(info.processes, {
-            'generation': 'queue',
-            'app-name': 'neverStarts',
-            'crashes': 0
-        }).length, 1, `one instance of 'neverStarts' is queued`);
+            let info = await client.invoke('info');
 
-        await client.close();
-        await daemon.killDaemon();
+            let starting = common.matchingObjects(info.processes, {
+                'generation': 'new',
+                'app-name': 'neverStarts',
+                'crashes': 0
+            });
+
+            assert.equal(starting.length, 2, `two instances of 'neverStarts' are starting`);
+
+            assert.equal(common.matchingObjects(info.processes, {
+                'generation': 'queue',
+                'app-name': 'neverStarts',
+                'crashes': 0
+            }).length, 1, `one instance of 'neverStarts' is queued`);
+
+            await client.invoke('kill', starting[0].id);
+
+            // need to wait for the process to actually exit...
+            await common.wait(100);
+
+            info = await client.invoke('info');
+            starting = common.matchingObjects(info.processes, {
+                'generation': 'new',
+                'app-name': 'neverStarts',
+                'crashes': 0
+            });
+
+            assert.equal(starting.length, 2, `two instances of 'neverStarts' are starting after killing one`);
+
+            assert.equal(common.matchingObjects(info.processes, {
+                'generation': 'queue',
+                'app-name': 'neverStarts',
+                'crashes': 0
+            }).length, 0, `no instance of 'neverStarts' is queued after killing one`);
+
+            await client.close();
+            await daemon.killDaemon();
+        });
     });
 });
+
+function inAllModes(fn) {
+    context('in cluster mode', function() {
+        fn.call(this, () => {
+            return common.daemonWithConfig();
+        });
+    });
+
+    context('in fork mode', function() {
+        fn.call(this, () => {
+            return common.daemonWithConfig('working-fork.js');
+        });
+    });
+}
