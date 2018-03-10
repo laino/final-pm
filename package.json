@@ -31,7 +31,7 @@
     "mkdirp": "",
     "ansi-escape-sequences": "laino/ansi-escape-sequences",
     "command-line-args": "",
-    "command-line-usage": "",
+    "command-line-usage": "4.1.0",
     "deep-equal": "",
     "humanize-duration": "",
     "read-package-config": "",
