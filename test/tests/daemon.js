@@ -47,6 +47,9 @@ describe('daemon', function() {
         await expect(client.invoke("start"))
             .to.be.rejectedWith('Arguments mismatch');
 
+        await expect(client.invoke("start", 3))
+            .to.be.rejectedWith('Arguments mismatch');
+
         await client.close();
         await daemon.killDaemon();
     });
@@ -60,11 +63,10 @@ describe('daemon', function() {
             await client.invoke('add', sample);
         }
 
-        const info = await client.invoke('info');
+        let info = await client.invoke('info');
 
-        const names = new Set(info.applications
-            .filter((app) => !app.builtin)
-            .map((app) => app.name));
+        const oldApps = info.applications.filter((app) => !app.builtin);
+        const names = new Set(oldApps.map((app) => app.name));
 
         samples.forEach((sample) => {
             assert.equal(names.has(sample.name), true, sample.name + " config exists");
@@ -72,6 +74,51 @@ describe('daemon', function() {
         });
 
         assert.equal(names.size, 0, "no extranous configs exist");
+
+        for (const sample of samples) {
+            sample.logger = "404";
+            await client.invoke('add', sample);
+        }
+
+        info = await client.invoke('info');
+
+        info.applications.filter((app) => !app.builtin).forEach((app, i) => {
+            assert.equal(app['name'] == oldApps[i]['name'], true,
+                `apps are still in the same order`);
+
+            assert.equal(app.revision > oldApps[i].revision, true,
+                `revision counter of ${app['name']} was incremented`);
+        });
+
+        for (const sample of samples) {
+            await client.invoke('delete', sample['name']);
+        }
+
+        info = await client.invoke('info');
+
+        assert.equal(
+            info.applications.filter((app) => !app.builtin).length, 0,
+            `all configurations were removed`);
+
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('discard old log lines in RAM', async function() {
+        const daemon = await common.daemonWithConfig('spammy.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'spammy');
+        await client.invoke('wait');
+        await common.wait(200);
+
+        const logs = (await client.invoke('logs', 'spammy', {
+            lines: 1000
+        })).lines.filter((line) => line.type === 'STDOUT');
+
+        assert.equal(logs.length <= 2, true,
+            `two or less log line should fit into RAM`);
 
         await client.close();
         await daemon.killDaemon();
@@ -139,7 +186,6 @@ describe('daemon', function() {
 
         it('should restart crashing applications', async function() {
             const daemon = await getDaemon();
-
             const client = await common.client(daemon);
 
             await client.invoke('start', 'app');
