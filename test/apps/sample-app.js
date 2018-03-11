@@ -1,4 +1,4 @@
-// sample-app.js
+/* eslint-disable no-console */
 console.log('starting');
 
 const cluster = require('cluster');

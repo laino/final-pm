@@ -17,10 +17,10 @@
   "scripts": {
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
-    "lint": "eslint . bin/*",
+    "lint": "eslint index.js examples config doc test lib bin/*",
     "test": "nyc --reporter=html mocha --timeout 10000ms --slow 2000ms . test/tests",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "autofix": "eslint --fix . bin/*"
+    "autofix": "eslint --fix index.js examples config doc test lib bin/*"
   },
   "bin": {
     "final-pm": "./bin/cli"
