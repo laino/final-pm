@@ -128,19 +128,28 @@ describe('daemon', function() {
 
             const client = await common.client(daemon);
 
-            await client.invoke('start', 'crashingApp');
+            await client.invoke('start', 'app');
+            await client.invoke('wait');
 
-            await common.wait(250);
-
-            let crashingApp = common.matchingObjects((await client.invoke('info')).processes, {
-                'app-name': 'crashingApp',
+            let crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'app',
             });
+            let crashingApp = crashingApps[0];
 
-            assert.equal(crashingApp.length, 1, "one instance of 'crashingApp' is running");
+            assert.equal(crashingApps.length, 1, "one instance of 'app' is running");
 
-            crashingApp = crashingApp[0];
+            process.kill(crashingApp.pid, 'SIGKILL');
 
-            assert.notEqual(crashingApp.crashes, 0, "was restartet at least once");
+            await common.wait(100);
+            await client.invoke('wait');
+
+            crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'app',
+            });
+            crashingApp = crashingApps[0];
+
+            assert.equal(crashingApps.length, 1, "one instance of 'app' is running");
+            assert.equal(crashingApp.crashes, 1, "was restartet once");
 
             await client.close();
             await daemon.killDaemon();

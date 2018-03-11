@@ -18,7 +18,7 @@
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
     "lint": "eslint . bin/*",
-    "test": "nyc --reporter=html --reporter=text mocha --slow 1300ms . test/tests",
+    "test": "nyc --reporter=html mocha --slow 1300ms . test/tests",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "autofix": "eslint --fix . bin/*"
   },
