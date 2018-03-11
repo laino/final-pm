@@ -1,15 +1,30 @@
 // sample-app.js
+console.log('starting');
+
 const cluster = require('cluster');
-let listening = false;
 const server = require('http').createServer((req, res) => {
     res.end(process.argv.join(' ')); // Reply with process arguments
-}).listen(3334, (error) => {
-    if (error) {
-        throw error;
-    }
-    listening = true;
-    process.send('ready');
 });
+let started = false;
+let shouldStop = false;
+
+process.stdout.write('TWO LINES\r\nAT ONCE\r\n');
+process.stdout.write('A LINE IN');
+setTimeout(() => {
+    process.stdout.write(' TWO PARTS\r\n');
+
+    server.listen(3334, (error) => {
+        if (error) {
+            throw error;
+        }
+        started = true;
+        if (shouldStop) {
+            stop();
+        }
+        process.send('ready');
+        console.log('ready');
+    });
+}, 50);
 
 process.on('SIGINT', stop);
 process.on('message', (msg) => {
@@ -19,13 +34,19 @@ process.on('message', (msg) => {
 });
 
 function stop() {
-    if (!listening) {
-        process.exit(0);
+    shouldStop = true;
+    if (!started) {
+        return;
     }
-    if (cluster.worker) {
-        cluster.worker.disconnect();
-    } else {
-        process.disconnect();
-        server.close();
-    }
+    console.log('stopping');
+    server.close(() => {
+        if (!process.connected) {
+            process.exit(0);
+        }
+        if (cluster.worker) {
+            cluster.worker.disconnect();
+        } else {
+            process.disconnect();
+        }
+    });
 }

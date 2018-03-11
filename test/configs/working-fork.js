@@ -4,14 +4,17 @@ module.exports = {
         'name': 'app',
         'mode': 'fork',
         'ready-on': 'message',
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'app-listen',
         'mode': 'fork',
         'ready-on': 'instant', // Can't use 'listen' in fork mode
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'app-message',
+        'mode': 'fork',
         'ready-on': 'message',
         'stop-signal': 'message',
         'run': './../apps/sample-app.js',
@@ -19,11 +22,13 @@ module.exports = {
         'name': 'app-instant',
         'mode': 'fork',
         'ready-on': 'instant',
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'crashingApp',
         'mode': 'fork',
         'ready-on': 'message',
+        'stop-signal': 'message',
         'run': './../apps/crashing-app.js',
     }, {
         'name': 'neverStarts',

@@ -3,10 +3,12 @@ module.exports = {
     'applications': [{
         'name': 'app',
         'ready-on': 'message',
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'app-listen',
         'ready-on': 'listen',
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'app-message',
@@ -16,6 +18,7 @@ module.exports = {
     }, {
         'name': 'app-instant',
         'ready-on': 'instant',
+        'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
         'name': 'crashingApp',

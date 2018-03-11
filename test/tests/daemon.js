@@ -105,6 +105,22 @@ describe('daemon', function() {
         info = await client.invoke('info');
 
         assert.equal(info.processes.length, 0, `instances of '${appName}' and 'file-logger' were stopped`);
+
+        const logs = await client.invoke('logs', appName);
+
+        const logsCondensed = logs.lines.map((line) => {
+            return line.type;
+        });
+
+        assert.deepEqual(
+            logsCondensed.filter((t) => t !== 'stdout'), [
+                'moved', 'start', 'moved', 'moved',
+                'moved', 'stop', 'exit'
+            ], `should have logged '${appName}' lifecycle in the correct order`);
+
+        assert.equal(
+            logsCondensed.filter((t) => t === 'stdout').length, 6,
+            `should have logged all STDOUT lines of '${appName}'`);
     }
 
     inAllModes(async function(getDaemon) {
