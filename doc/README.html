@@ -42,32 +42,36 @@ By default all actions are <b>graceful</b>. Old processes will always be cleanly
 <p>
 <pre><code class="">  &#35; final-pm [--config File|Folder] [Action Select...] 
 
-  -c, --config File|Folder   Default: process-config.{js,json}                                             
-                             Load a configuration file. If the path doesn't begin with ./ or /, also       
-                             checks parent folders. If you specified a configuration for an already        
-                             running application, it will only be applied once the application is manually 
-                             (re-)started, but not when a new process is spawned after a crash.            
-  --set [app:]key=value      Override a configuration key.                                                 
-  -n, --lines num            When using the log action, sets the number of past log lines to display. Up   
-                             to max-buffered-log-bytes (see --help-configuration).                         
-  -f, --follow               When using the log action, will output new log lines continously as they      
-                             appear. Cancel with CTRL-C.                                                   
-  --launch                   Start the daemon even if there's nothing to do.                               
-  --kill                     Stop the daemon, ungracefully killing any remaining processes. This is done   
-                             after all other commands have been sent to the daemon.                        
-                             Use 'final-pm --wait --kill stop all' to achieve a graceful stop.             
-  --wait                     Wait for any pending actions to complete. This means final-pm will only       
-                             return once the queue, new, old and marked generations are empty.             
-  --force                    Make final-pm ignore some safeguards. (I hope you know what you're doing)     
-  --no-upload                Don't upload new application configurations from config files.                
-  --dry                      Don't actually do anything, use --verbose for more output.                    
-  -v, --verbose              Show debug output.                                                            
-  --help                     Print short usage guide.                                                      
-  --help-usage               Print full usage guide including actions.                                     
-  --help-generations         Print help page about generations.                                            
-  --help-example             Print a short example application.                                            
-  --help-configuration       Print full configuration help.                                                
-  --help-all                 Print full help page.                                                         
+  -c, --config File|Folder   Default: process-config.{js,json}                                 
+                             Load a configuration file. If the path doesn't begin with ./ or   
+                             /, also checks parent folders. If you specified a configuration   
+                             for an already running application, it will only be applied once  
+                             the application is manually (re-)started, but not when a new      
+                             process is spawned after a crash.                                 
+  --set [app:]key=value      Override a configuration key.                                     
+  -n, --lines num            When using the log action, sets the number of past log lines to   
+                             display. Up to max-buffered-log-bytes (see --help-configuration). 
+  -f, --follow               When using the log action, will output new log lines continously  
+                             as they appear. Cancel with CTRL-C.                               
+  --launch                   Start the daemon even if there's nothing to do.                   
+  --kill                     Stop the daemon, ungracefully killing any remaining processes.    
+                             This is done after all other commands have been sent to the       
+                             daemon.                                                           
+                             Use 'final-pm --wait --kill stop all' to achieve a graceful stop. 
+  --wait                     Wait for any pending actions to complete. This means final-pm     
+                             will only return once the queue, new, old and marked generations  
+                             are empty.                                                        
+  --force                    Make final-pm ignore some safeguards. (I hope you know what       
+                             you're doing)                                                     
+  --no-upload                Don't upload new application configurations from config files.    
+  --dry                      Don't actually do anything, use --verbose for more output.        
+  -v, --verbose              Show debug output.                                                
+  --help                     Print short usage guide.                                          
+  --help-usage               Print full usage guide including actions.                         
+  --help-generations         Print help page about generations.                                
+  --help-example             Print a short example application.                                
+  --help-configuration       Print full configuration help.                                    
+  --help-all                 Print full help page.                                             
 
 </code></pre></p>
 
@@ -409,7 +413,8 @@ All output of logger processes themselves will end up in the daemon log file (<i
       /*                                                                    
        * Defines how FinalPM should ask a process to stop gracefully.       
        *                                                                    
-       * Valid values are 'SIGINT', 'SIGTERM' and 'disconnect'.             
+       * Valid values are 'SIGINT', 'SIGTERM', 'disconnect', and 'message'. 
+       * For loggers it is recommended to set this to 'message'.            
        *                                                                    
        * On Windows platforms sending 'SIGINT' is unsupported and           
        * FinalPM will default to 'message' instead.                         
@@ -519,10 +524,20 @@ All output of logger processes themselves will end up in the daemon log file (<i
        * also when a logger isn't yet ready (or crashed and                 
        * has to be restarted).                                              
        *                                                                    
-       * This value is per-application.                                     
+       * This value is per-application-logger combination.                  
        */                                                                   
                                                                             
-      'max-buffered-log-bytes': 1024 * 1024,                                
+      'max-buffered-log-bytes': 256 * 1024,                                 
+                                                                            
+      /*                                                                    
+       * How long in milliseconds to keep logs in RAM after the             
+       * last process of an application has terminated and                  
+       * they have been flushed to the logger process.                      
+       *                                                                    
+       * Once this timeout has expired 'final-pm log' won't return          
+       * any logs for your application anymore.                             
+       */                                                                   
+      'log-retention-timeout': 1000 * 60 * 60 * 24,                         
                                                                             
       /*                                                                    
        * Buffer at most this many bytes per log line, before                

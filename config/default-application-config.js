@@ -99,7 +99,8 @@ module.exports = {
     /*
      * Defines how FinalPM should ask a process to stop gracefully.
      *
-     * Valid values are 'SIGINT', 'SIGTERM' and 'disconnect'.
+     * Valid values are 'SIGINT', 'SIGTERM', 'disconnect', and 'message'.
+     * For loggers it is recommended to set this to 'message'.
      *
      * On Windows platforms sending 'SIGINT' is unsupported and
      * FinalPM will default to 'message' instead.
@@ -209,10 +210,20 @@ module.exports = {
      * also when a logger isn't yet ready (or crashed and
      * has to be restarted).
      *
-     * This value is per-application.
+     * This value is per-application-logger combination.
      */
 
     'max-buffered-log-bytes': 256 * 1024,
+
+    /*
+     * How long in milliseconds to keep logs in RAM after the
+     * last process of an application has terminated and
+     * they have been flushed to the logger process.
+     *
+     * Once this timeout has expired 'final-pm log' won't return
+     * any logs for your application anymore.
+     */
+    'log-retention-timeout': 1000 * 60 * 60 * 24,
 
     /*
      * Buffer at most this many bytes per log line, before

@@ -97,14 +97,14 @@ describe('daemon', function() {
             'generation': 'running',
             'app-name': 'file-logger',
             'crashes': 0
-        }).length, 1, `one instance of 'file-logger' for ${appName} is running`);
+        }).length, 1, `one instance of 'file-logger' for '${appName}' is running`);
 
         await client.invoke('stop', runningApp[0].id);
         await client.invoke('wait');
 
         info = await client.invoke('info');
 
-        assert.equal(info.processes.length, 0, `instance of ${appName} was stopped`);
+        assert.equal(info.processes.length, 0, `instances of '${appName}' and 'file-logger' were stopped`);
     }
 
     inAllModes(async function(getDaemon) {

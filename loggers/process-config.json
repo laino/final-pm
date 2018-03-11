@@ -3,6 +3,7 @@
         "type": "logger",
         "name": "file-logger",
         "ready-on": "message",
+        "stop-signal": "message",
         "run": "file.js",
         "builtin": true
     }]
