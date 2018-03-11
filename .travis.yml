@@ -5,7 +5,9 @@ os:
 node_js:
   - "node"
 install:
-    - npm install
+  - npm install
 script:
-    - npm run lint
-    - npm run test
+  - npm run lint
+  - npm run test
+after_success:
+  - npm run coverage

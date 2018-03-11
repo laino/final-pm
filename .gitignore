@@ -3,3 +3,5 @@ yarn-error.log
 yarn.lock
 *.swp
 examples/log.txt
+.nyc_output
+coverage
