@@ -2,8 +2,8 @@ FinalPM
 =======
 
 [![Build Status](https://travis-ci.org/laino/final-pm.svg?branch=master)](https://travis-ci.org/laino/final-pm)
-[![Coverage Status](https://coveralls.io/repos/github/laino/final-pm/badge.svg?branch=master)](https://coveralls.io/github/laino/final-pm?branch=master)
-[![David](https://img.shields.io/david/laino/final-pm.svg)](https://david-dm.org/laino/final-pm)
+[![Coverage Status](https://coveralls.io/repos/github/laino/final-pm/badge.svg?branch=master&)](https://coveralls.io/github/laino/final-pm?branch=master)
+[![David](https://david-dm.org/laino/final-pm/status.svg)](https://david-dm.org/laino/final-pm)
 [![GitHub package version](https://img.shields.io/github/package-json/v/laino/final-pm.svg)](https://github.com/laino/final-pm)
 [![npm](https://img.shields.io/npm/v/final-pm.svg)](https://www.npmjs.com/package/final-pm)
 
