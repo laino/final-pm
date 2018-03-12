@@ -1,6 +1,6 @@
 {
   "name": "final-pm",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "author": "laino",
   "description": "The Final Process Manager",
   "main": "index.js",
