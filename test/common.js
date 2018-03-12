@@ -14,6 +14,7 @@ const rmdir = util.promisify(require('rmdir'));
 
 chai.use(chaiAsPromised);
 
+const runningProcesses = new Set();
 const runningDaemons = new Set();
 const clients = new Set();
 const tmpfiles  = new Set();
@@ -27,28 +28,6 @@ process.on("unhandledRejection", (reason) => {
 });
 
 let portCounter = 30511;
-
-exports.tmpsocket = (home) => {
-    if (exports.isWindows()) {
-        return 'ws://localhost:' + (portCounter++);
-    } else {
-        return 'ws+unix://' + path.join(home, 'daemon.sock');
-    }
-};
-
-exports.tmplaunchconfig = async () => {
-    const home = exports.tmpdir();
-
-    const config = await finalPM.config.getConfig({
-        path: null,
-        env: {
-            FINAL_PM_CONFIG_HOME: home,
-            FINAL_PM_CONFIG_SOCKET: exports.tmpsocket(home),
-        }
-    });
-
-    return config;
-};
 
 exports.daemon = async () => {
     const daemon = new finalPM.daemon();
@@ -137,10 +116,48 @@ exports.loadConfig = async (name = 'working.js') => {
     return config.applications;
 };
 
+exports.trackProcess = (child) => {
+    runningProcesses.add(child);
+
+    child.on('exit', () => {
+        runningProcesses.delete(child);
+    });
+
+    return child;
+}
+
 exports.wait = (ms) => {
     return new Promise((resolve) => {
         setTimeout(resolve, ms);
     });
+};
+
+exports.awaitEvent = (emitter, event) => {
+    return new Promise((resolve) => {
+        emitter.on(event, resolve);
+    });
+};
+
+exports.tmpsocket = (home) => {
+    if (exports.isWindows()) {
+        return 'ws://localhost:' + (portCounter++);
+    } else {
+        return 'ws+unix://' + path.join(home, 'daemon.sock');
+    }
+};
+
+exports.tmplaunchconfig = async () => {
+    const home = exports.tmpdir();
+
+    const config = await finalPM.config.getConfig({
+        path: null,
+        env: {
+            FINAL_PM_CONFIG_HOME: home,
+            FINAL_PM_CONFIG_SOCKET: exports.tmpsocket(home),
+        }
+    });
+
+    return config;
 };
 
 exports.appdir = () => {
@@ -167,9 +184,18 @@ exports.readFile = util.promisify(fs.readFile);
 afterEach(async function() { //eslint-disable-line no-undef
     let hadDaemon = false;
     let hadClient = false;
+    let hadProcesses = false;
     let failed = !this.currentTest || this.currentTest.state === 'failed';
     let processes = [];
     let output = [];
+
+    if (runningProcesses.size) {
+        for (const child of runningProcesses) {
+            child.kill('SIGKILL');
+        }
+
+        hadProcesses = true;
+    }
 
     if (clients.size) {
         for (const client of clients) {
@@ -239,5 +265,9 @@ afterEach(async function() { //eslint-disable-line no-undef
 
     if (hadClient && !failed) {
         throw new Error("A client was still connected after the test.");
+    }
+
+    if (hadProcesses && !failed) {
+        throw new Error("Test left behind rogue processes.");
     }
 });
