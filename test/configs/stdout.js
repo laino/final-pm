@@ -22,7 +22,6 @@ module.exports = {
         'ready-on': 'message',
         'stop-signal': 'message',
         'run': './../apps/spammy-app.js',
-        'stop-signal': 'SIGTERM',
         'max-buffered-log-bytes': 20,
     }]
 };
