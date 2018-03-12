@@ -46,7 +46,7 @@ describe('daemon', function() {
         await waitExit;
     });
 
-    it('detect dead unix domain sockets', async function() {
+    it('should detect dead unix domain sockets', async function() {
         if (common.isWindows()) {
             return;
         }
@@ -168,7 +168,7 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('discards old log lines in RAM', async function() {
+    it('should discard old log lines in RAM', async function() {
         const daemon = await common.daemonWithConfig('stdout.js');
         const client = await common.client(daemon);
 
@@ -187,7 +187,7 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('discards logs after some time', async function() {
+    it('should discard logs after some time', async function() {
         const daemon = await common.daemonWithConfig('stdout.js');
         const client = await common.client(daemon);
 
@@ -219,7 +219,7 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('correctly logs multiple lines received at once or apart', async function() {
+    it('should correctly log multiple lines received at once or apart', async function() {
         const daemon = await common.daemonWithConfig('stdout.js');
         const client = await common.client(daemon);
 
@@ -241,7 +241,7 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('trim lines exceded "max-log-line-length"', async function() {
+    it('should trim lines exceeding "max-log-line-length"', async function() {
         const daemon = await common.daemonWithConfig('stdout.js');
         const client = await common.client(daemon);
 
