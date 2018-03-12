@@ -117,6 +117,16 @@ exports.loadConfig = async (name = 'working.js') => {
 };
 
 exports.trackProcess = (child) => {
+    if (!child) {
+        return null;
+    }
+
+    if (child.then) {
+        return child.then((child) => {
+            return exports.trackProcess(child);
+        });
+    }
+
     runningProcesses.add(child);
 
     child.on('exit', () => {
@@ -124,7 +134,7 @@ exports.trackProcess = (child) => {
     });
 
     return child;
-}
+};
 
 exports.wait = (ms) => {
     return new Promise((resolve) => {

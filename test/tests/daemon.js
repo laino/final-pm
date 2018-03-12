@@ -1,10 +1,7 @@
 
 const finalPM = require('../../');
 const common = require('../common');
-const fs = require('fs');
-const util = require('util');
 const {assert, expect} = require('chai');
-const writeFile = util.promisify(fs.writeFile);
 
 describe('daemon', function() {
     it('should start and stop within the test environment', async function() {
@@ -16,6 +13,7 @@ describe('daemon', function() {
         const launchConfig = await common.tmplaunchconfig();
 
         const dprocess = common.trackProcess(await finalPM.daemon.launch(launchConfig));
+        const waitExit = common.awaitEvent(dprocess, 'exit');
 
         const client = await finalPM.client.connect(launchConfig['socket']);
 
@@ -23,7 +21,7 @@ describe('daemon', function() {
 
         await client.close();
 
-        await common.awaitEvent(dprocess, 'exit');
+        await waitExit;
     });
 
     it('should fail when a daemon is already running', async function() {
@@ -34,6 +32,7 @@ describe('daemon', function() {
         const launchConfig = await common.tmplaunchconfig();
 
         const dprocess = common.trackProcess(await finalPM.daemon.launch(launchConfig));
+        const waitExit = common.awaitEvent(dprocess, 'exit');
 
         await expect(common.trackProcess(finalPM.daemon.launch(launchConfig)))
             .to.be.rejectedWith("Daemon already running");
@@ -44,7 +43,7 @@ describe('daemon', function() {
 
         await client.close();
 
-        await common.awaitEvent(dprocess, 'exit');
+        await waitExit;
     });
 
     it('detect dead unix domain sockets', async function() {
@@ -54,9 +53,15 @@ describe('daemon', function() {
 
         const launchConfig = await common.tmplaunchconfig();
 
-        await writeFile(launchConfig['socket-path'], '');
+        let dprocess = common.trackProcess(await finalPM.daemon.launch(launchConfig));
+        let waitExit = common.awaitEvent(dprocess, 'exit');
 
-        const dprocess = common.trackProcess(await finalPM.daemon.launch(launchConfig));
+        dprocess.kill('SIGKILL');
+
+        await waitExit;
+
+        dprocess = common.trackProcess(await finalPM.daemon.launch(launchConfig));
+        waitExit = common.awaitEvent(dprocess, 'exit');
 
         const client = await finalPM.client.connect(launchConfig['socket']);
 
@@ -64,7 +69,7 @@ describe('daemon', function() {
 
         await client.close();
 
-        await common.awaitEvent(dprocess, 'exit');
+        await waitExit;
     });
 
     it('should listen to unix sockets', async function() {
