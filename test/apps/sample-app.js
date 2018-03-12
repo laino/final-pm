@@ -8,23 +8,17 @@ const server = require('http').createServer((req, res) => {
 let started = false;
 let shouldStop = false;
 
-process.stdout.write('TWO LINES\r\nAT ONCE\r\n');
-process.stdout.write('A LINE IN');
-setTimeout(() => {
-    process.stdout.write(' TWO PARTS\r\n');
-
-    server.listen(3334, (error) => {
-        if (error) {
-            throw error;
-        }
-        started = true;
-        if (shouldStop) {
-            stop();
-        }
-        process.send('ready');
-        console.log('ready');
-    });
-}, 50);
+server.listen(3334, (error) => {
+    if (error) {
+        throw error;
+    }
+    started = true;
+    if (shouldStop) {
+        stop();
+    }
+    process.send('ready');
+    console.log('ready');
+});
 
 process.on('SIGINT', stop);
 process.on('message', (msg) => {

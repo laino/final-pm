@@ -105,8 +105,8 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('discard old log lines in RAM', async function() {
-        const daemon = await common.daemonWithConfig('spammy.js');
+    it('discards old log lines in RAM', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
         const client = await common.client(daemon);
 
         await client.invoke('start', 'spammy');
@@ -115,10 +115,86 @@ describe('daemon', function() {
 
         const logs = (await client.invoke('logs', 'spammy', {
             lines: 1000
-        })).lines.filter((line) => line.type === 'STDOUT');
+        })).lines.filter((line) => line.type === 'stdout');
 
         assert.equal(logs.length <= 2, true,
             `two or less log line should fit into RAM`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('discards logs after some time', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        let result = await client.invoke('start', 'expire');
+        await client.invoke('wait');
+        await client.invoke('stop', result.process.id);
+        await client.invoke('wait');
+
+        // Immediately start a new app, aborting the timeout
+        result = await client.invoke('start', 'expire');
+        await client.invoke('wait');
+
+        await common.wait(500);
+
+        assert.notEqual(
+            (await client.invoke('logs', 'expire')).lines.length, 0,
+            `shouldn't have discarded logs`);
+
+        await client.invoke('stop', result.process.id);
+        await client.invoke('wait');
+
+        await common.wait(500);
+
+        assert.equal(
+            (await client.invoke('logs', 'expire')).lines.length, 0,
+            `should've discarded logs`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('correctly logs multiple lines received at once or apart', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'app');
+        await client.invoke('wait');
+        await client.invoke('stop', 0);
+        await client.invoke('wait');
+
+        const logs = (await client.invoke('logs', 'app'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.equal(logs.length, 3, `logged 3 lines`);
+
+        assert.deepEqual(logs.map((line) => line.text),
+            ['TWO LINES', 'AT ONCE', 'A LINE IN TWO PARTS'],
+            `logged everything and in the right order`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('trim lines exceded "max-log-line-length"', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'trim');
+        await client.invoke('wait');
+        await client.invoke('stop', 0);
+        await client.invoke('wait');
+
+        const logs = (await client.invoke('logs', 'trim'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.equal(logs.length, 3, `logged 3 lines`);
+
+        assert.deepEqual(logs.map((line) => line.text),
+            ['TWO L', 'AT ON', 'A LIN'],
+            `logged everything and in the right order`);
 
         await client.close();
         await daemon.killDaemon();
@@ -166,7 +242,7 @@ describe('daemon', function() {
             ], `should have logged '${appName}' lifecycle in the correct order`);
 
         assert.equal(
-            logsCondensed.filter((t) => t === 'stdout').length, 6,
+            logsCondensed.filter((t) => t === 'stdout').length, 3,
             `should have logged all STDOUT lines of '${appName}'`);
     }
 
