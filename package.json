@@ -18,8 +18,10 @@
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
     "lint": "eslint index.js examples config doc test lib bin/*",
-    "test": "nyc --reporter=html mocha --timeout 10000ms --slow 2000ms . test/tests",
+    "test": "mocha --timeout 5000ms --slow 1000ms . test/tests",
+    "test-coverage": "nyc --reporter=html mocha --timeout 10000ms --slow 2000ms . test/tests",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "loc": "find bin/* lib config -type f | xargs cat | grep --invert-match -P \"^[/*{}(),;\\[\\] ]*$$\" | wc -l",
     "autofix": "eslint --fix index.js examples config doc test lib bin/*"
   },
   "bin": {

@@ -11,7 +11,6 @@ const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
 const deepEqual = require('deep-equal');
 const rmdir = util.promisify(require('rmdir'));
-const {Client} = require('final-rpc');
 
 chai.use(chaiAsPromised);
 
@@ -29,16 +28,32 @@ process.on("unhandledRejection", (reason) => {
 
 let portCounter = 30511;
 
+exports.tmpsocket = (home) => {
+    if (exports.isWindows()) {
+        return 'ws://localhost:' + (portCounter++);
+    } else {
+        return 'ws+unix://' + path.join(home, 'daemon.sock');
+    }
+};
+
+exports.tmplaunchconfig = async () => {
+    const home = exports.tmpdir();
+
+    const config = await finalPM.config.getConfig({
+        path: null,
+        env: {
+            FINAL_PM_CONFIG_HOME: home,
+            FINAL_PM_CONFIG_SOCKET: exports.tmpsocket(home),
+        }
+    });
+
+    return config;
+};
+
 exports.daemon = async () => {
     const daemon = new finalPM.daemon();
 
-    let socket;
-
-    if (exports.isWindows()) {
-        socket = 'ws://localhost:' + (portCounter++);
-    } else {
-        socket = 'ws+unix://' + path.join(exports.tmpdir(), 'daemon.sock');
-    }
+    let socket = exports.tmpsocket(exports.tmpdir());
 
     const output = [];
 
@@ -65,7 +80,7 @@ exports.isWindows = () => {
 };
 
 exports.client = async(daemon) => {
-    const client = await new Client(daemonSocks.get(daemon)).waitOpen();
+    const client = await finalPM.client.connect(daemonSocks.get(daemon));
 
     clients.add(client);
 

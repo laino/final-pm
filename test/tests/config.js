@@ -12,6 +12,8 @@ describe('config', function() {
     const JS_PROMISE_FN_CONFIG = path.resolve(__dirname, '..', 'configs', 'working-promise-fn.js');
     const JSON_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.json');
 
+    const OTHER1 = path.resolve(__dirname, '..', 'configs', 'stdout.js');
+
     const MALFORMED_CONFIGS = [
         ['broken1.json', 'Unexpected token'],
         ['broken2.json', '$$$ERROR$$$'],
@@ -134,6 +136,15 @@ describe('config', function() {
         assert.deepEqual(JS_PROMISE, JSON, "JS (promise) and JSON configs should be the same");
         assert.deepEqual(JS_FN, JSON, "JS (function) and JSON configs should be the same");
         assert.deepEqual(JS_PROMISE_FN, JSON, "JS (promise + function) and JSON configs should be the same");
+    });
+
+    it('should normalize configurations', async function() {
+        const config1 = await finalPM.config.getConfig(JS_CONFIG);
+        const config2 = await finalPM.config.getConfig(OTHER1);
+
+        const normalized = finalPM.config.normalizeArray([config1, config2]);
+
+        assert.equal(normalized.length, 1);
     });
 
     it('should reject malformed configurations', async function() {

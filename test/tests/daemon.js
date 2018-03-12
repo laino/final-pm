@@ -1,12 +1,60 @@
 
+const finalPM = require('../../');
 const common = require('../common');
+const fs = require('fs');
+const util = require('util');
 const {assert, expect} = require('chai');
+const writeFile = util.promisify(fs.writeFile);
 
 describe('daemon', function() {
-    it('should start and stop', async function() {
+    it('should start and stop within the test environment', async function() {
         const daemon = await common.daemon();
-
         await daemon.killDaemon();
+    });
+
+    it('should start and stop as a seperate process', async function() {
+        const launchConfig = await common.tmplaunchconfig();
+
+        await finalPM.daemon.launch(launchConfig);
+
+        const client = await finalPM.client.connect(launchConfig['socket']);
+
+        await client.invoke('killDaemon');
+
+        await client.close();
+    });
+
+    it('should fail when a daemon is already running', async function() {
+        const launchConfig = await common.tmplaunchconfig();
+
+        await finalPM.daemon.launch(launchConfig);
+
+        await expect(finalPM.daemon.launch(launchConfig))
+            .to.be.rejectedWith("Daemon already running");
+
+        const client = await finalPM.client.connect(launchConfig['socket']);
+
+        await client.invoke('killDaemon');
+
+        await client.close();
+    });
+
+    it('detect dead unix domain sockets', async function() {
+        if (common.isWindows()) {
+            return;
+        }
+
+        const launchConfig = await common.tmplaunchconfig();
+
+        await writeFile(launchConfig['socket-path'], '');
+
+        await finalPM.daemon.launch(launchConfig);
+
+        const client = await finalPM.client.connect(launchConfig['socket']);
+
+        await client.invoke('killDaemon');
+
+        await client.close();
     });
 
     it('should listen to unix sockets', async function() {
