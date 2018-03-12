@@ -8,17 +8,16 @@ const server = require('http').createServer((req, res) => {
 let started = false;
 let shouldStop = false;
 
-server.listen(3334, (error) => {
-    if (error) {
-        throw error;
-    }
-    started = true;
-    if (shouldStop) {
-        stop();
-    }
-    process.send('ready');
-    console.log('ready');
-});
+if (process.argv[2] === 'listen') {
+    server.listen(3334, (error) => {
+        if (error) {
+            throw error;
+        }
+        ready();
+    });
+} else {
+    ready();
+}
 
 process.on('SIGINT', stop);
 process.on('message', (msg) => {
@@ -26,6 +25,15 @@ process.on('message', (msg) => {
         stop();
     }
 });
+
+function ready() {
+    started = true;
+    if (shouldStop) {
+        stop();
+    }
+    process.send('ready');
+    console.log('ready');
+}
 
 function stop() {
     shouldStop = true;

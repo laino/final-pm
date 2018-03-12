@@ -6,8 +6,20 @@ module.exports = {
         'ready-on': 'message',
         'stop-signal': 'message',
         'run': './../apps/sample-app.js',
+        'start-timeout': 2000,
+        'stop-timeout': 2000,
+        'instances': 3,
+    }, {
+        'name': 'app-uniform',
+        'mode': 'fork',
+        'ready-on': 'message',
+        'stop-signal': 'message',
+        'run': './../apps/sample-app.js',
+        'instances': 3,
+        'unique-instances': false
     }, {
         'name': 'app-listen',
+        'args': ['listen'],
         'mode': 'fork',
         'ready-on': 'instant', // Can't use 'listen' in fork mode
         'stop-signal': 'message',
@@ -42,6 +54,18 @@ module.exports = {
         'mode': 'fork',
         'ready-on': 'message',
         'stop-timeout': 3000,
+        'run': './../apps/never-stopping-app.js',
+    }, {
+        'name': 'neverStartsFast',
+        'ready-on': 'message',
+        'mode': 'fork',
+        'start-timeout': 100,
+        'run': './../apps/never-starting-app.js',
+    }, {
+        'name': 'neverStopsFast',
+        'mode': 'fork',
+        'ready-on': 'message',
+        'stop-timeout': 100,
         'run': './../apps/never-stopping-app.js',
     }, {
         'name': 'zombie',

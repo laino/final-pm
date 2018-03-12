@@ -3,9 +3,20 @@
         "name": "app",
         "ready-on": "message",
         "stop-signal": "message",
-        "run": "./../apps/sample-app.js"
+        "run": "./../apps/sample-app.js",
+        "start-timeout": 2000,
+        "stop-timeout": 2000,
+        "instances": 3
+    }, {
+        "name": "app-uniform",
+        "ready-on": "message",
+        "stop-signal": "message",
+        "run": "./../apps/sample-app.js",
+        "instances": 3,
+        "unique-instances": false
     }, {
         "name": "app-listen",
+        "args": ["listen"],
         "ready-on": "listen",
         "stop-signal": "message",
         "run": "./../apps/sample-app.js"
@@ -33,6 +44,16 @@
         "name": "neverStops",
         "ready-on": "message",
         "stop-timeout": 3000,
+        "run": "./../apps/never-stopping-app.js"
+    }, {
+        "name": "neverStartsFast",
+        "ready-on": "message",
+        "start-timeout": 100,
+        "run": "./../apps/never-starting-app.js"
+    }, {
+        "name": "neverStopsFast",
+        "ready-on": "message",
+        "stop-timeout": 100,
         "run": "./../apps/never-stopping-app.js"
     }, {
         "name": "zombie",

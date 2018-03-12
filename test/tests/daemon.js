@@ -326,29 +326,234 @@ describe('daemon', function() {
         it('should restart crashing applications', async function() {
             const daemon = await getDaemon();
             const client = await common.client(daemon);
+            
+            // 1. Start the the app once
 
             await client.invoke('start', 'app');
             await client.invoke('wait');
 
             let crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
+                'generation': 'running'
             });
             let crashingApp = crashingApps[0];
 
             assert.equal(crashingApps.length, 1, "one instance of 'app' is running");
 
+            // 2. Kill the app
             process.kill(crashingApp.pid, 'SIGKILL');
 
-            await common.wait(100);
+            // 3. Wait for FinalPM to register that it died
+            await common.wait(300);
+
+            crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'app',
+                'generation': 'new'
+            });
+            crashingApp = crashingApps[0];
+
+            assert.equal(crashingApps.length, 1,
+                "one instance of 'app' is starting");
+            assert.equal(crashingApp.crashes, 1,
+                "was restartet once");
+            assert.equal(new Date(crashingApp['start-time']).getTime() > Date.now(), 1,
+                "is using a start delay");
+
+            // 4. Wait for the startDelay to expire and the app running
             await client.invoke('wait');
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
+                'generation': 'running'
             });
             crashingApp = crashingApps[0];
 
-            assert.equal(crashingApps.length, 1, "one instance of 'app' is running");
-            assert.equal(crashingApp.crashes, 1, "was restartet once");
+            assert.equal(crashingApps.length, 1,
+                "one instance of 'app' is running");
+
+            // 5. Kill it again
+            process.kill(crashingApp.pid, 'SIGKILL');
+
+            // 6. Wait for FinalPM to register that
+            await common.wait(300);
+
+            crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'app',
+                'generation': 'new'
+            });
+            crashingApp = crashingApps[0];
+
+            assert.equal(crashingApps.length, 1,
+                "one instance of 'app' is starting");
+            assert.equal(crashingApp.crashes, 2,
+                "was restartet twice");
+            assert.equal(new Date(crashingApp['start-time']).getTime() > Date.now(), 1,
+                "is using a start delay");
+
+            // 6. This time we stop it before the start delay expires
+            await client.invoke('stop', crashingApp.id);
+            await client.invoke('wait');
+
+            assert.equal((await client.invoke('info')).processes.length, 0,
+                "no processes are running");
+
+            assert.equal(common.matchingObjects((await client.invoke('logs', 'app')).lines, {
+                type: 'stop',
+                text: 'signal=pre-start'
+            }).length, 1, "start delay was aborted");
+
+            await client.close();
+            await daemon.killDaemon();
+        });
+
+        it('should replace instances 1:1 as new instances become ready', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
+
+            const oldestInstance = await client.invoke('start', 'app', {number:0});
+            const replacedInstance = await client.invoke('start', 'app', {number:1});
+            await client.invoke('start', 'app', {number:2});
+            await client.invoke('wait');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app',
+                    'generation': 'running'
+                }
+            ).length, 3, 'three instances should be running');
+
+            await client.invoke('start', 'app', {number: 1});
+            await client.invoke('wait');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app',
+                    'generation': 'running'
+                }
+            ).length, 3, 'only three instances should be running');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app',
+                    'id': replacedInstance.process.id
+                }
+            ).length, 0, 'replaced instance should not be running');
+
+            await client.invoke('start', 'app', {number: 4});
+            await client.invoke('wait');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app',
+                    'generation': 'running'
+                }
+            ).length, 3, 'still only three instances should be running');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app',
+                    'id': oldestInstance.process.id
+                }
+            ).length, 0, 'oldest instance should not be running');
+
+            await client.close();
+            await daemon.killDaemon();
+        });
+
+        it('should replace non-unique instances oldest to newest', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
+
+            const oldestInstance1 = await client.invoke('start', 'app-uniform');
+            const oldestInstance2 = await client.invoke('start', 'app-uniform');
+
+            await client.invoke('start', 'app-uniform');
+            await client.invoke('wait');
+
+            await client.invoke('start', 'app-uniform');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app-uniform',
+                    'generation': 'running'
+                }
+            ).length, 3, 'three instances should be running');
+
+            await client.invoke('start', 'app-uniform');
+            await client.invoke('wait');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app-uniform',
+                    'generation': 'running'
+                }
+            ).length, 3, 'only three instances should be running');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app-uniform',
+                    'id': oldestInstance1.process.id
+                }
+            ).length, 0, 'oldest instance should not be running');
+
+            await client.invoke('start', 'app-uniform');
+            await client.invoke('wait');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app-uniform',
+                    'generation': 'running'
+                }
+            ).length, 3, 'only three instances should be running');
+
+            assert.equal(common.matchingObjects(
+                (await client.invoke('info')).processes, {
+                    'app-name': 'app-uniform',
+                    'id': oldestInstance2.process.id
+                }
+            ).length, 0, 'second oldest instance should not be running');
+
+            await client.close();
+            await daemon.killDaemon();
+        });
+
+        it('should kill processes when start-timeout is exceeded', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
+
+            await client.invoke('start', 'neverStartsFast');
+            await common.wait(400);
+
+            const crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
+                'app-name': 'neverStartsFast',
+            });
+            const crashingApp = crashingApps[0];
+
+            assert.equal(crashingApps.length, 1,
+                "one instance of 'neverStartsFast' is running");
+
+            assert.equal(crashingApp.crashes > 0, 1,
+                "was restartet at least once");
+
+            assert.equal(new Date(crashingApp['start-time']).getTime() > Date.now(), 1,
+                "is using a start delay");
+
+            await client.close();
+            await daemon.killDaemon();
+        });
+
+        it('should kill processes when stop-timeout is exceeded', async function() {
+            const daemon = await getDaemon();
+            const client = await common.client(daemon);
+
+            const started = await client.invoke('start', 'neverStopsFast');
+
+            await client.invoke('wait');
+            await client.invoke('stop', started.process.id);
+
+            await common.wait(500);
+
+            assert.equal((await client.invoke('info')).processes.length, 0, "nothing is running");
 
             await client.close();
             await daemon.killDaemon();
