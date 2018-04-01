@@ -28,6 +28,11 @@ module.exports = async function() {
             'stop-signal': 'message',
             'run': './../apps/sample-app.js',
         }, {
+            'name': 'app-disconnect',
+            'ready-on': 'message',
+            'stop-signal': 'disconnect',
+            'run': './../apps/sample-app.js',
+        }, {
             'name': 'app-instant',
             'ready-on': 'instant',
             'stop-signal': 'message',

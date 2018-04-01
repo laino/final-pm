@@ -31,6 +31,12 @@ module.exports = {
         'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
+        'name': 'app-disconnect',
+        'mode': 'fork',
+        'ready-on': 'message',
+        'stop-signal': 'disconnect',
+        'run': './../apps/sample-app.js',
+    }, {
         'name': 'app-instant',
         'mode': 'fork',
         'ready-on': 'instant',

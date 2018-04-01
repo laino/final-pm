@@ -67,8 +67,28 @@ exports.client = async(daemon) => {
         clients.delete(client);
     });
 
-    return client;
+    return new WrapClient(client);
 };
+
+class WrapClient {
+    constructor(client) {
+        this.client = client;
+    }
+
+    async invoke(...args) {
+        const result = await this.client.invoke.apply(this.client, args);
+
+        if (!typeof result === 'object' && typeof result.success !== 'boolean') {
+            throw new Error("Result didn't conform to { success: Boolean } schema!");
+        }
+
+        return result;
+    }
+
+    async close() {
+        await this.client.close();
+    }
+}
 
 exports.deepEqual = deepEqual;
 
@@ -193,6 +213,7 @@ exports.readFile = util.promisify(fs.readFile);
 
 afterEach(async function() { //eslint-disable-line no-undef
     let hadDaemon = false;
+    let daemonStopped = false;
     let hadClient = false;
     let hadProcesses = false;
     let failed = !this.currentTest || this.currentTest.state === 'failed';
@@ -219,7 +240,10 @@ afterEach(async function() { //eslint-disable-line no-undef
         for (const daemon of runningDaemons.values()) {
             processes = processes.concat(daemon.info().processes);
             output = output.concat(daemonOut.get(daemon));
-            await daemon.killDaemon();
+            await Promise.race([
+                exports.wait(1000),
+                daemon.killDaemon().then(() => daemonStopped = true)
+            ]);
         }
 
         hadDaemon = true;
@@ -270,6 +294,9 @@ afterEach(async function() { //eslint-disable-line no-undef
     tmpfiles.clear();
 
     if (hadDaemon && !failed) {
+        if (!daemonStopped) {
+            throw new Error("A daemon was still running after the test and didn't stop when asked.");
+        }
         throw new Error("A daemon was still running after the test.");
     }
 

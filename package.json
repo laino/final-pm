@@ -41,7 +41,8 @@
     "strip-ansi": "",
     "lockfile": "",
     "table": "",
-    "stable": ""
+    "stable": "",
+    "semver": ""
   },
   "devDependencies": {
     "ansi-to-html": "",

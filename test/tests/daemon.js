@@ -86,13 +86,11 @@ describe('daemon', function() {
 
         await daemon.listen('ws+unix://' + file);
 
-        assert.equal(await common.exists(file), true,
-            "unix socket exists");
+        assert.isOk(await common.exists(file), "unix socket exists");
 
         await daemon.close();
 
-        assert.equal(await common.exists(file), false,
-            "unix socket was removed");
+        assert.isNotOk(await common.exists(file), "unix socket was removed");
 
         await daemon.killDaemon();
     });
@@ -101,16 +99,22 @@ describe('daemon', function() {
         const daemon = await common.daemon();
         const client = await common.client(daemon);
 
-        await expect(client.invoke("info", "derp"))
+        await expect(client.invoke('info', 'derp'))
             .to.be.rejectedWith('Arguments mismatch');
 
-        await expect(client.invoke("404"))
+        await expect(client.invoke('start'))
+            .to.be.rejectedWith('Arguments mismatch');
+
+        await expect(client.invoke('start', 3))
+            .to.be.rejectedWith('Arguments mismatch');
+
+        await expect(client.invoke('404'))
             .to.be.rejectedWith('no such method');
 
-        await expect(client.invoke("start"))
-            .to.be.rejectedWith('Arguments mismatch');
+        await expect(client.invoke('all', [{ name: '404', args: [] }]))
+            .to.be.rejectedWith('No such API call');
 
-        await expect(client.invoke("start", 3))
+        await expect(client.invoke('all', 'derp'))
             .to.be.rejectedWith('Arguments mismatch');
 
         await client.close();
@@ -132,7 +136,7 @@ describe('daemon', function() {
         const names = new Set(oldApps.map((app) => app.name));
 
         samples.forEach((sample) => {
-            assert.equal(names.has(sample.name), true, sample.name + " config exists");
+            assert.isOk(names.has(sample.name), sample.name + " config exists");
             names.delete(sample.name);
         });
 
@@ -146,10 +150,10 @@ describe('daemon', function() {
         info = await client.invoke('info');
 
         info.applications.filter((app) => !app.builtin).forEach((app, i) => {
-            assert.equal(app['name'] == oldApps[i]['name'], true,
+            assert.isOk(app['name'] == oldApps[i]['name'],
                 `apps are still in the same order`);
 
-            assert.equal(app.revision > oldApps[i].revision, true,
+            assert.isOk(app.revision > oldApps[i].revision,
                 `revision counter of ${app['name']} was incremented`);
         });
 
@@ -168,106 +172,33 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
-    it('should discard old log lines in RAM', async function() {
-        const daemon = await common.daemonWithConfig('stdout.js');
+    it('should report unsuccessful operations as such', async function() {
+        const daemon = await common.daemon();
         const client = await common.client(daemon);
 
-        await client.invoke('start', 'spammy');
-        await client.invoke('wait');
-        await common.wait(200);
+        let result = await client.invoke('start', '404');
+        assert.isNotOk(result.success, "operation was unsuccessful because the app didn't exist");
 
-        const logs = (await client.invoke('logs', 'spammy', {
-            lines: 1000
-        })).lines.filter((line) => line.type === 'stdout');
+        result = await client.invoke('delete', '404');
+        assert.isNotOk(result.success, "operation was unsuccessful because the app didn't exist");
 
-        assert.equal(logs.length <= 2, true,
-            `two or less log line should fit into RAM`);
+        result = await client.invoke('stop', 999);
+        assert.isNotOk(result.success, "operation was unsuccessful because the process didn't exist");
 
-        await client.close();
-        await daemon.killDaemon();
-    });
-
-    it('should discard logs after some time', async function() {
-        const daemon = await common.daemonWithConfig('stdout.js');
-        const client = await common.client(daemon);
-
-        let result = await client.invoke('start', 'expire');
-        await client.invoke('wait');
-        await client.invoke('stop', result.process.id);
-        await client.invoke('wait');
-
-        // Immediately start a new app, aborting the timeout
-        result = await client.invoke('start', 'expire');
-        await client.invoke('wait');
-
-        await common.wait(500);
-
-        assert.notEqual(
-            (await client.invoke('logs', 'expire')).lines.length, 0,
-            `shouldn't have discarded logs`);
-
-        await client.invoke('stop', result.process.id);
-        await client.invoke('wait');
-
-        await common.wait(500);
-
-        assert.equal(
-            (await client.invoke('logs', 'expire')).lines.length, 0,
-            `should've discarded logs`);
-
-        await client.close();
-        await daemon.killDaemon();
-    });
-
-    it('should correctly log multiple lines received at once or apart', async function() {
-        const daemon = await common.daemonWithConfig('stdout.js');
-        const client = await common.client(daemon);
-
-        await client.invoke('start', 'app');
-        await client.invoke('wait');
-        await client.invoke('stop', 0);
-        await client.invoke('wait');
-
-        const logs = (await client.invoke('logs', 'app'))
-            .lines.filter((line) => line.type === 'stdout');
-
-        assert.equal(logs.length, 3, `logged 3 lines`);
-
-        assert.deepEqual(logs.map((line) => line.text),
-            ['TWO LINES', 'AT ONCE', 'A LINE IN TWO PARTS'],
-            `logged everything and in the right order`);
-
-        await client.close();
-        await daemon.killDaemon();
-    });
-
-    it('should trim lines exceeding "max-log-line-length"', async function() {
-        const daemon = await common.daemonWithConfig('stdout.js');
-        const client = await common.client(daemon);
-
-        await client.invoke('start', 'trim');
-        await client.invoke('wait');
-        await client.invoke('stop', 0);
-        await client.invoke('wait');
-
-        const logs = (await client.invoke('logs', 'trim'))
-            .lines.filter((line) => line.type === 'stdout');
-
-        assert.equal(logs.length, 3, `logged 3 lines`);
-
-        assert.deepEqual(logs.map((line) => line.text),
-            ['TWO L', 'AT ON', 'A LIN'],
-            `logged everything and in the right order`);
+        result = await client.invoke('kill', 999);
+        assert.isNotOk(result.success, "operation was unsuccessful because the process didn't exist");
 
         await client.close();
         await daemon.killDaemon();
     });
 
     async function startStopTestSingleApp(client, appName) {
-        await client.invoke('all', [
+        const {results} = await client.invoke('all', [
             { name: 'start', args: [appName] },
             { name: 'wait' },
         ]);
+
+        assert.isOk(results[0].success, `${appName} was started successfully`);
 
         let info = await client.invoke('info');
 
@@ -309,7 +240,7 @@ describe('daemon', function() {
             `should have logged all STDOUT lines of '${appName}'`);
     }
 
-    inAllModes(async function(getDaemon) {
+    inAllModes(function(getDaemon, mode) {
         it('should start/stop apps and their loggers', async function() {
             const daemon = await getDaemon();
             const client = await common.client(daemon);
@@ -319,6 +250,11 @@ describe('daemon', function() {
             await startStopTestSingleApp(client, 'app-instant');
             await startStopTestSingleApp(client, 'app-message');
 
+            // FIXME: node bug
+            if (mode !== 'fork') {
+                await startStopTestSingleApp(client, 'app-disconnect');
+            }
+
             await client.close();
             await daemon.killDaemon();
         });
@@ -326,7 +262,7 @@ describe('daemon', function() {
         it('should restart crashing applications', async function() {
             const daemon = await getDaemon();
             const client = await common.client(daemon);
-            
+
             // 1. Start the the app once
 
             await client.invoke('start', 'app');
@@ -609,18 +545,113 @@ describe('daemon', function() {
             await daemon.killDaemon();
         });
     });
+
+    it('should discard old log lines in RAM', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'spammy');
+        await client.invoke('wait');
+        await common.wait(200);
+
+        const logs = (await client.invoke('logs', 'spammy', {
+            lines: 1000
+        })).lines.filter((line) => line.type === 'stdout');
+
+        assert.isAtMost(logs.length, 2,
+            `two or less log line should fit into RAM`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('should discard logs after some time', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        let result = await client.invoke('start', 'expire');
+        await client.invoke('wait');
+        await client.invoke('stop', result.process.id);
+        await client.invoke('wait');
+
+        // Immediately start a new app, aborting the timeout
+        result = await client.invoke('start', 'expire');
+        await client.invoke('wait');
+
+        await common.wait(500);
+
+        assert.notEqual(
+            (await client.invoke('logs', 'expire')).lines.length, 0,
+            `shouldn't have discarded logs`);
+
+        await client.invoke('stop', result.process.id);
+        await client.invoke('wait');
+
+        await common.wait(500);
+
+        assert.equal(
+            (await client.invoke('logs', 'expire')).lines.length, 0,
+            `should've discarded logs`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('should correctly log multiple lines received at once or apart', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'app');
+        await client.invoke('wait');
+        await client.invoke('stop', 0);
+        await client.invoke('wait');
+
+        const logs = (await client.invoke('logs', 'app'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.equal(logs.length, 3, `logged 3 lines`);
+
+        assert.deepEqual(logs.map((line) => line.text),
+            ['TWO LINES', 'AT ONCE', 'A LINE IN TWO PARTS'],
+            `logged everything and in the right order`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
+    it('should trim lines exceeding "max-log-line-length"', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        await client.invoke('start', 'trim');
+        await client.invoke('wait');
+        await client.invoke('stop', 0);
+        await client.invoke('wait');
+
+        const logs = (await client.invoke('logs', 'trim'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.equal(logs.length, 3, `logged 3 lines`);
+
+        assert.deepEqual(logs.map((line) => line.text),
+            ['TWO L', 'AT ON', 'A LIN'],
+            `logged everything and in the right order`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
 });
 
 function inAllModes(fn) {
     context('in cluster mode', function() {
         fn.call(this, () => {
             return common.daemonWithConfig();
-        });
+        }, 'cluster');
     });
 
     context('in fork mode', function() {
         fn.call(this, () => {
             return common.daemonWithConfig('working-fork.js');
-        });
+        }, 'fork');
     });
 }

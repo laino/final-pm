@@ -111,12 +111,10 @@ async function runWithConfig(config) {
 
     const info = await client.invoke('info');
 
-    if (info.version !== finalPM.version) {
-        cli.warn("Version",
-            `Daemon version (${info.version || '<2.1.0'}) differs from CLI (${finalPM.version})`);
-    } else {
-        cli.debug("Version", `Daemon and CLI version: ${info.version}`);
-    }
+    versionCheck('Final-PM', info.version || '<2.1.0', finalPM.version);
+    versionCheck('NODE', info.nodeVersion || 'unknown', process.version);
+
+    cli.bugs.check(info, args, config);
 
     // Add applications we would've uploaded in a dry run
     if (upload && args.dry) {
@@ -176,6 +174,15 @@ async function runWithConfig(config) {
         cli.debug("Connection", "Closing Connection");
 
         client.close();
+    }
+}
+
+function versionCheck(name, daemonVersion, cliVersion) {
+    if (cliVersion !== daemonVersion) {
+        cli.warn("Version",
+            `Daemon ${name} version (${daemonVersion}) differs from CLI (${cliVersion})`);
+    } else {
+        cli.debug("Version", `Daemon and CLI ${name} version: ${cliVersion}`);
     }
 }
 

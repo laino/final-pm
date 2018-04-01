@@ -7,6 +7,7 @@ const server = require('http').createServer((req, res) => {
 });
 let started = false;
 let shouldStop = false;
+let stopping = false;
 
 if (process.argv[2] === 'listen') {
     server.listen(3334, (error) => {
@@ -19,6 +20,7 @@ if (process.argv[2] === 'listen') {
     ready();
 }
 
+process.on('disconnect', stop);
 process.on('SIGINT', stop);
 process.on('message', (msg) => {
     if (msg === 'stop') {
@@ -28,11 +30,11 @@ process.on('message', (msg) => {
 
 function ready() {
     started = true;
+    process.send('ready');
+    console.log('ready');
     if (shouldStop) {
         stop();
     }
-    process.send('ready');
-    console.log('ready');
 }
 
 function stop() {
@@ -40,8 +42,20 @@ function stop() {
     if (!started) {
         return;
     }
+    if (stopping) {
+        return;
+    }
+
+    stopping = true;
     console.log('stopping');
-    server.close(() => {
+
+    if (process.argv[2] === 'listen') {
+        server.close(doStop);
+    } else {
+        doStop();
+    }
+
+    function doStop() {
         if (!process.connected) {
             process.exit(0);
         }
@@ -50,5 +64,5 @@ function stop() {
         } else {
             process.disconnect();
         }
-    });
+    }
 }
