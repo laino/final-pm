@@ -16,7 +16,7 @@ module.exports = {
         'ready-on': 'message',
         'run': './../apps/stdout.js',
         'stop-signal': 'SIGTERM',
-        'log-retention-timeout': 400,
+        'log-retention-timeout': 200,
     }, {
         'name': 'spammy',
         'ready-on': 'message',

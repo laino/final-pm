@@ -150,10 +150,10 @@ describe('daemon', function() {
         info = await client.invoke('info');
 
         info.applications.filter((app) => !app.builtin).forEach((app, i) => {
-            assert.isOk(app['name'] == oldApps[i]['name'],
+            assert.strictEqual(app['name'], oldApps[i]['name'],
                 `apps are still in the same order`);
 
-            assert.isOk(app.revision > oldApps[i].revision,
+            assert.isAbove(app.revision, oldApps[i].revision,
                 `revision counter of ${app['name']} was incremented`);
         });
 
@@ -280,7 +280,9 @@ describe('daemon', function() {
             process.kill(crashingApp.pid, 'SIGKILL');
 
             // 3. Wait for FinalPM to register that it died
-            await common.wait(300);
+            await common.awaitLogLine(client, 'app', 1000, (line) => {
+                return line.type === 'exit' && line.process.pid === crashingApp.pid;
+            });
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
@@ -295,7 +297,7 @@ describe('daemon', function() {
             assert.equal(new Date(crashingApp['start-time']).getTime() > Date.now(), 1,
                 "is using a start delay");
 
-            // 4. Wait for the startDelay to expire and the app running
+            // 4. Wait for the startDelay to expire and the app to be running
             await client.invoke('wait');
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
@@ -307,11 +309,13 @@ describe('daemon', function() {
             assert.equal(crashingApps.length, 1,
                 "one instance of 'app' is running");
 
-            // 5. Kill it again
+            // 5. Kill it again, this time in the running generation.
             process.kill(crashingApp.pid, 'SIGKILL');
 
-            // 6. Wait for FinalPM to register that
-            await common.wait(300);
+            // 6. Wait for FinalPM to register that.
+            await common.awaitLogLine(client, 'app', 1000, (line) => {
+                return line.type === 'exit' && line.process.pid === crashingApp.pid;
+            });
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
@@ -458,11 +462,24 @@ describe('daemon', function() {
             const client = await common.client(daemon);
 
             await client.invoke('start', 'neverStartsFast');
-            await common.wait(400);
+
+            let sawStartTimeout = false;
+
+            await common.awaitLogLine(client, 'neverStartsFast', 1000, (line) => {
+                if (line.type === 'start-timeout') {
+                    sawStartTimeout = true;
+                    return;
+                }
+
+                if (sawStartTimeout && line.type === 'moved' && line.process.generation === 'new') {
+                    return true;
+                }
+            });
 
             const crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'neverStartsFast',
             });
+
             const crashingApp = crashingApps[0];
 
             assert.equal(crashingApps.length, 1,
@@ -487,9 +504,9 @@ describe('daemon', function() {
             await client.invoke('wait');
             await client.invoke('stop', started.process.id);
 
-            await common.wait(500);
-
-            assert.equal((await client.invoke('info')).processes.length, 0, "nothing is running");
+            await common.awaitLogLine(client, 'neverStopsFast', 1000, (line) => {
+                return line.type === 'exit';
+            });
 
             await client.close();
             await daemon.killDaemon();
@@ -524,7 +541,9 @@ describe('daemon', function() {
             await client.invoke('kill', starting[0].id);
 
             // need to wait for the process to actually exit...
-            await common.wait(100);
+            await common.awaitLogLine(client, 'neverStarts', 1000, (line) => {
+                return line.type === 'exit' && line.process.pid === starting[0].pid;
+            });
 
             info = await client.invoke('info');
             starting = common.matchingObjects(info.processes, {
@@ -552,6 +571,8 @@ describe('daemon', function() {
 
         await client.invoke('start', 'spammy');
         await client.invoke('wait');
+
+        // Wait for it to create some logs
         await common.wait(200);
 
         const logs = (await client.invoke('logs', 'spammy', {
@@ -578,7 +599,7 @@ describe('daemon', function() {
         result = await client.invoke('start', 'expire');
         await client.invoke('wait');
 
-        await common.wait(500);
+        await common.wait(200);
 
         assert.notEqual(
             (await client.invoke('logs', 'expire')).lines.length, 0,
@@ -587,7 +608,7 @@ describe('daemon', function() {
         await client.invoke('stop', result.process.id);
         await client.invoke('wait');
 
-        await common.wait(500);
+        await common.wait(200);
 
         assert.equal(
             (await client.invoke('logs', 'expire')).lines.length, 0,

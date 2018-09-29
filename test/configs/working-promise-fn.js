@@ -8,6 +8,7 @@ module.exports = async function() {
             'run': './../apps/sample-app.js',
             'start-timeout': 2000,
             'stop-timeout': 2000,
+            'restart-crashing-delay': 300,
             'instances': 3,
         }, {
             'name': 'app-uniform',
@@ -55,12 +56,12 @@ module.exports = async function() {
         }, {
             'name': 'neverStartsFast',
             'ready-on': 'message',
-            'start-timeout': 100,
+            'start-timeout': 10,
             'run': './../apps/never-starting-app.js',
         }, {
             'name': 'neverStopsFast',
             'ready-on': 'message',
-            'stop-timeout': 100,
+            'stop-timeout': 10,
             'run': './../apps/never-stopping-app.js',
         }, {
             'name': 'zombie',

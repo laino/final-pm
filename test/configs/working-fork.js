@@ -8,6 +8,7 @@ module.exports = {
         'run': './../apps/sample-app.js',
         'start-timeout': 2000,
         'stop-timeout': 2000,
+        'restart-crashing-delay': 300,
         'instances': 3,
     }, {
         'name': 'app-uniform',
@@ -65,13 +66,13 @@ module.exports = {
         'name': 'neverStartsFast',
         'ready-on': 'message',
         'mode': 'fork',
-        'start-timeout': 100,
+        'start-timeout': 10,
         'run': './../apps/never-starting-app.js',
     }, {
         'name': 'neverStopsFast',
         'mode': 'fork',
         'ready-on': 'message',
-        'stop-timeout': 100,
+        'stop-timeout': 10,
         'run': './../apps/never-stopping-app.js',
     }, {
         'name': 'zombie',

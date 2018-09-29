@@ -11,6 +11,7 @@ const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
 const deepEqual = require('deep-equal');
 const rmdir = util.promisify(require('rmdir'));
+const {EventEmitter} = require('events');
 
 chai.use(chaiAsPromised);
 
@@ -70,9 +71,15 @@ exports.client = async(daemon) => {
     return new WrapClient(client);
 };
 
-class WrapClient {
+class WrapClient extends EventEmitter {
     constructor(client) {
+        super();
+
         this.client = client;
+
+        this.client.on('publish', (type, data) => {
+            this.emit('publish', type, data);
+        });
     }
 
     async invoke(...args) {
@@ -161,6 +168,81 @@ exports.wait = (ms) => {
         setTimeout(resolve, ms);
     });
 };
+
+exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve, reject) => {
+    let ended = false;
+
+    const timeout = setTimeout(async () => {
+        onEnd(new Error('timeout waiting for log line'));
+    }, maxMs);
+
+    client.on('publish', onPublish);
+
+    const {lines} = await client.invoke('logs', app, { follow: true } );
+
+    if (ended) {
+        return;
+    }
+
+    for (const line of lines) {
+        testLine(line);
+
+        if (ended) {
+            return;
+        }
+    }
+
+    function onPublish(type, data) {
+        if (type !== 'log-' + app) {
+            return;
+        }
+
+        testLine(data);
+    }
+
+    function testLine(line) {
+        if (typeof test === 'function') {
+            let result;
+
+            try {
+                result = test(line);
+            } catch (error) {
+                onEnd(error);
+                return;
+            }
+
+            if (result) {
+                onEnd(null, line);
+            }
+
+            return;
+        }
+
+        if (typeof test === 'string' && test === line.type) {
+            onEnd(null, line);
+        }
+    }
+
+    function onEnd(error, result) {
+        if (ended) {
+            console.error(new Error("already ended"));
+            return;
+        }
+
+        ended = true;
+
+        client.removeListener('publish', onPublish);
+        clearTimeout(timeout);
+
+        client.invoke('unfollow', app).then(() => {
+            if (error) {
+                return reject(error);
+            }
+
+            resolve(result);
+        }, reject);
+    }
+});
 
 exports.awaitEvent = (emitter, event) => {
     return new Promise((resolve) => {
