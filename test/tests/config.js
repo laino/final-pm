@@ -4,6 +4,7 @@ const finalPM = require('../../');
 const path = require('path');
 const os = require('os');
 const {assert, expect} = require('chai');
+const ConfigError = finalPM.config.ConfigError;
 
 describe('config', function() {
     const JS_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.js');
@@ -11,6 +12,8 @@ describe('config', function() {
     const JS_PROMISE_CONFIG = path.resolve(__dirname, '..', 'configs', 'working-promise.js');
     const JS_PROMISE_FN_CONFIG = path.resolve(__dirname, '..', 'configs', 'working-promise-fn.js');
     const JSON_CONFIG = path.resolve(__dirname, '..', 'configs', 'working.json');
+
+    const EMPTY = path.resolve(__dirname, '..', 'configs', 'empty.json');
 
     const OTHER1 = path.resolve(__dirname, '..', 'configs', 'stdout.js');
 
@@ -26,6 +29,11 @@ describe('config', function() {
         ['broken9.json', 'will have no effect'],
         ['broken10.json', 'only supported in cluster mode'],
         ['broken11.json', 'max-instances must be larger'],
+        ['broken12.json', 'must be an array'],
+        ['broken13.js', 'non-zero exit code'],
+        ['broken14.js', 'without any result'],
+        ['broken15.js', 'produced a second result'],
+        ['broken16.js', 'Unknown Error'],
         ['invalid-extension.ASF', 'Unknown file extension'],
         ['404.json', 'ENOENT', Error]
     ];
@@ -44,6 +52,11 @@ describe('config', function() {
 
         assert.equal(config['config-path'], configPath,
             "Contains the full configuration path");
+
+        compareTo.applications = compareTo.applications || [];
+
+        assert.equal(config.applications.length, compareTo.applications.length,
+            "Contain the same number of configurations");
 
         for (let app of compareTo.applications) {
             app = Object.assign({}, app);
@@ -117,6 +130,7 @@ describe('config', function() {
 
     it('should load JSON configuration files correctly', async function() {
         await testConfig(JSON_CONFIG);
+        await testConfig(EMPTY);
     });
 
     it('should parse JS and JSON configuration files the same', async function() {
@@ -148,8 +162,6 @@ describe('config', function() {
     });
 
     it('should reject malformed configurations', async function() {
-        const ConfigError = finalPM.config.ConfigError;
-
         for (const [name, err, errorClass] of MALFORMED_CONFIGS) {
             const configPath = path.resolve(__dirname, '..', 'configs', name);
 
@@ -172,6 +184,7 @@ describe('config', function() {
         const ENV = await finalPM.config.getConfig({
             path: JS_CONFIG,
             env: {
+                SOMETHING_ELSE: 'hi',
                 FINAL_PM_CONFIG_APP_LOGGER: 'fake-logger',
                 FINAL_PM_CONFIG_APP_LOGGER_ARGS: '["CUSTOM"]'
             }
@@ -181,6 +194,81 @@ describe('config', function() {
             'logger': 'fake-logger',
             'logger-args': ['CUSTOM'],
         }).length, 1, "overwrite config values with ENV");
+    });
+
+    it('should reject malformed config from CLI and ENV', async function() {
+        function getBrokenConfigA() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                env: {
+                    FINAL_PM_CONFIG_APP_UNKNOWN_KEY: 'value',
+                }
+            });
+        }
+
+        function getBrokenConfigB() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                args: ['app:unknown-key=value']
+            });
+        }
+
+        function getBrokenConfigC() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                args: ['unknown-key=value']
+            });
+        }
+
+        function getBrokenConfigD() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                args: ['unknown-app:logger=fake-logger']
+            });
+        }
+
+        function getBrokenConfigE() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                args: ['unknown']
+            });
+        }
+
+        function getBrokenConfigF() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                env: {
+                    FINAL_PM_CONFIG_APP_LOGGER: '"asdf',
+                }
+            });
+        }
+        function getBrokenConfigG() {
+            return finalPM.config.getConfig({
+                path: JS_CONFIG,
+                args: ['app:logger="asdf']
+            });
+        }
+
+        await expect(getBrokenConfigA()).to.be.rejectedWith(ConfigError,
+            "doesn't match any known configuration key");
+
+        await expect(getBrokenConfigB()).to.be.rejectedWith(ConfigError,
+            "doesn't match any known application configuration key");
+
+        await expect(getBrokenConfigC()).to.be.rejectedWith(ConfigError,
+            "doesn't match any known configuration key");
+
+        await expect(getBrokenConfigD()).to.be.rejectedWith(ConfigError,
+            "Unknown application name");
+
+        await expect(getBrokenConfigE()).to.be.rejectedWith(ConfigError,
+            "Expected '='");
+
+        await expect(getBrokenConfigF()).to.be.rejectedWith(ConfigError,
+            "Unexpected end of JSON input");
+
+        await expect(getBrokenConfigG()).to.be.rejectedWith(ConfigError,
+            "Unexpected end of JSON input");
     });
 
     it('should read config values from a package.json and npm config', async function() {

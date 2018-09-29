@@ -1,0 +1,6 @@
+{
+    "applications": [{
+        "name": "golem",
+        "run": "./../apps/golem.js"
+    }]
+}

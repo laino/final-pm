@@ -44,35 +44,33 @@ module.exports = {
         'stop-signal': 'message',
         'run': './../apps/sample-app.js',
     }, {
-        'name': 'crashingApp',
+        'name': 'crashing',
         'mode': 'fork',
         'ready-on': 'message',
         'stop-signal': 'message',
         'run': './../apps/crashing-app.js',
     }, {
-        'name': 'neverStarts',
+        'name': 'never-starts',
         'ready-on': 'message',
         'mode': 'fork',
         'max-instances': 2,
-        'start-timeout': 3000,
         'run': './../apps/never-starting-app.js',
     }, {
-        'name': 'neverStops',
+        'name': 'never-stops',
         'mode': 'fork',
         'ready-on': 'message',
-        'stop-timeout': 3000,
         'run': './../apps/never-stopping-app.js',
     }, {
-        'name': 'neverStartsFast',
+        'name': 'start-timeout',
         'ready-on': 'message',
         'mode': 'fork',
-        'start-timeout': 10,
+        'start-timeout': 1,
         'run': './../apps/never-starting-app.js',
     }, {
-        'name': 'neverStopsFast',
+        'name': 'stop-timeout',
         'mode': 'fork',
         'ready-on': 'message',
-        'stop-timeout': 10,
+        'stop-timeout': 1,
         'run': './../apps/never-stopping-app.js',
     }, {
         'name': 'zombie',
@@ -80,6 +78,6 @@ module.exports = {
         'ready-on': 'message',
         'run': './../apps/zombie.js',
         'kill-signal': 'SIGTERM',
-        'start-timeout': 500 // immediately become a zombie
+        'start-timeout': 1 // immediately become a zombie
     }]
 };

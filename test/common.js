@@ -33,7 +33,7 @@ let portCounter = 30511;
 exports.daemon = async () => {
     const daemon = new finalPM.daemon();
 
-    let socket = exports.tmpsocket(exports.tmpdir());
+    let socket = exports.tmpSocket(exports.tmpdir());
 
     const output = [];
 
@@ -118,7 +118,7 @@ exports.matchingObjects = (array, obj) => {
 };
 
 
-exports.daemonWithConfig = async (name = 'working.js') => {
+exports.daemonWithConfig = async (name = 'working.json') => {
     const daemon = await exports.daemon();
     const samples = await exports.loadConfig(name);
 
@@ -129,7 +129,16 @@ exports.daemonWithConfig = async (name = 'working.js') => {
     return daemon;
 };
 
-exports.loadConfig = async (name = 'working.js') => {
+exports.daemonWithGolem = async (config, fn) => {
+    const daemon = await exports.daemon();
+    const golem = exports.createGolem(config, fn);
+
+    daemon.add(golem);
+
+    return daemon;
+};
+
+exports.loadConfig = async (name = 'working.json') => {
     const config = await finalPM.config.getConfig(
         path.resolve(__dirname, 'configs', name));
 
@@ -141,6 +150,17 @@ exports.loadConfig = async (name = 'working.js') => {
     });
 
     return config.applications;
+};
+
+exports.createGolem = async (config, fn) => {
+    const baseConfig = await exports.loadConfig('golem.json')[0];
+    const code = '(' + fn.toString() + ')()';
+
+    Object.assign(baseConfig, {env: { INJECT: code } }, config);
+
+    console.log(baseConfig);
+
+    return baseConfig;
 };
 
 exports.trackProcess = (child) => {
@@ -171,20 +191,24 @@ exports.wait = (ms) => {
 
 exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve, reject) => {
     let ended = false;
+    let gotResponse = false;
+    let lastTimestamp = 0;
 
     const timeout = setTimeout(async () => {
-        onEnd(new Error('timeout waiting for log line'));
+        onEnd(new Error("timeout waiting for log line"));
     }, maxMs);
 
     client.on('publish', onPublish);
 
-    const {lines} = await client.invoke('logs', app, { follow: true } );
+    const response = await client.invoke('logs', app, { follow: true } );
+
+    gotResponse = true;
 
     if (ended) {
         return;
     }
 
-    for (const line of lines) {
+    for (const line of response.lines) {
         testLine(line);
 
         if (ended) {
@@ -193,6 +217,15 @@ exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve,
     }
 
     function onPublish(type, data) {
+        if (ended) {
+            return;
+        }
+
+        if (!gotResponse) {
+            onEnd(new Error("Got log lines before log response."));
+            return;
+        }
+
         if (type !== 'log-' + app) {
             return;
         }
@@ -201,6 +234,13 @@ exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve,
     }
 
     function testLine(line) {
+        if (line.timestamp < lastTimestamp) {
+            onEnd(new Error("Receiving lines out of order."));
+            return;
+        }
+
+        lastTimestamp = line.timestamp;
+
         if (typeof test === 'function') {
             let result;
 
@@ -250,22 +290,22 @@ exports.awaitEvent = (emitter, event) => {
     });
 };
 
-exports.tmpsocket = (home) => {
-    if (exports.isWindows()) {
+exports.tmpSocket = (home, usePort) => {
+    if (usePort || exports.isWindows()) {
         return 'ws://localhost:' + (portCounter++);
     } else {
         return 'ws+unix://' + path.join(home, 'daemon.sock');
     }
 };
 
-exports.tmplaunchconfig = async () => {
+exports.tmpLaunchConfig = async (usePort) => {
     const home = exports.tmpdir();
 
     const config = await finalPM.config.getConfig({
         path: null,
         env: {
             FINAL_PM_CONFIG_HOME: home,
-            FINAL_PM_CONFIG_SOCKET: exports.tmpsocket(home),
+            FINAL_PM_CONFIG_SOCKET: exports.tmpSocket(home, usePort),
         }
     });
 
@@ -312,7 +352,7 @@ afterEach(async function() { //eslint-disable-line no-undef
 
     if (clients.size) {
         for (const client of clients) {
-            await client.close();
+            client.close();
         }
 
         hadClient = true;
