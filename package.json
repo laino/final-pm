@@ -1,19 +1,50 @@
 {
   "name": "final-pm",
-  "version": "2.23.0",
+  "version": "2.23.1",
   "author": "laino",
   "description": "The Final Process Manager",
-  "main": "index.js",
-  "repository": "https://github.com/laino/final-pm",
-  "keywords": [
-    "process manager", "process", "manager", "graceful", "restarts",
-    "pm2", "cli", "fault tolerant", "forever", "load balancer", "production",
-    "runtime", "load-balancer", "Keep process alive", "autorestart",
-    "daemon", "final-pm", "finalpm", "supervisor", "supervisord",
-    "load balancer", "load", "balancer"
-  ],
   "license": "MIT",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laino/final-pm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/laino/final-pm/issues"
+  },
+  "homepage": "https://github.com/laino/final-pm#readme",
+  "keywords": [
+    "process manager",
+    "process",
+    "manager",
+    "graceful",
+    "restarts",
+    "pm2",
+    "cli",
+    "fault tolerant",
+    "forever",
+    "load balancer",
+    "production",
+    "runtime",
+    "load-balancer",
+    "Keep process alive",
+    "autorestart",
+    "daemon",
+    "final-pm",
+    "finalpm",
+    "supervisor",
+    "supervisord",
+    "load balancer",
+    "load",
+    "balancer"
+  ],
+  "directories": {
+    "doc": "doc",
+    "example": "examples",
+    "lib": "lib",
+    "test": "test"
+  },
+  "main": "index.js",
   "scripts": {
     "start": "./bin/cli",
     "build-doc": "./doc/build.js",
@@ -28,34 +59,34 @@
     "final-pm": "./bin/cli"
   },
   "dependencies": {
-    "final-rpc": "",
-    "joi": "",
-    "async": "",
-    "mkdirp": "",
-    "ansi-escape-sequences": "laino/ansi-escape-sequences",
-    "command-line-args": "",
-    "command-line-usage": "4.1.0",
-    "deep-equal": "",
-    "humanize-duration": "",
-    "read-package-config": "",
-    "strip-ansi": "",
-    "lockfile": "",
-    "table": "",
-    "stable": "",
-    "semver": ""
+    "ansi-escape-sequences": "github:laino/ansi-escape-sequences",
+    "async": "^2.6.1",
+    "command-line-args": "^5.0.2",
+    "command-line-usage": "^4.1.0",
+    "deep-equal": "^1.0.1",
+    "final-rpc": "^1.2.0",
+    "humanize-duration": "^3.15.3",
+    "joi": "^13.7.0",
+    "lockfile": "^1.0.4",
+    "mkdirp": "^0.5.1",
+    "read-package-config": "^1.0.2",
+    "semver": "^5.5.1",
+    "stable": "^0.1.8",
+    "strip-ansi": "^5.0.0",
+    "table": "^5.0.2"
   },
   "devDependencies": {
-    "samsam": "",
     "ansi-to-html": "",
-    "nyc": "",
+    "chai": "",
+    "chai-as-promised": "",
     "coveralls": "",
     "eslint": "",
     "eslint-plugin-mocha": "",
-    "turndown": "",
     "mocha": "",
-    "chai": "",
-    "chai-as-promised": "",
+    "nyc": "",
+    "rmdir": "",
+    "samsam": "",
     "tmp": "",
-    "rmdir": ""
+    "turndown": ""
   }
 }

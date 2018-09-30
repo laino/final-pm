@@ -21,6 +21,8 @@ let lineWasEmpty = false;
 
 const definition = argsDefinition.all;
 
+process.stdout.columns = 120;
+
 definition.forEach((section) => {
     if (!section.content) {
         return;
@@ -38,6 +40,7 @@ definition.forEach((section) => {
     }
 
     section.content.options.noWrap = true;
+    section.content.options.maxWidth = 120;
 });
 
 const htmlBody = '<p>' + AnsiToHtml.toHtml(commandLineUsage(definition))

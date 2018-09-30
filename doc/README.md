@@ -69,7 +69,7 @@ __Examples__
 
 A selector identifies a process or an application.  
 
-A selector can either be an _application name_, internal process ID (id=_id_), or OS process ID (pid=_pid_). Using **all** as a selector will target all applications found in the configuration or which are running, depending on the action. An application name followed by /_N_ (slash _N_) will only select the _N_-th process of that application. Prefix your selector with **new:**, **running:**, **old:**, or **marked:** to only target processes in that **generation**. See the usage examples above.  
+A selector can either be an _application name_, internal process ID (id=_id_), or OS process ID (pid=_pid_). Using **all** as a selector will target all applications found in the configuration or which are running, depending on the action. An application name followed by /_N_ (slash _N_) will only select the _N_\-th process of that application. Prefix your selector with **new:**, **running:**, **old:**, or **marked:** to only target processes in that **generation**. See the usage examples above.  
 
 **Actions**  
   
@@ -95,12 +95,12 @@ Upload configuration (implies **add**), then start or stop processes for each se
 __show__  
   
 Show an overview of (selected) processes.  
-Use **--verbose** to also show logging processes.  
+Use **\--verbose** to also show logging processes.  
 
 __inspect__  
   
 Show detailed information for all selected applications / processes.  
-Use **--verbose** to show even more detailed information.  
+Use **\--verbose** to show even more detailed information.  
 
 __add__  
   
@@ -112,7 +112,7 @@ Delete application configurations from the daemon.
 
 __log__  
   
-Show process output. Understands **--follow** and **--lines**, which work the same as the UNIX _tail_ command.  
+Show process output. Understands **\--follow** and **\--lines**, which work the same as the UNIX _tail_ command.  
 
 ### Generations  
   
@@ -143,10 +143,10 @@ New processes who were asked to stop are kept here, then are moved to the **old 
 ### Configuration  
   
 
-Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. On the command line configuration keys may be overriden with **--set** _key_=_value_, where _key_ may be any configuration key. To override keys within an appliaction config, prefix _key_ with '_application-name_:' like so: --set myApp:ready-on="message"  
+Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. On the command line configuration keys may be overriden with **\--set** _key_\=_value_, where _key_ may be any configuration key. To override keys within an appliaction config, prefix _key_ with '_application-name_:' like so: --set myApp:ready-on="message"  
 
-Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in _key_ with underscores and translating it to uppercase, finally prefixed with FINAL\_PM\_CONFIG_,  
-i.e. myApp:ready-on="message" becomes FINAL\_PM\_CONFIG\_MYAPP\_READY_ON=message.  
+Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in _key_ with underscores and translating it to uppercase, finally prefixed with FINAL\_PM\_CONFIG\_,  
+i.e. myApp:ready-on="message" becomes FINAL\_PM\_CONFIG\_MYAPP\_READY\_ON=message.  
 
 __Logging__  
   
