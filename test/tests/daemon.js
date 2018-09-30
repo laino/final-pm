@@ -379,7 +379,7 @@ describe('daemon', function() {
 
             daemon.add(await common.createGolem({
                 'name': 'custom-start',
-                'start-timeout': 300,
+                'start-timeout': 600,
                 'ready-on': 'message',
                 'mode': mode,
             }, function() {
