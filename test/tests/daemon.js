@@ -377,21 +377,40 @@ describe('daemon', function() {
             const daemon = await getDaemon();
             const client = await common.client(daemon);
 
-            const {process} = await client.invoke('start', 'never-starts');
+            daemon.add(await common.createGolem({
+                'name': 'custom-start',
+                'start-timeout': 300,
+                'ready-on': 'message',
+                'mode': mode,
+            }, function() {
+                process.on('message', (msg) => {
+                    if (msg === 'become-ready') {
+                        process.send('ready');
+                    }
+                });
+            }));
+
+            const {process} = await client.invoke('start', 'custom-start');
 
             await client.invoke('stop', process.id);
 
-            const runningApps = common.matchingObjects((await client.invoke('info')).processes, {
-                'app-name': 'never-starts',
-            });
+            await common.awaitLogLine(client, 'custom-start', 1000,
+                {type: 'moved', process: {generation: 'marked', id: process.id}},
+                {type: 'start-timeout', process: {generation: 'marked', id: process.id}},
+                {type: 'exit', process: {generation: 'marked', id: process.id}}
+            );
 
-            const myApp = runningApps[0];
+            const {process: process2} = await client.invoke('start', 'custom-start');
 
-            assert.equal(runningApps.length, 1,
-                "one instance of 'never-starts' is running");
+            await client.invoke('stop', process2.id);
+            await client.invoke('send', process2.id, 'become-ready');
 
-            assert.equal(myApp.generation, 'marked',
-                "'never-starts' is in marked generation");
+            await common.awaitLogLine(client, 'custom-start', 1000,
+                {type: 'moved', process: {generation: 'marked', id: process2.id}},
+                {type: 'moved', process: {generation: 'old', id: process2.id}},
+                {type: 'stop', process: {generation: 'old', id: process2.id}},
+                {type: 'exit', process: {generation: 'old', id: process2.id}}
+            );
 
             await client.close();
             await daemon.killDaemon();
@@ -418,9 +437,9 @@ describe('daemon', function() {
             process.kill(crashingApp.pid, 'SIGKILL');
 
             // 3. Wait for FinalPM to register that it died
-            await common.awaitLogLine(client, 'app', 1000, (line) => {
-                return line.type === 'exit' && line.process.pid === crashingApp.pid;
-            });
+            await common.awaitLogLine(client, 'app', 1000,
+                {type: 'exit', process: { pid: crashingApp.pid }}
+            );
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
@@ -451,9 +470,9 @@ describe('daemon', function() {
             process.kill(crashingApp.pid, 'SIGKILL');
 
             // 6. Wait for FinalPM to register that.
-            await common.awaitLogLine(client, 'app', 1000, (line) => {
-                return line.type === 'exit' && line.process.pid === crashingApp.pid;
-            });
+            await common.awaitLogLine(client, 'app', 1000,
+                {type: 'exit', process: { pid: crashingApp.pid }}
+            );
 
             crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'app',
@@ -601,18 +620,10 @@ describe('daemon', function() {
 
             await client.invoke('start', 'start-timeout');
 
-            let sawStartTimeout = false;
-
-            await common.awaitLogLine(client, 'start-timeout', 1000, (line) => {
-                if (line.type === 'start-timeout') {
-                    sawStartTimeout = true;
-                    return;
-                }
-
-                if (sawStartTimeout && line.type === 'moved' && line.process.generation === 'new') {
-                    return true;
-                }
-            });
+            await common.awaitLogLine(client, 'start-timeout', 1000,
+                {type: 'start-timeout'},
+                {type: 'moved', process: {generation: 'new'}}
+            );
 
             const crashingApps = common.matchingObjects((await client.invoke('info')).processes, {
                 'app-name': 'start-timeout',
@@ -642,9 +653,9 @@ describe('daemon', function() {
             await client.invoke('wait');
             await client.invoke('stop', started.process.id);
 
-            await common.awaitLogLine(client, 'stop-timeout', 1000, (line) => {
-                return line.type === 'exit';
-            });
+            await common.awaitLogLine(client, 'stop-timeout', 1000,
+                {type: 'exit'}
+            );
 
             await client.close();
             await daemon.killDaemon();

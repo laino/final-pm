@@ -1,6 +1,6 @@
 {
   "name": "final-pm",
-  "version": "2.22.0",
+  "version": "2.23.0",
   "author": "laino",
   "description": "The Final Process Manager",
   "main": "index.js",
@@ -45,6 +45,7 @@
     "semver": ""
   },
   "devDependencies": {
+    "samsam": "",
     "ansi-to-html": "",
     "nyc": "",
     "coveralls": "",

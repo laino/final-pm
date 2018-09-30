@@ -9,7 +9,7 @@ const os = require('os');
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const util = require('util');
-const deepEqual = require('deep-equal');
+const samsam = require('samsam');
 const rmdir = util.promisify(require('rmdir'));
 const {EventEmitter} = require('events');
 
@@ -97,18 +97,12 @@ class WrapClient extends EventEmitter {
     }
 }
 
-exports.deepEqual = deepEqual;
+exports.deepEqual = (objA, objB) => {
+    return samsam.deepEqual(objA, objB);
+};
 
 exports.objectMatches = (toTest, obj) => {
-    for (const [key, value] of Object.entries(obj)) {
-        if (!Object.prototype.hasOwnProperty.call(toTest, key))
-            return false;
-
-        if (!exports.deepEqual(toTest[key], value))
-            return false;
-    }
-
-    return true;
+    return samsam.match(toTest, obj);
 };
 
 exports.matchingObjects = (array, obj) => {
@@ -153,12 +147,10 @@ exports.loadConfig = async (name = 'working.json') => {
 };
 
 exports.createGolem = async (config, fn) => {
-    const baseConfig = await exports.loadConfig('golem.json')[0];
+    const baseConfig = (await exports.loadConfig('golem.json'))[0];
     const code = '(' + fn.toString() + ')()';
 
     Object.assign(baseConfig, {env: { INJECT: code } }, config);
-
-    console.log(baseConfig);
 
     return baseConfig;
 };
@@ -189,13 +181,16 @@ exports.wait = (ms) => {
     });
 };
 
-exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve, reject) => {
+exports.awaitLogLine = (client, app, maxMs, ...tests) => new Promise(async (resolve, reject) => {
     let ended = false;
     let gotResponse = false;
     let lastTimestamp = 0;
 
     const timeout = setTimeout(async () => {
-        onEnd(new Error("timeout waiting for log line"));
+        const test = tests[0];
+        const str = typeof test === 'function' ? test.toString() : JSON.stringify(test);
+
+        onEnd(new Error("timeout waiting for log line: " + str));
     }, maxMs);
 
     client.on('publish', onPublish);
@@ -241,25 +236,28 @@ exports.awaitLogLine = (client, app, maxMs, test) => new Promise(async (resolve,
 
         lastTimestamp = line.timestamp;
 
-        if (typeof test === 'function') {
-            let result;
+        const test = tests[0];
+        let result = false;
 
+        if (typeof test === 'function') {
             try {
                 result = test(line);
             } catch (error) {
                 onEnd(error);
                 return;
             }
-
-            if (result) {
-                onEnd(null, line);
-            }
-
-            return;
         }
 
-        if (typeof test === 'string' && test === line.type) {
-            onEnd(null, line);
+        if (typeof test === 'object' && samsam.match(line, test)) {
+            result = true;
+        }
+
+        if (result) {
+            tests.shift();
+
+            if (tests.length === 0) {
+                onEnd(null, line);
+            }
         }
     }
 
