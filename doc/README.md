@@ -366,7 +366,7 @@ __Default Application Config__
       /*                                                                    
        * Defines how FinalPM should kill a process.                         
        *                                                                    
-       * Process which have been sent the kill signal, but which            
+       * Processes which have been sent the kill signal, but which          
        * haven't terminated yet, are considered "Zombie" processes.         
        *                                                                    
        * Valid values are 'SIGTERM' and 'SIGKILL'.                          
@@ -401,11 +401,13 @@ __Default Application Config__
        * Whether FinalPM should consider each process                       
        * of this application to be functionally identical.                  
        *                                                                    
+       * This controls how old processes are replaced.                      
+       *                                                                    
        * 'false': FinalPM will assume instances of this                     
-       *          application are fundamentally the same,                   
-       *          and always replace the oldest processes currently         
-       *          in the running generation when deciding which             
-       *          processes to stop when new ones were started.             
+       *          application are fundamentally the same                    
+       *          and always replace the oldest processes                   
+       *          in the 'running' generation when new processes            
+       *          became ready.                                             
        *                                                                    
        * 'true':  FinalPM will add FINAL_PM_INSTANCE_NUMBER=N               
        *          to the environment of each process, as well as            
@@ -420,14 +422,16 @@ __Default Application Config__
                                                                             
       /*                                                                    
        * When true, a new process will be started whenever a                
-       * running one of this application exited abnormally.                 
+       * running one of this application exited abnormally                  
+       * in the 'running' generation.                                       
        */                                                                   
                                                                             
       'restart-crashing': true,                                             
                                                                             
       /*                                                                    
        * Same as above, except for processes which haven't yet              
-       * indicated they are ready.                                          
+       * indicated they are ready, i.e. they crashed in the                 
+       * 'new' generation.                                                  
        */                                                                   
                                                                             
       'restart-new-crashing': true,                                         
