@@ -143,10 +143,10 @@ New processes who were asked to stop are kept here, then are moved to the **old 
 ### Configuration  
   
 
-Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. On the command line configuration keys may be overriden with **\--set** _key_\=_value_, where _key_ may be any configuration key. To override keys within an appliaction config, prefix _key_ with '_application-name_:' like so: --set myApp:ready-on="message"  
+Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. When using a JS configuration file, you may either export the configuration directly, export a promise, or export a function that returns a promise/configuration when called.  
+On the command line configuration keys may be overriden with **\--set** _key_\=_value_, where _key_ may be any configuration key.  
 
-Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in _key_ with underscores and translating it to uppercase, finally prefixed with FINAL\_PM\_CONFIG\_,  
-i.e. myApp:ready-on="message" becomes FINAL\_PM\_CONFIG\_MYAPP\_READY\_ON=message.  
+To override keys within an appliaction config, prefix _key_ with '_application-name_:' like so: --set myApp:ready-on="message". Configuration keys can also be overriden with environment variables by replacing all dashes and colons in _key_ with underscores, converting to uppercase, and prefixing them with 'FINAL\_PM\_CONFIG\_'. For example: FINAL\_PM\_CONFIG\_MYAPP\_LOGGER=journald.  
 
 __Logging__  
   

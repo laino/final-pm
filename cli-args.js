@@ -310,13 +310,16 @@ exports.configuration = [
         header: "Configuration",
         content: [
             "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
+            "When using a JS configuration file, you may either export the configuration directly, export a promise, or export " +
+            "a function that returns a promise/configuration when called.",
             "On the command line configuration keys may be overriden with [bold]{--set} [italic]{key}=[italic]{value}, where " +
-            "[italic]{key} may be any configuration key. To override keys within an appliaction config, prefix [italic]{key} with " +
-            "'[italic]{application-name}:' like so: --set myApp:ready-on=\"message\"",
+            "[italic]{key} may be any configuration key.",
             "",
-            "Each configuration key can also be overriden with an environment variable by replacing all dashes and colons in [italic]{key} " +
-            "with underscores and translating it to uppercase, finally prefixed with FINAL_PM_CONFIG_, ",
-            "i.e. myApp:ready-on=\"message\" becomes FINAL_PM_CONFIG_MYAPP_READY_ON=message.",
+            "To override keys within an appliaction config, prefix [italic]{key} with " +
+            "'[italic]{application-name}:' like so: --set myApp:ready-on=\"message\". " +
+            "Configuration keys can also be overriden with environment variables by replacing all dashes and colons in [italic]{key} " +
+            "with underscores, converting to uppercase, and prefixing them with 'FINAL_PM_CONFIG_'. " +
+            "For example: FINAL_PM_CONFIG_MYAPP_LOGGER=journald.",
             "",
             "[underline]{Logging}",
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
