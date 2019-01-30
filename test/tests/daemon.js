@@ -354,6 +354,40 @@ describe('daemon', function() {
         await daemon.killDaemon();
     });
 
+    it('should correctly handle the "all" selector for logs', async function() {
+        const daemon = await common.daemonWithConfig('stdout.js');
+        const client = await common.client(daemon);
+
+        const logs = (await client.invoke('logs', 'all'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.deepEqual(logs, [], `shouldn't have logged anything yet`);
+
+        setTimeout(async () => {
+            await client.invoke('start', 'app');
+            await client.invoke('wait');
+            await client.invoke('stop', 0);
+            await client.invoke('wait');
+        }, 50);
+
+        await common.awaitLogLine(client, 'all', 1000,
+            {type: 'stdout'},
+            {type: 'stdout'},
+            {type: 'stdout'},
+            {type: 'exit', app: 'app'}
+        );
+
+        const logs2 = (await client.invoke('logs', 'all'))
+            .lines.filter((line) => line.type === 'stdout');
+
+        assert.deepEqual(logs2.map((line) => line.text),
+            ['TWO LINES', 'AT ONCE', 'A LINE IN TWO PARTS'],
+            `logged and returned everything and in the right order`);
+
+        await client.close();
+        await daemon.killDaemon();
+    });
+
     inAllModes(function(getDaemon, mode) {
         it('should start/stop apps and their loggers', async function() {
             const daemon = await getDaemon();
