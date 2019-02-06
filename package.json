@@ -56,7 +56,8 @@
     "autofix": "eslint --fix index.js examples config doc test lib bin/*"
   },
   "bin": {
-    "final-pm": "./bin/cli"
+    "final-pm": "./bin/cli",
+    "final-pm-daemon": "./bin/daemon"
   },
   "dependencies": {
     "ansi-escape-sequences": "github:laino/ansi-escape-sequences",
