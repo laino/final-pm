@@ -35,7 +35,10 @@ async function run() {
     await instance.listen(process.argv[2]);
 
     log("Daemon", `Daemon ${finalPM.version} running.`);
-    process.send('ready');
+
+    if (Object.prototype.hasOwnProperty.call(process, 'send')) {
+        process.send('ready');
+    }
 }
 
 function err(...args) {
