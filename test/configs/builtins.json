@@ -1,0 +1,6 @@
+{
+    "applications": [{
+        "type": "logger",
+        "name": "file-logger"
+    }]
+}

@@ -135,9 +135,70 @@ describe('daemon', function() {
         const daemon = await common.daemon();
         const client = await common.client(daemon);
         const samples = await common.loadConfig();
+        const builtins = await common.loadConfig('builtins.json');
 
+        // Add the sample apps with changed config-path
         for (const sample of samples) {
-            await client.invoke('add', sample);
+            const changedSample = Object.assign({}, sample, {
+                'config-path': '/tmp/__changed__'
+            });
+
+            const result = await client.invoke('add', changedSample);
+
+            assert.deepEqual(result, {
+                changed: [],
+                added: true,
+                success: true,
+                reason: null
+            }, "initially adding the application was successful");
+        }
+
+        // Try to overwrite some builtins
+        for (const builtin of builtins) {
+            const result = await client.invoke('add', builtin);
+
+            assert.deepEqual(result, {
+                changed: [],
+                added: false,
+                success: false,
+                reason: 'builtin'
+            }, "operation was unsuccessful because app is a builtin");
+        }
+
+        // Try to re-add sample apps with correct paths
+        for (const sample of samples) {
+            const result = await client.invoke('add', sample);
+
+            assert.deepEqual(result, {
+                changed: [],
+                added: false,
+                success: false,
+                reason: 'path'
+            }, "operation was unsuccessful because the path changed");
+        }
+
+        // Try to forcefully re-add sample apps with correct paths
+        for (const sample of samples) {
+            const result = await client.invoke('add', sample, {force: true});
+
+            assert.deepEqual(result, {
+                changed: ['config-path'],
+                added: false,
+                success: true,
+                reason: null
+            }, "operation was successful");
+        }
+
+        // Try to add the same apps again
+        for (const sample of samples) {
+            const result = await client.invoke('add', sample);
+
+            assert.deepEqual(result, {
+                changed: [],
+                added: false,
+                success: true,
+                reason: null
+            }, "operation was successful but the app wasn't added again");
         }
 
         let info = await client.invoke('info');
