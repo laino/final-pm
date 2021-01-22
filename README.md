@@ -7,7 +7,7 @@ FinalPM
 [![GitHub package version](https://img.shields.io/github/package-json/v/laino/final-pm.svg)](https://github.com/laino/final-pm)
 [![npm](https://img.shields.io/npm/v/final-pm.svg)](https://www.npmjs.com/package/final-pm)
 
-Finally a solid process manager. Never unintentionally kill your application in production again.
+Finally a good process manager. Never unintentionally kill your application in production again.
 
 Why?
 ----
