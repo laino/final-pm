@@ -21,9 +21,9 @@ run().catch(err => {
 
 async function run() {
     if (args.dry) {
-        cli.log("DRY", "[bold]{Commands with side effects will only be simulated.}");
+        cli.log("DRY", "{bold Commands with side effects will only be simulated.}");
         if (!args.verbose) {
-            cli.log("DRY", "[bold yellow]{This mode is probably more useful with [italic]{--verbose}}");
+            cli.log("DRY", "{bold.yellow This mode is probably more useful with {italic --verbose}}");
         }
     }
 
@@ -42,7 +42,7 @@ async function run() {
 
     const configs = await Promise.all(paths.map(async (path) =>  {
         const timeout = setTimeout(() => {
-            cli.warn(`Loading [italic]{${path}} is taking a long time. You should make sure it terminates.`);
+            cli.warn(`Loading {italic ${path}} is taking a long time. You should make sure it terminates.`);
         }, 10000);
 
         try {
@@ -145,7 +145,7 @@ async function runWithConfig(config) {
     }
 
     if (actions.length) {
-        cli.log("[yellow]{Action}", makeSummary(actions));
+        cli.log("{yellow Action}", makeSummary(actions));
 
         const results = await runAll(client, actions, args.wait);
         const failed = [];
@@ -157,9 +157,9 @@ async function runWithConfig(config) {
         });
 
         if (failed.length) {
-            cli.log("[red]{Action}", "[red bold]{Failed:} " + makeSummary(failed));
+            cli.log("{red Action}", "{bold.red Failed:} " + makeSummary(failed));
         } else {
-            cli.log("[yellow]{Action}", "[green bold]{Success}");
+            cli.log("{yellow Action}", "{bold.green Success}");
         }
     }
 
@@ -195,8 +195,8 @@ async function runAll(client, actions, showBlocking) {
         const starting = info.processes.filter((proc) => proc.generation === 'new');
         const stopping = info.processes.filter((proc) => ['old', 'marked'].includes(proc.generation));
 
-        cli.log('Wait', `Processes: [bold]{${starting.length}} starting, ` +
-                        `[bold]{${stopping.length}} stopping`);
+        cli.log('Wait', `Processes: {bold ${starting.length}} starting, ` +
+                        `{bold ${stopping.length}} stopping`);
 
         printTimeout = setTimeout(printBlocking, 5000);
     }
@@ -235,7 +235,7 @@ function filterApplications(applications) {
 
 async function uploadConfigurations(client, config) {
     cli.debug("Upload", `Uploading application configuration: ` +
-                  `[bold]{${config.applications.map(_ => _.name).join(' ')}}`);
+                  `{bold ${config.applications.map(_ => _.name).join(' ')}}`);
 
     const applications = filterApplications(config.applications);
 
@@ -264,7 +264,7 @@ async function uploadConfigurations(client, config) {
             if (result.added) {
                 added.push(app['name']);
             } else if (result.changed.length) {
-                updated.push(`[bold]{${app['name']}}{[yellow]{${result.changed.join(',')}}}`);
+                updated.push(`{bold ${app['name']}}{{yellow ${result.changed.join(',')}}}`);
             }
             return;
         }
@@ -279,14 +279,14 @@ async function uploadConfigurations(client, config) {
             reason = "because builtins can't be overriden";
         }
 
-        cli.err("Upload", `Daemon rejected configuration for [bold]{${app.name}} ` +
+        cli.err("Upload", `Daemon rejected configuration for {bold ${app.name}} ` +
                           `${reason}.\nTry using --force or --no-upload.`);
 
         failed = true;
     });
 
     if (added.length) {
-        cli.log("Config", `[bold]{${added.join(' ')}} added`);
+        cli.log("Config", `{bold ${added.join(' ')}} added`);
     }
 
     if (updated.length) {
@@ -324,7 +324,7 @@ function makeSummary(actions) {
         plan.push("kill daemon");
     }
 
-    return "[bold]{" + cli.capitalize(plan.join('}, then [bold]{')) + '}...';
+    return "{bold " + cli.capitalize(plan.join("}, then {bold ")) + "}...";
 }
 
 async function connectOrLaunch(config) {

@@ -60,34 +60,34 @@
     "final-pm-daemon": "./bin/daemon"
   },
   "dependencies": {
-    "ansi-escape-sequences": "github:laino/ansi-escape-sequences",
-    "async": "^2.6.1",
-    "command-line-args": "^5.0.2",
-    "command-line-usage": "^4.1.0",
-    "deep-equal": "^1.0.1",
+    "async": "^3.2.0",
+    "chalk": "^4.1.0",
+    "command-line-args": "^5.1.1",
+    "command-line-usage": "^6.1.1",
+    "deep-equal": "^2.0.5",
     "final-rpc": "^1.2.0",
-    "humanize-duration": "^3.15.3",
-    "joi": "^13.7.0",
+    "humanize-duration": "^3.25.1",
+    "joi": "^17.3.0",
     "lockfile": "^1.0.4",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^1.0.4",
     "read-package-config": "^1.0.2",
-    "semver": "^5.5.1",
+    "semver": "^7.3.4",
     "stable": "^0.1.8",
-    "strip-ansi": "^5.0.0",
-    "table": "^5.0.2"
+    "strip-ansi": "^6.0.0",
+    "table": "^6.0.7"
   },
   "devDependencies": {
-    "ansi-to-html": "",
+    "ansi-to-html": "*",
     "chai": "",
     "chai-as-promised": "",
-    "coveralls": "",
-    "eslint": "",
-    "eslint-plugin-mocha": "",
-    "mocha": "",
-    "nyc": "",
+    "coveralls": "*",
+    "eslint": "*",
+    "eslint-plugin-mocha": "*",
+    "mocha": "*",
+    "nyc": "*",
     "rmdir": "",
     "samsam": "",
-    "tmp": "",
-    "turndown": ""
+    "tmp": "*",
+    "turndown": "*"
   }
 }

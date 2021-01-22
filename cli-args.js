@@ -18,9 +18,9 @@ exports.options = [
     {
         name: 'config',
         alias: 'c',
-        typeLabel: '[underline]{File|Folder}',
+        typeLabel: '{underline File|Folder}',
         type: String,
-        description: "Default: process-config.{js,json}\n" +
+        description: "Default: process-config.\\{js,json\\}\n" +
                      "Load a configuration file. If the given path is a folder, also checks parent folders. " +
                      "If you specified a configuration for an already running application, it will only be applied " +
                      "once the application is manually (re-)started, but not when a new process is spawned after a crash.",
@@ -29,7 +29,7 @@ exports.options = [
     },
     {
         name: 'set',
-        typeLabel: '[[underline]{app}:][underline]{key}=[underline]{value}',
+        typeLabel: '[{underline app}:]{underline key}={underline value}',
         type: String,
         description: "Override a configuration key.",
         lazyMultiple: true,
@@ -38,18 +38,18 @@ exports.options = [
     {
         name: 'lines',
         alias: 'n',
-        typeLabel: '[underline]{num}',
+        typeLabel: '{underline num}',
         type: Number,
-        description: "When using the [bold]{log} action, sets the number of past log lines to display. " +
-                     "Up to [bold]{max-buffered-log-bytes} (see --help-configuration).",
+        description: "When using the {bold log} action, sets the number of past log lines to display. " +
+                     "Up to {bold max-buffered-log-bytes} (see --help-configuration).",
         defaultValue: 10
     },
     {
         name: 'follow',
         alias: 'f',
         type: Boolean,
-        description: "When using the [bold]{log} action, will output new log lines continously as they appear. " +
-                     "Cancel with [italic]{CTRL-C}.",
+        description: "When using the {bold log} action, will output new log lines continously as they appear. " +
+                     "Cancel with {italic CTRL-C}.",
         defaultValue: false
     },
     {
@@ -63,14 +63,14 @@ exports.options = [
         type: Boolean,
         description: "Stop the daemon, ungracefully killing any remaining processes. " +
                      "This is done after all other commands have been sent to the daemon.\n" +
-                     "Use [italic]{'final-pm --wait --kill stop all'} to achieve a graceful stop.",
+                     "Use {italic 'final-pm --wait --kill stop all'} to achieve a graceful stop.",
         defaultValue: false
     },
     {
         name: 'wait',
         type: Boolean,
         description: "Wait for any pending actions to complete. This means final-pm will only return once " +
-                     "the [bold]{queue}, [bold]{new}, [bold]{old} and [bold]{marked generations} are empty.",
+                     "the {bold queue}, {bold new}, {bold old} and {bold marked generations} are empty.",
         defaultValue: false
     },
     {
@@ -88,7 +88,7 @@ exports.options = [
     {
         name: 'dry',
         type: Boolean,
-        description: "Don't actually do anything, use [italic]{--verbose} for more output.",
+        description: "Don't actually do anything, use {italic --verbose} for more output.",
         defaultValue: false
     },
     {
@@ -107,13 +107,13 @@ exports.options = [
     {
         name: 'help-usage',
         type: Boolean,
-        description: "Print full usage guide including [bold]{actions}.",
+        description: "Print full usage guide including {bold actions}.",
         defaultValue: false
     },
     {
         name: 'help-generations',
         type: Boolean,
-        description: "Print help page about [bold]{generations}.",
+        description: "Print help page about {bold generations}.",
         defaultValue: false
     },
     {
@@ -140,7 +140,7 @@ exports.help = [
     {
         header: "Options",
         content: [
-            "# final-pm [--config [underline]{File|Folder}] [[underline]{Action} [underline]{Select}...]"
+            "# final-pm [--config {underline File|Folder}] [{underline Action} {underline Select}...]"
         ]
     },
     {
@@ -153,12 +153,12 @@ exports.usage = [
     {
         header: "FinalPM",
         content: [
-            "[italic]{Finally a good process manager.}",
+            "{italic Finally a good process manager.}",
             "",
-            "By default all actions are [bold]{graceful}. Old processes will always be cleanly stopped only " +
-            "once new processes have indicated they are [bold]{ready}.",
+            "By default all actions are {bold graceful}. Old processes will always be cleanly stopped only " +
+            "once new processes have indicated they are {bold ready}.",
             "",
-            "[underline]{Examples}",
+            "{underline Examples}",
             "",
             "# Start processes of all configured applications.",
             "final-pm start all",
@@ -181,58 +181,58 @@ exports.usage = [
     {
         content: [
             "",
-            "[bold]{Selectors}",
+            "{bold Selectors}",
             "",
             "A selector identifies a process or an application.",
             "",
-            "A selector can either be an [italic]{application name}, internal process ID (id=[italic]{id}), " +
-            "or OS process ID (pid=[italic]{pid}). " +
-            "Using [bold]{all} as a selector will target all applications found in the configuration or " +
-            "which are running, depending on the action. An application name followed by /[italic]{N} " +
-            "(slash [italic]{N}) will only select the [italic]{N}-th process of that application. " +
-            "Prefix your selector with [bold]{new:}, [bold]{running:}, [bold]{old:}, or [bold]{marked:} " +
-            "to only target processes in that [bold]{generation}. See the usage examples above.",
+            "A selector can either be an {italic application name}, internal process ID (id={italic id}), " +
+            "or OS process ID (pid={italic pid}). " +
+            "Using {bold all} as a selector will target all applications found in the configuration or " +
+            "which are running, depending on the action. An application name followed by /{italic N} " +
+            "(slash {italic N}) will only select the {italic N}-th process of that application. " +
+            "Prefix your selector with {bold new:}, {bold running:}, {bold old:}, or {bold marked:} " +
+            "to only target processes in that {bold generation}. See the usage examples above.",
             "",
-            "[bold]{Actions}",
+            "{bold Actions}",
             "",
-            "Valid actions are [bold]{start}, [bold]{stop}, [bold]{kill}, [bold]{scale}, [bold]{show}, " +
-            "[bold]{inspect}, [bold]{add}, [bold]{delete}, [bold]{log}.",
+            "Valid actions are {bold start}, {bold stop}, {bold kill}, {bold scale}, {bold show}, " +
+            "{bold inspect}, {bold add}, {bold delete}, {bold log}.",
             "",
-            "[underline]{start / restart}",
-            "Upload configuration (implies [bold]{add}), then start N=[italic]{instances} processes for all selected applications. " +
+            "{underline start / restart}",
+            "Upload configuration (implies {bold add}), then start N={italic instances} processes for all selected applications. " +
             "When processes are selected this will start one new process for each selected one instead. " +
             "May cause existing processes to be gracefully stopped when the newly started ones are ready, and " +
-            "will even implicitly stop more processes than were started when [italic]{instances} was decreased " +
+            "will even implicitly stop more processes than were started when {italic instances} was decreased " +
             "in the configuration. Note that this may replace different processes than the selected ones, or none at all, " +
-            "if [italic]{unique-instances} is set to [italic]{false}. In which case the oldest ones of that application " +
-            "will be replaced if [italic]{instances} was exceeded.",
+            "if {italic unique-instances} is set to {italic false}. In which case the oldest ones of that application " +
+            "will be replaced if {italic instances} was exceeded.",
             "",
-            "[underline]{stop}",
-            "Gracefully stop all selected [italic]{running/new} processes or applications.",
+            "{underline stop}",
+            "Gracefully stop all selected {italic running/new} processes or applications.",
             "",
-            "[underline]{kill}",
-            "Immediately [bold]{SIGKILL} all selected processes or applications. This works on processes in any [bold]{generation}.",
+            "{underline kill}",
+            "Immediately {bold SIGKILL} all selected processes or applications. This works on processes in any {bold generation}.",
             "",
-            "[underline]{scale}",
-            "Upload configuration (implies [bold]{add}), then start or stop processes for each selected application " +
-            "until the number of running processes matches configured [italic]{instances}.",
+            "{underline scale}",
+            "Upload configuration (implies {bold add}), then start or stop processes for each selected application " +
+            "until the number of running processes matches configured {italic instances}.",
             "",
-            "[underline]{show}",
+            "{underline show}",
             "Show an overview of (selected) processes.",
-            "Use [bold]{--verbose} to also show logging processes.",
+            "Use {bold --verbose} to also show logging processes.",
             "",
-            "[underline]{inspect}",
+            "{underline inspect}",
             "Show detailed information for all selected applications / processes.",
-            "Use [bold]{--verbose} to show even more detailed information.",
+            "Use {bold --verbose} to show even more detailed information.",
             "",
-            "[underline]{add}",
+            "{underline add}",
             "Upload application configurations to the daemon, replacing older instances of the same configuration.",
             "",
-            "[underline]{delete}",
+            "{underline delete}",
             "Delete application configurations from the daemon.",
             "",
-            "[underline]{log}",
-            "Show process output. Understands [bold]{--follow} and [bold]{--lines}, which work the same as the UNIX [italic]{tail} command.",
+            "{underline log}",
+            "Show process output. Understands {bold --follow} and {bold --lines}, which work the same as the UNIX {italic tail} command.",
         ]
     }
 ]);
@@ -242,38 +242,38 @@ exports.generations = [
         header: "Generations",
         content: [
             "Processes are grouped in generations:",
-            "The [bold]{queue}, [bold]{new}, [bold]{running}, [bold]{old}, and [bold]{marked generation}.",
+            "The {bold queue}, {bold new}, {bold running}, {bold old}, and {bold marked generation}.",
             "",
-            "[underline]{Queue Generation}",
+            "{underline Queue Generation}",
             "All processes begin in this generation and remain here until they can be started. Usually " +
-            "they can be started immediately unless [bold]{max-instances} is reached.",
+            "they can be started immediately unless {bold max-instances} is reached.",
             "",
-            "[underline]{New Generation}",
-            "The [bold]{new generation} is where processes remain until they are considered [bold]{ready}. " +
-            "A process is considered to be [bold]{ready} on the cluster [bold]{listen} event " +
-            "or when it sends the [bold]{ready} message, depending on the configuration (config: [bold]{ready-on}). " +
-            "Once a process is [bold]{ready} it is moved to the [bold]{running generation}. " +
-            "If a process is asked to be stopped while in the new generation, it is moved to the [bold]{marked generation} instead. " +
-            "If a process exits abnormally while in the new generation, a new one is started (config: [bold]{restart-new-crashing}).",
+            "{underline New Generation}",
+            "The {bold new generation} is where processes remain until they are considered {bold ready}. " +
+            "A process is considered to be {bold ready} on the cluster {bold listen} event " +
+            "or when it sends the {bold ready} message, depending on the configuration (config: {bold ready-on}). " +
+            "Once a process is {bold ready} it is moved to the {bold running generation}. " +
+            "If a process is asked to be stopped while in the new generation, it is moved to the {bold marked generation} instead. " +
+            "If a process exits abnormally while in the new generation, a new one is started (config: {bold restart-new-crashing}).",
             "",
-            "[underline]{Running Generation}",
-            "The [bold]{running generation} is where processes remain until they are [bold]{stopped}. At most the configured amount of " +
-            "processes for each application may reside here. If [italic]{unique-instances} is set to [italic]{false} and the maximum " +
-            "[italic]{instances} was exceeded because new processes were started, the oldest processes will be moved to the [bold]{old generation}. " +
-            "If [italic]{unique-instances} is set to [italic]{true}, each process will replace its counterpart 1:1 instead, and only then will " +
-            "additional processes be stopped if [italic]{instances} is exceeded. If a process exits abnormally while in the running generation, " +
-            "a new one is started (config: [bold]{restart-crashing}). Note that an older process can never replace a process that was started " +
+            "{underline Running Generation}",
+            "The {bold running generation} is where processes remain until they are {bold stopped}. At most the configured amount of " +
+            "processes for each application may reside here. If {italic unique-instances} is set to {italic false} and the maximum " +
+            "{italic instances} was exceeded because new processes were started, the oldest processes will be moved to the {bold old generation}. " +
+            "If {italic unique-instances} is set to {italic true}, each process will replace its counterpart 1:1 instead, and only then will " +
+            "additional processes be stopped if {italic instances} is exceeded. If a process exits abnormally while in the running generation, " +
+            "a new one is started (config: {bold restart-crashing}). Note that an older process can never replace a process that was started " +
             "later, ensuring always the latest processes are running even if startup time wildly varies.",
             "",
-            "[underline]{Old Generation}",
-            "The [bold]{old generation} is where processes remain when they should be [bold]{stopped} until they finally [bold]{exit}. " +
-            "A process moved to the [bold]{old generation} is sent the [bold]{SIGINT} signal. If the process does not exit within " +
-            "[bold]{stop-timeout} (default is no timeout), it is sent [bold]{SIGKILL} and removed from the old generation.",
+            "{underline Old Generation}",
+            "The {bold old generation} is where processes remain when they should be {bold stopped} until they finally {bold exit}. " +
+            "A process moved to the {bold old generation} is sent the {bold SIGINT} signal. If the process does not exit within " +
+            "{bold stop-timeout} (default is no timeout), it is sent {bold SIGKILL} and removed from the old generation.",
             "",
-            "[underline]{Marked Generation}",
-            "New processes who were asked to stop are kept here, then are moved to the [bold]{old generation} " +
-            "once they are [bold]{ready}. This means the programmer never has to worry about handling " +
-            "[bold]{SIGINT} signals during startup."
+            "{underline Marked Generation}",
+            "New processes who were asked to stop are kept here, then are moved to the {bold old generation} " +
+            "once they are {bold ready}. This means the programmer never has to worry about handling " +
+            "{bold SIGINT} signals during startup."
         ]
     }
 ];
@@ -288,8 +288,8 @@ exports.example = [
                 noTrim: true
             },
             data: [
-                { col: "[underline]{Example Config}" },
-                { col: "[italic]{final-pm --config sample-config.js start myApp}\n" }
+                { col: "{underline Example Config}" },
+                { col: "{italic final-pm --config sample-config.js start myApp}\n" }
             ].concat(fileToColumns('examples/sample-config.js'))
         }
     },
@@ -299,7 +299,7 @@ exports.example = [
                 noTrim: true
             },
             data: [
-                { col: "[underline]{Example App}\n" }
+                { col: "{underline Example App}\n" }
             ].concat(fileToColumns('examples/sample-app.js'))
         }
     }
@@ -312,23 +312,23 @@ exports.configuration = [
             "Configuration may be done in either JSON or JS, as well as environment variables and command line arguments. " +
             "When using a JS configuration file, you may either export the configuration directly, export a promise, or export " +
             "a function that returns a promise/configuration when called.",
-            "On the command line configuration keys may be overriden with [bold]{--set} [italic]{key}=[italic]{value}, where " +
-            "[italic]{key} may be any configuration key.",
+            "On the command line configuration keys may be overriden with {bold --set} {italic key}={italic value}, where " +
+            "{italic key} may be any configuration key.",
             "",
-            "To override keys within an appliaction config, prefix [italic]{key} with " +
-            "'[italic]{application-name}:' like so: --set myApp:ready-on=\"message\". " +
-            "Configuration keys can also be overriden with environment variables by replacing all dashes and colons in [italic]{key} " +
+            "To override keys within an appliaction config, prefix {italic key} with " +
+            "'{italic application-name}:' like so: --set myApp:ready-on=\"message\". " +
+            "Configuration keys can also be overriden with environment variables by replacing all dashes and colons in {italic key} " +
             "with underscores, converting to uppercase, and prefixing them with 'FINAL_PM_CONFIG_'. " +
             "For example: FINAL_PM_CONFIG_MYAPP_LOGGER=journald.",
             "",
-            "[underline]{Logging}",
+            "{underline Logging}",
             "Logging is done by a logging process started for each application, which will be fed logging output via process.send(logLine). " +
             "Logger processes are started with the same CWD as your application. Keep this in mind when passing relative paths to loggers. " +
             "The logging process is automatically started with your application, and is stopped once the last process of your application exits. " +
             "By default all applications use the simple file-logger that ships with final-pm, but creating a custom logger is very simple. " +
             "Have a look at the file-logger if you're curious how to create your own logger: ",
             "https://github.com/laino/final-pm/blob/master/loggers/file.js",
-            "All output of logger processes themselves will end up in the daemon log file ([italic]{daemon-log})."
+            "All output of logger processes themselves will end up in the daemon log file ({italic daemon-log})."
         ]
     },
     {
@@ -337,7 +337,7 @@ exports.configuration = [
                 noTrim: true
             },
             data: [
-                { col: "[underline]{Default Config}\n" },
+                { col: "{underline Default Config}\n" },
             ].concat(fileToColumns('config/default-config.js'))
         }
     },
@@ -347,7 +347,7 @@ exports.configuration = [
                 noTrim: true
             },
             data: [
-                { col: "[underline]{Default Application Config}\n" }
+                { col: "{underline Default Application Config}\n" }
             ].concat(fileToColumns('config/default-application-config.js'))
         }
     }
@@ -361,5 +361,8 @@ exports.isKnownAction = function(arg) {
 
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))
-        .toString().split('\n').map(col => {return {col};});
+        .toString()
+        .replace(/[{}]/g, m => '\\' + m)
+        .split('\n')
+        .map(col => {return {col};});
 }
