@@ -181,6 +181,7 @@ exports.wait = (ms) => {
     });
 };
 
+// eslint-disable-next-line
 exports.awaitLogLine = (client, app, maxMs, ...tests) => new Promise(async (resolve, reject) => {
     let ended = false;
     let gotResponse = false;
