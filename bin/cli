@@ -14,8 +14,8 @@ const args = cli.args;
 
 run().catch(err => {
     const {message = err, stack = err} = err;
-    cli.err("CLI", message);
-    cli.debug("CLI", stack);
+    cli.err("CLI", cli.escape(message));
+    cli.debug("CLI", cli.escape(stack));
     process.exit(1);
 });
 
@@ -36,13 +36,13 @@ async function run() {
     const paths = await Promise.all(lookupPaths.map(finalPM.config.resolveConfig));
 
     if (paths.includes(null) && args.config.length) {
-        cli.err(`No configuration file found at: ${lookupPaths[paths.indexOf(null)]}`);
+        cli.err(`No configuration file found at: ${cli.escape(lookupPaths[paths.indexOf(null)])}`);
         process.exit(1);
     }
 
     const configs = await Promise.all(paths.map(async (path) =>  {
         const timeout = setTimeout(() => {
-            cli.warn(`Loading {italic ${path}} is taking a long time. You should make sure it terminates.`);
+            cli.warn(`Loading {italic ${cli.escape(path)}} is taking a long time. You should make sure it terminates.`);
         }, 10000);
 
         try {
@@ -264,7 +264,7 @@ async function uploadConfigurations(client, config) {
             if (result.added) {
                 added.push(app['name']);
             } else if (result.changed.length) {
-                updated.push(`{bold ${app['name']}}{{yellow ${result.changed.join(',')}}}`);
+                updated.push(`{bold ${app['name']}}\\{{yellow ${result.changed.join(',')}}\\}`);
             }
             return;
         }

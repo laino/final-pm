@@ -1,6 +1,6 @@
 {
   "name": "final-pm",
-  "version": "2.25.1",
+  "version": "2.25.2",
   "author": "laino",
   "description": "The Final Process Manager",
   "license": "MIT",
@@ -74,6 +74,10 @@
     "stable": "^0.1.8",
     "strip-ansi": "^6.0.0",
     "table": "^6.0.7"
+  },
+  "nyc": {
+      "include": [ "lib", "loggers", "index.js" ],
+      "exclude": [ "lib/cli" ]
   },
   "devDependencies": {
     "ansi-to-html": "*",
