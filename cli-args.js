@@ -1,6 +1,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const logging = require('./lib/cli/logging');
 
 exports.knownActions = [
     'start', 'restart', 'stop',
@@ -362,7 +363,7 @@ exports.isKnownAction = function(arg) {
 function fileToColumns(file) {
     return fs.readFileSync(path.resolve(__dirname, file))
         .toString()
-        .replace(/[{}]/g, m => '\\' + m)
         .split('\n')
+        .map(logging.escape)
         .map(col => {return {col};});
 }
